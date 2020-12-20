@@ -9,7 +9,8 @@ import "reflect-metadata";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import { COOKIE_NAME, __prod__ } from "./constants";
-import { HelloResolver } from "./resolvers/hello";
+import { User } from "./entities/User";
+import { UserResolver } from "./resolvers/userResolver";
 
 const main = async () => {
   await createConnection({
@@ -20,7 +21,7 @@ const main = async () => {
     logging: true,
     synchronize: true,
     migrations: [path.join(__dirname, "./migrations/*")],
-    entities: [],
+    entities: [User],
   });
 
   const app = express();
@@ -55,7 +56,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [HelloResolver],
+      resolvers: [UserResolver],
       validate: false,
     }),
     context: ({ req, res }) => ({
