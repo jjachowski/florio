@@ -18,7 +18,12 @@ const Login: React.FC<LoginProps> = ({}) => {
       <Formik
         initialValues={{ usernameOrEmail: '', password: '' }}
         onSubmit={async (values, { setErrors }) => {
-          const response = await login({ variables: values });
+          const response = await login({
+            variables: values,
+            update: (cache) => {
+              cache.evict({ fieldName: 'me' });
+            },
+          });
           console.log(response);
           if (response.data?.login.errors) {
             // should i mark the fields red and display field error?
