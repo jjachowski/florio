@@ -8,13 +8,13 @@ import {
   Query,
   FieldResolver,
   Root,
-} from "type-graphql";
-import { AccountType, User } from "../entities/User";
-import argon2 from "argon2";
-import { COOKIE_NAME } from "../constants";
-import { MyContext } from "../types";
-import { RegisterCredentials } from "../inputTypes/registerCredentials";
-import { validateRegister } from "../utils/validators";
+} from 'type-graphql';
+import { AccountType, User } from '../entities/User';
+import argon2 from 'argon2';
+import { COOKIE_NAME } from '../constants';
+import { MyContext } from '../types';
+import { RegisterCredentials } from '../inputTypes/registerCredentials';
+import { validateRegister } from '../utils/validators';
 
 @ObjectType()
 class FieldError {
@@ -38,7 +38,7 @@ export class UserResolver {
   @FieldResolver(() => String)
   email(@Root() user: User, @Ctx() { req }: MyContext) {
     if (user.id !== req.session.userId) {
-      return "";
+      return '';
     }
     return user.email;
   }
@@ -138,7 +138,7 @@ export class UserResolver {
 
   @Mutation(() => UserResponse)
   async register(
-    @Arg("credentials") credentials: RegisterCredentials,
+    @Arg('credentials') credentials: RegisterCredentials,
     @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
     const errors = validateRegister(credentials);
@@ -158,13 +158,13 @@ export class UserResolver {
       }).save();
     } catch (err) {
       console.log(err);
-      if (err.code === "23505") {
-        if (err.detail.includes("email")) {
+      if (err.code === '23505') {
+        if (err.detail.includes('email')) {
           return {
             errors: [
               {
-                field: "email",
-                message: "email already taken",
+                field: 'email',
+                message: 'Ten adres email jest już zajęty',
               },
             ],
           };
@@ -172,8 +172,8 @@ export class UserResolver {
           return {
             errors: [
               {
-                field: "username",
-                message: "username already taken",
+                field: 'username',
+                message: 'Ta nazwa użytkownika jest już zajęta',
               },
             ],
           };
@@ -185,7 +185,7 @@ export class UserResolver {
     // this will set a cookie on the user
     // keep them logged in
     if (!user) {
-      return { errors: [{ field: "user", message: "user was undefined" }] };
+      return { errors: [{ field: 'user', message: 'user was undefined' }] };
     }
     req.session.userId = user.id;
 
@@ -194,13 +194,13 @@ export class UserResolver {
 
   @Mutation(() => UserResponse)
   async login(
-    @Arg("usernameOrEmail") usernameOrEmail: string,
-    @Arg("password") password: string,
+    @Arg('usernameOrEmail') usernameOrEmail: string,
+    @Arg('password') password: string,
 
     @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
     const user = await User.findOne({
-      where: usernameOrEmail.includes("@")
+      where: usernameOrEmail.includes('@')
         ? { email: usernameOrEmail }
         : { username: usernameOrEmail },
     });
@@ -209,8 +209,8 @@ export class UserResolver {
       return {
         errors: [
           {
-            field: "usernameOrEmail",
-            message: "username or email incorrect",
+            field: 'usernameOrEmail',
+            message: 'username or email incorrect',
           },
         ],
       };
@@ -220,8 +220,8 @@ export class UserResolver {
       return {
         errors: [
           {
-            field: "password",
-            message: "incorrect password",
+            field: 'password',
+            message: 'incorrect password',
           },
         ],
       };
