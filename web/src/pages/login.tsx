@@ -56,7 +56,7 @@ const Login: React.FC<LoginProps> = ({}) => {
               />
               <Button
                 mt={4}
-                colorScheme="teal"
+                colorScheme="green"
                 isLoading={props.isSubmitting}
                 type="submit"
                 mr={4}

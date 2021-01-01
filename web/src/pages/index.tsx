@@ -3,7 +3,7 @@ const Index = () => {
   return (
     <>
       <Navbar />
-      helo
+      {/* // searchbar // recently updated / added */}
     </>
   );
 };
