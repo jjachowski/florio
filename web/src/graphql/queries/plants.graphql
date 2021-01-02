@@ -1,0 +1,10 @@
+query Plants {
+  plants {
+    id
+    names {
+      name
+      isPrimary
+    }
+    description
+  }
+}

@@ -41,8 +41,6 @@ export class PlantResolver {
     @Arg('otherNames', () => [String]) otherNames: string[],
     @Arg('description') description: string
   ): Promise<PlantResponse> {
-    PlantName.delete({});
-    Plant.delete({});
     const plant = Plant.create({
       description,
     });

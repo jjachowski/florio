@@ -15,7 +15,28 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  plants: Array<Plant>;
   me?: Maybe<User>;
+};
+
+export type Plant = {
+  __typename?: 'Plant';
+  id: Scalars['Float'];
+  names: Array<PlantName>;
+  description: Scalars['String'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+};
+
+export type PlantName = {
+  __typename?: 'PlantName';
+  id: Scalars['Float'];
+  name: Scalars['String'];
+  isPrimary: Scalars['Boolean'];
+  plantId: Scalars['Float'];
+  plant: Plant;
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
 };
 
 export type User = {
@@ -30,9 +51,17 @@ export type User = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addPlant: PlantResponse;
   register: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
+};
+
+
+export type MutationAddPlantArgs = {
+  description: Scalars['String'];
+  otherNames: Array<Scalars['String']>;
+  primaryName: Scalars['String'];
 };
 
 
@@ -44,6 +73,18 @@ export type MutationRegisterArgs = {
 export type MutationLoginArgs = {
   password: Scalars['String'];
   usernameOrEmail: Scalars['String'];
+};
+
+export type PlantResponse = {
+  __typename?: 'PlantResponse';
+  errors?: Maybe<Array<PlantError>>;
+  plant?: Maybe<Plant>;
+};
+
+export type PlantError = {
+  __typename?: 'PlantError';
+  field: Scalars['String'];
+  message: Scalars['String'];
 };
 
 export type UserResponse = {
@@ -121,6 +162,21 @@ export type MeQuery = (
   & { me?: Maybe<(
     { __typename?: 'User' }
     & Pick<User, 'id' | 'username' | 'accountType' | 'email'>
+  )> }
+);
+
+export type PlantsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type PlantsQuery = (
+  { __typename?: 'Query' }
+  & { plants: Array<(
+    { __typename?: 'Plant' }
+    & Pick<Plant, 'id' | 'description'>
+    & { names: Array<(
+      { __typename?: 'PlantName' }
+      & Pick<PlantName, 'name' | 'isPrimary'>
+    )> }
   )> }
 );
 
@@ -274,3 +330,40 @@ export function useMeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MeQuery
 export type MeQueryHookResult = ReturnType<typeof useMeQuery>;
 export type MeLazyQueryHookResult = ReturnType<typeof useMeLazyQuery>;
 export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
+export const PlantsDocument = gql`
+    query Plants {
+  plants {
+    id
+    names {
+      name
+      isPrimary
+    }
+    description
+  }
+}
+    `;
+
+/**
+ * __usePlantsQuery__
+ *
+ * To run a query within a React component, call `usePlantsQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlantsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlantsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlantsQuery(baseOptions?: Apollo.QueryHookOptions<PlantsQuery, PlantsQueryVariables>) {
+        return Apollo.useQuery<PlantsQuery, PlantsQueryVariables>(PlantsDocument, baseOptions);
+      }
+export function usePlantsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PlantsQuery, PlantsQueryVariables>) {
+          return Apollo.useLazyQuery<PlantsQuery, PlantsQueryVariables>(PlantsDocument, baseOptions);
+        }
+export type PlantsQueryHookResult = ReturnType<typeof usePlantsQuery>;
+export type PlantsLazyQueryHookResult = ReturnType<typeof usePlantsLazyQuery>;
+export type PlantsQueryResult = Apollo.QueryResult<PlantsQuery, PlantsQueryVariables>;
