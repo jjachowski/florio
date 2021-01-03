@@ -1,0 +1,10 @@
+fragment FullPlant on Plant {
+  id
+  createdAt
+  updatedAt
+  description
+  names {
+    name
+    isPrimary
+  }
+}

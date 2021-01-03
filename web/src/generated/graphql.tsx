@@ -105,6 +105,15 @@ export type RegisterCredentials = {
   password: Scalars['String'];
 };
 
+export type FullPlantFragment = (
+  { __typename?: 'Plant' }
+  & Pick<Plant, 'id' | 'createdAt' | 'updatedAt' | 'description'>
+  & { names: Array<(
+    { __typename?: 'PlantName' }
+    & Pick<PlantName, 'name' | 'isPrimary'>
+  )> }
+);
+
 export type LoginMutationVariables = Exact<{
   usernameOrEmail: Scalars['String'];
   password: Scalars['String'];
@@ -172,15 +181,22 @@ export type PlantsQuery = (
   { __typename?: 'Query' }
   & { plants: Array<(
     { __typename?: 'Plant' }
-    & Pick<Plant, 'id' | 'description'>
-    & { names: Array<(
-      { __typename?: 'PlantName' }
-      & Pick<PlantName, 'name' | 'isPrimary'>
-    )> }
+    & FullPlantFragment
   )> }
 );
 
-
+export const FullPlantFragmentDoc = gql`
+    fragment FullPlant on Plant {
+  id
+  createdAt
+  updatedAt
+  description
+  names {
+    name
+    isPrimary
+  }
+}
+    `;
 export const LoginDocument = gql`
     mutation Login($usernameOrEmail: String!, $password: String!) {
   login(usernameOrEmail: $usernameOrEmail, password: $password) {
@@ -333,15 +349,10 @@ export type MeQueryResult = Apollo.QueryResult<MeQuery, MeQueryVariables>;
 export const PlantsDocument = gql`
     query Plants {
   plants {
-    id
-    names {
-      name
-      isPrimary
-    }
-    description
+    ...FullPlant
   }
 }
-    `;
+    ${FullPlantFragmentDoc}`;
 
 /**
  * __usePlantsQuery__

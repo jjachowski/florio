@@ -1,28 +1,21 @@
-import { Box, Heading } from '@chakra-ui/react';
+import { VStack } from '@chakra-ui/react';
+import { Layout } from '../components/Layout';
 import { Navbar } from '../components/Navbar';
+import { PlantCard } from '../components/PlantCard';
 import { usePlantsQuery } from '../generated/graphql';
 const Index = () => {
   const { data } = usePlantsQuery();
-  console.log(data?.plants);
 
   return (
     <>
       <Navbar />
-      {data?.plants.map((plant) => {
-        return (
-          <Box boxShadow="xl" mt={4} mx={4} p={4} rounded={12} key={plant.id}>
-            <Heading>{plant.names.find((n) => n.isPrimary)?.name}</Heading>
-            <p>{plant.description}</p>
-            <p>
-              other names:{' '}
-              {plant.names
-                .filter((n) => !n.isPrimary)
-                .map((n) => n.name)
-                .join(', ')}
-            </p>
-          </Box>
-        );
-      })}
+      <Layout mt={16} variant="regular">
+        <VStack spacing={8}>
+          {data?.plants.map((plant) => (
+            <PlantCard key={plant.id} plant={plant} />
+          ))}
+        </VStack>
+      </Layout>
     </>
   );
 };
