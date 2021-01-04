@@ -1,6 +1,7 @@
 import {
   Arg,
   Field,
+  Int,
   Mutation,
   ObjectType,
   Query,
@@ -33,6 +34,14 @@ export class PlantResolver {
   async plants(): Promise<Plant[]> {
     const plants = await Plant.find();
     return plants;
+  }
+
+  @Query(() => Plant, { nullable: true })
+  async plant(@Arg('id', () => Int) id: number): Promise<Plant | undefined> {
+    const plant = await Plant.findOne(id);
+    console.log(plant);
+
+    return plant;
   }
 
   @Mutation(() => PlantResponse)

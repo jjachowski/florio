@@ -1,0 +1,5 @@
+query Plant($id: Int!) {
+  plant(id: $id) {
+    ...FullPlant
+  }
+}

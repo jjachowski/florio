@@ -2,6 +2,7 @@ import { background, Box, Flex, Heading, Image, Link } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { FullPlantFragment, Plant } from '../generated/graphql';
+import { PlantOtherNames } from './PlantOtherNames';
 
 interface PlantCardProps {
   plant: FullPlantFragment;
@@ -33,22 +34,12 @@ export const PlantCard: React.FC<PlantCardProps> = ({ plant }) => {
         >
           <Heading>{plant.names.find((n) => n.isPrimary)?.name}</Heading>
         </Link>
-        <p>
-          {plant.names.length > 0 && (
-            <Box mb={6} color="gray.500">
-              inaczej:{' '}
-              {plant.names
-                .filter((n) => !n.isPrimary)
-                .map((n) => n.name)
-                .join(', ')}
-            </Box>
-          )}
-        </p>
-        <p>
+        <PlantOtherNames plant={plant} />
+        <Box>
           {plant.description.length > 300
             ? plant.description.substring(0, 300) + '...'
             : plant.description}
-        </p>
+        </Box>
       </Box>
     </Flex>
   );
