@@ -17,6 +17,7 @@ export type Query = {
   __typename?: 'Query';
   plants: Array<Plant>;
   plant?: Maybe<Plant>;
+  plantNames: Array<PlantName>;
   me?: Maybe<User>;
 };
 
@@ -190,6 +191,17 @@ export type PlantQuery = (
   & { plant?: Maybe<(
     { __typename?: 'Plant' }
     & FullPlantFragment
+  )> }
+);
+
+export type PlantNamesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type PlantNamesQuery = (
+  { __typename?: 'Query' }
+  & { plantNames: Array<(
+    { __typename?: 'PlantName' }
+    & Pick<PlantName, 'name' | 'isPrimary' | 'plantId'>
   )> }
 );
 
@@ -398,6 +410,40 @@ export function usePlantLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Plan
 export type PlantQueryHookResult = ReturnType<typeof usePlantQuery>;
 export type PlantLazyQueryHookResult = ReturnType<typeof usePlantLazyQuery>;
 export type PlantQueryResult = Apollo.QueryResult<PlantQuery, PlantQueryVariables>;
+export const PlantNamesDocument = gql`
+    query PlantNames {
+  plantNames {
+    name
+    isPrimary
+    plantId
+  }
+}
+    `;
+
+/**
+ * __usePlantNamesQuery__
+ *
+ * To run a query within a React component, call `usePlantNamesQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlantNamesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlantNamesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlantNamesQuery(baseOptions?: Apollo.QueryHookOptions<PlantNamesQuery, PlantNamesQueryVariables>) {
+        return Apollo.useQuery<PlantNamesQuery, PlantNamesQueryVariables>(PlantNamesDocument, baseOptions);
+      }
+export function usePlantNamesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PlantNamesQuery, PlantNamesQueryVariables>) {
+          return Apollo.useLazyQuery<PlantNamesQuery, PlantNamesQueryVariables>(PlantNamesDocument, baseOptions);
+        }
+export type PlantNamesQueryHookResult = ReturnType<typeof usePlantNamesQuery>;
+export type PlantNamesLazyQueryHookResult = ReturnType<typeof usePlantNamesLazyQuery>;
+export type PlantNamesQueryResult = Apollo.QueryResult<PlantNamesQuery, PlantNamesQueryVariables>;
 export const PlantsDocument = gql`
     query Plants {
   plants {

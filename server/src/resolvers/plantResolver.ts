@@ -39,9 +39,15 @@ export class PlantResolver {
   @Query(() => Plant, { nullable: true })
   async plant(@Arg('id', () => Int) id: number): Promise<Plant | undefined> {
     const plant = await Plant.findOne(id);
-    console.log(plant);
 
     return plant;
+  }
+
+  @Query(() => [PlantName])
+  async plantNames(): Promise<PlantName[]> {
+    const plantNames = await PlantName.find();
+
+    return plantNames;
   }
 
   @Mutation(() => PlantResponse)
@@ -64,6 +70,7 @@ export class PlantResolver {
         plantId: plant.id,
       })
     );
+
     otherNames.forEach((otherName) =>
       plantNames.push(
         PlantName.create({
