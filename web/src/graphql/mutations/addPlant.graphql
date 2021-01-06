@@ -1,0 +1,27 @@
+mutation AddPlant(
+  $primaryName: String!
+  $otherNames: [String!]!
+  $description: String!
+  $characteristics: [String!]!
+  $imageUrl: String!
+) {
+  addPlant(
+    primaryName: $primaryName
+    otherNames: $otherNames
+    description: $description
+    characteristics: $characteristics
+    imageUrl: $imageUrl
+  ) {
+    errors {
+      field
+      message
+    }
+    plant {
+      names {
+        name
+        isPrimary
+      }
+      description
+    }
+  }
+}

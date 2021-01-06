@@ -24,6 +24,14 @@ export class Plant extends BaseEntity {
   names!: PlantName[];
 
   @Field()
+  @Column({ nullable: true })
+  imageUrl!: string;
+
+  @Field(() => [String])
+  @Column('text', { array: true, nullable: true })
+  characteristics: string[];
+
+  @Field()
   @Column()
   description!: string;
 

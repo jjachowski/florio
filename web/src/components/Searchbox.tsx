@@ -2,21 +2,17 @@ import { SearchIcon } from '@chakra-ui/icons';
 import {
   Button,
   Flex,
-  Kbd,
-  Modal,
-  ModalOverlay,
-  useDisclosure,
-  ModalContent,
   Input,
-  Box,
-  VStack,
-  Heading,
+  Kbd,
   List,
   ListItem,
+  Modal,
+  ModalContent,
+  ModalOverlay,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { stringify } from 'querystring';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactShortcut from 'react-shortcut';
 import { usePlantNamesQuery } from '../generated/graphql';
 
@@ -70,17 +66,11 @@ export const Searchbox: React.FC<SearchboxProps> = ({}) => {
   }, [searchText]);
 
   const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    let newSelectedText = '';
     let currentIndex = autocomplete.filteredNames.findIndex(
       (n) => n.name === autocomplete.selectedText
     );
-    console.log(event.key);
 
     switch (event.key) {
-      case 'Control':
-        console.log(autocomplete);
-
-        break;
       case 'Enter':
         router.push(
           '/plant/' +
@@ -91,24 +81,31 @@ export const Searchbox: React.FC<SearchboxProps> = ({}) => {
         onClose();
         break;
       case 'ArrowDown':
+        event.preventDefault();
         if (currentIndex < autocomplete.filteredNames.length - 1) {
-          newSelectedText = autocomplete.filteredNames[currentIndex + 1].name;
-          setAutocomplete({ ...autocomplete, selectedText: newSelectedText });
+          setAutocomplete({
+            ...autocomplete,
+            selectedText: autocomplete.filteredNames[currentIndex + 1].name,
+          });
         }
         break;
       case 'ArrowUp':
+        event.preventDefault();
         if (currentIndex > 0) {
-          newSelectedText = autocomplete.filteredNames[currentIndex - 1].name;
-          setAutocomplete({ ...autocomplete, selectedText: newSelectedText });
+          setAutocomplete({
+            ...autocomplete,
+            selectedText: autocomplete.filteredNames[currentIndex - 1].name,
+          });
         }
         break;
     }
-    const xd = autocomplete.filteredNames.find(
+
+    const itemtoScrollIntoView = autocomplete.filteredNames.find(
       (f) => f.name === autocomplete.selectedText
     );
 
-    if (xd) {
-      (xd.ref as any).current?.scrollIntoView({
+    if (itemtoScrollIntoView) {
+      (itemtoScrollIntoView.ref as any).current?.scrollIntoView({
         block: 'center',
       });
     }
@@ -121,7 +118,7 @@ export const Searchbox: React.FC<SearchboxProps> = ({}) => {
         <ModalContent overflow='hidden'>
           <Input
             value={searchText}
-            onKeyUp={handleKeyUp}
+            onKeyDown={handleKeyUp}
             onChange={handleSearchTextChange}
             roundedBottom={0}
             placeholder='zacznij wpisywać nazwę rośliny...'
@@ -135,13 +132,23 @@ export const Searchbox: React.FC<SearchboxProps> = ({}) => {
                   py='1rem'
                   bg={
                     autocomplete.selectedText === plantName.name
-                      ? 'green.400'
+                      ? 'green.100'
                       : 'none'
                   }
                   key={plantName.name}
                   ref={plantName.ref}
+                  onClick={() => {
+                    router.push('/plant/' + plantName.plantId);
+                    onClose();
+                  }}
+                  onMouseEnter={() =>
+                    setAutocomplete({
+                      ...autocomplete,
+                      selectedText: plantName.name,
+                    })
+                  }
                 >
-                  <Heading size='sm'>{plantName.name}</Heading>
+                  {plantName.name}
                 </ListItem>
               ))}
             </List>

@@ -30,6 +30,8 @@ export type Plant = {
   __typename?: 'Plant';
   id: Scalars['Float'];
   names: Array<PlantName>;
+  imageUrl: Scalars['String'];
+  characteristics: Array<Scalars['String']>;
   description: Scalars['String'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -66,6 +68,8 @@ export type Mutation = {
 
 
 export type MutationAddPlantArgs = {
+  characteristics: Array<Scalars['String']>;
+  imageUrl: Scalars['String'];
   description: Scalars['String'];
   otherNames: Array<Scalars['String']>;
   primaryName: Scalars['String'];
@@ -119,6 +123,33 @@ export type FullPlantFragment = (
     { __typename?: 'PlantName' }
     & Pick<PlantName, 'name' | 'isPrimary'>
   )> }
+);
+
+export type AddPlantMutationVariables = Exact<{
+  primaryName: Scalars['String'];
+  otherNames: Array<Scalars['String']>;
+  description: Scalars['String'];
+  characteristics: Array<Scalars['String']>;
+  imageUrl: Scalars['String'];
+}>;
+
+
+export type AddPlantMutation = (
+  { __typename?: 'Mutation' }
+  & { addPlant: (
+    { __typename?: 'PlantResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'PlantError' }
+      & Pick<PlantError, 'field' | 'message'>
+    )>>, plant?: Maybe<(
+      { __typename?: 'Plant' }
+      & Pick<Plant, 'description'>
+      & { names: Array<(
+        { __typename?: 'PlantName' }
+        & Pick<PlantName, 'name' | 'isPrimary'>
+      )> }
+    )> }
+  ) }
 );
 
 export type LoginMutationVariables = Exact<{
@@ -228,6 +259,58 @@ export const FullPlantFragmentDoc = gql`
   }
 }
     `;
+export const AddPlantDocument = gql`
+    mutation AddPlant($primaryName: String!, $otherNames: [String!]!, $description: String!, $characteristics: [String!]!, $imageUrl: String!) {
+  addPlant(
+    primaryName: $primaryName
+    otherNames: $otherNames
+    description: $description
+    characteristics: $characteristics
+    imageUrl: $imageUrl
+  ) {
+    errors {
+      field
+      message
+    }
+    plant {
+      names {
+        name
+        isPrimary
+      }
+      description
+    }
+  }
+}
+    `;
+export type AddPlantMutationFn = Apollo.MutationFunction<AddPlantMutation, AddPlantMutationVariables>;
+
+/**
+ * __useAddPlantMutation__
+ *
+ * To run a mutation, you first call `useAddPlantMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddPlantMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addPlantMutation, { data, loading, error }] = useAddPlantMutation({
+ *   variables: {
+ *      primaryName: // value for 'primaryName'
+ *      otherNames: // value for 'otherNames'
+ *      description: // value for 'description'
+ *      characteristics: // value for 'characteristics'
+ *      imageUrl: // value for 'imageUrl'
+ *   },
+ * });
+ */
+export function useAddPlantMutation(baseOptions?: Apollo.MutationHookOptions<AddPlantMutation, AddPlantMutationVariables>) {
+        return Apollo.useMutation<AddPlantMutation, AddPlantMutationVariables>(AddPlantDocument, baseOptions);
+      }
+export type AddPlantMutationHookResult = ReturnType<typeof useAddPlantMutation>;
+export type AddPlantMutationResult = Apollo.MutationResult<AddPlantMutation>;
+export type AddPlantMutationOptions = Apollo.BaseMutationOptions<AddPlantMutation, AddPlantMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($usernameOrEmail: String!, $password: String!) {
   login(usernameOrEmail: $usernameOrEmail, password: $password) {

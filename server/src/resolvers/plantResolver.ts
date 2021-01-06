@@ -54,10 +54,14 @@ export class PlantResolver {
   async addPlant(
     @Arg('primaryName') primaryName: string,
     @Arg('otherNames', () => [String]) otherNames: string[],
-    @Arg('description') description: string
+    @Arg('description') description: string,
+    @Arg('imageUrl') imageUrl: string,
+    @Arg('characteristics', () => [String]) characteristics: string[]
   ): Promise<PlantResponse> {
     const plant = Plant.create({
       description,
+      imageUrl,
+      characteristics,
     });
 
     await plant.save();
