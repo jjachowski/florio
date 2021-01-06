@@ -10,8 +10,13 @@ import {
   Input,
   Box,
   VStack,
+  Heading,
+  List,
+  ListItem,
 } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { stringify } from 'querystring';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactShortcut from 'react-shortcut';
 import { usePlantNamesQuery } from '../generated/graphql';
 
@@ -22,13 +27,22 @@ export const Searchbox: React.FC<SearchboxProps> = ({}) => {
   const { data } = usePlantNamesQuery();
   const [searchText, setSearchText] = useState('');
   const shortcuts = ['command+k', 'ctrl+k'];
+  const router = useRouter();
 
-  const [autocomplete, setAutocomplete] = useState({
+  const [autocomplete, setAutocomplete] = useState<{
+    selectedText: string;
+    filteredNames: {
+      name: string;
+      plantId: number;
+      ref: React.RefObject<any> | null;
+    }[];
+  }>({
     selectedText: '',
     filteredNames:
       data?.plantNames.map((pn) => ({
         name: pn.name,
         plantId: pn.plantId,
+        ref: null,
       })) ?? [],
   });
 
@@ -50,40 +64,53 @@ export const Searchbox: React.FC<SearchboxProps> = ({}) => {
           .map((pn) => ({
             name: pn.name,
             plantId: pn.plantId,
+            ref: React.createRef(),
           })) ?? [],
     });
   }, [searchText]);
 
   const handleKeyUp = (event: React.KeyboardEvent<HTMLInputElement>) => {
     let newSelectedText = '';
-    let currentIndex = 0;
+    let currentIndex = autocomplete.filteredNames.findIndex(
+      (n) => n.name === autocomplete.selectedText
+    );
+    console.log(event.key);
 
     switch (event.key) {
-      case 'ArrowDown':
-        currentIndex = autocomplete.filteredNames.findIndex(
-          (n) => n.name === autocomplete.selectedText
-        );
-        if (currentIndex - 1 === autocomplete.filteredNames.length) {
-          newSelectedText = autocomplete.filteredNames[0].name;
-        } else {
-          newSelectedText = autocomplete.filteredNames[currentIndex + 1].name;
-        }
-        setAutocomplete({ ...autocomplete, selectedText: newSelectedText });
-        break;
-      case 'ArrowUp':
-        currentIndex = autocomplete.filteredNames.findIndex(
-          (n) => n.name === autocomplete.selectedText
-        );
-        if (currentIndex === 0) {
-          newSelectedText =
-            autocomplete.filteredNames[autocomplete.filteredNames.length - 1]
-              .name;
-        } else {
-          newSelectedText = autocomplete.filteredNames[currentIndex - 1].name;
-        }
-        setAutocomplete({ ...autocomplete, selectedText: newSelectedText });
+      case 'Control':
+        console.log(autocomplete);
 
         break;
+      case 'Enter':
+        router.push(
+          '/plant/' +
+            autocomplete.filteredNames.find(
+              (n) => n.name === autocomplete.selectedText
+            )?.plantId
+        );
+        onClose();
+        break;
+      case 'ArrowDown':
+        if (currentIndex < autocomplete.filteredNames.length - 1) {
+          newSelectedText = autocomplete.filteredNames[currentIndex + 1].name;
+          setAutocomplete({ ...autocomplete, selectedText: newSelectedText });
+        }
+        break;
+      case 'ArrowUp':
+        if (currentIndex > 0) {
+          newSelectedText = autocomplete.filteredNames[currentIndex - 1].name;
+          setAutocomplete({ ...autocomplete, selectedText: newSelectedText });
+        }
+        break;
+    }
+    const xd = autocomplete.filteredNames.find(
+      (f) => f.name === autocomplete.selectedText
+    );
+
+    if (xd) {
+      (xd.ref as any).current?.scrollIntoView({
+        block: 'center',
+      });
     }
   };
 
@@ -91,29 +118,34 @@ export const Searchbox: React.FC<SearchboxProps> = ({}) => {
     <>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent overflow='hidden'>
           <Input
             value={searchText}
             onKeyUp={handleKeyUp}
             onChange={handleSearchTextChange}
+            roundedBottom={0}
             placeholder='zacznij wpisywać nazwę rośliny...'
           />
-          {searchText.length > 2 && (
-            <VStack maxH='15rem' overflow='auto' spacing={2}>
+          {
+            <List maxH='15rem' overflow='auto'>
               {autocomplete.filteredNames?.map((plantName) => (
-                <Box
+                <ListItem
+                  w='100%'
+                  textAlign='center'
+                  py='1rem'
                   bg={
                     autocomplete.selectedText === plantName.name
-                      ? 'red.100'
-                      : 'blue.100'
+                      ? 'green.400'
+                      : 'none'
                   }
                   key={plantName.name}
+                  ref={plantName.ref}
                 >
-                  {plantName.name}
-                </Box>
+                  <Heading size='sm'>{plantName.name}</Heading>
+                </ListItem>
               ))}
-            </VStack>
-          )}
+            </List>
+          }
         </ModalContent>
       </Modal>
       <ReactShortcut keys={shortcuts} onKeysPressed={onOpen} />
