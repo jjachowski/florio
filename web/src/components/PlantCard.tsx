@@ -16,7 +16,7 @@ export const PlantCard: React.FC<PlantCardProps> = ({ plant }) => {
         roundedLeft={12}
         objectFit='cover'
         width='15rem'
-        src='https://zielony-parapet.pl/5136-thickbox_default/calathea-lancifolia-kalatea-lancetolistna.jpg'
+        src={plant.imageUrl}
         alt='Kalatea'
       />
       <Box bg='trans' p={10}>

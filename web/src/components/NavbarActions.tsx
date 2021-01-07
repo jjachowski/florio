@@ -16,16 +16,16 @@ export const NavbarActions: React.FC<NavbarActionsProps> = ({}) => {
   const apollo = useApolloClient();
 
   return (
-    <Flex justify="center" align="center">
+    <Flex w='100%' align='center'>
       {data?.me ? (
-        <Flex mr={4} align="center">
+        <Flex mr={4} ml='auto' align='center'>
           <Avatar
             mr={2}
-            size="sm"
+            size='sm'
             name={data.me.username}
-            src="https://bit.ly/dan-abramov"
+            src='https://bit.ly/dan-abramov'
           />
-          <Box mr={4} fontWeight="bold">
+          <Box mr={4} fontWeight='bold'>
             {data?.me?.username}
           </Box>
           <Link
@@ -42,14 +42,14 @@ export const NavbarActions: React.FC<NavbarActionsProps> = ({}) => {
               }
             }}
             mr={4}
-            fontWeight="bold"
+            fontWeight='bold'
           >
             wyloguj
           </Link>
         </Flex>
       ) : (
-        <NextLink href="/login">
-          <Link mr={4} fontWeight="bold">
+        <NextLink href='/login'>
+          <Link mr={4} fontWeight='bold'>
             zaloguj
           </Link>
         </NextLink>

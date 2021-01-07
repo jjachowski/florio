@@ -118,7 +118,7 @@ export type RegisterCredentials = {
 
 export type FullPlantFragment = (
   { __typename?: 'Plant' }
-  & Pick<Plant, 'id' | 'createdAt' | 'updatedAt' | 'description'>
+  & Pick<Plant, 'id' | 'createdAt' | 'updatedAt' | 'imageUrl' | 'description'>
   & { names: Array<(
     { __typename?: 'PlantName' }
     & Pick<PlantName, 'name' | 'isPrimary'>
@@ -252,11 +252,12 @@ export const FullPlantFragmentDoc = gql`
   id
   createdAt
   updatedAt
-  description
+  imageUrl
   names {
     name
     isPrimary
   }
+  description
 }
     `;
 export const AddPlantDocument = gql`

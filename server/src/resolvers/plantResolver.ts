@@ -33,6 +33,8 @@ export class PlantResolver {
   @Query(() => [Plant])
   async plants(): Promise<Plant[]> {
     const plants = await Plant.find();
+    console.log(plants);
+
     return plants;
   }
 

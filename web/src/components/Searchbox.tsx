@@ -132,7 +132,12 @@ export const Searchbox: React.FC<SearchboxProps> = ({}) => {
                   py='1rem'
                   bg={
                     autocomplete.selectedText === plantName.name
-                      ? 'green.100'
+                      ? 'green.500'
+                      : 'none'
+                  }
+                  boxShadow={
+                    autocomplete.selectedText === plantName.name
+                      ? '2xl'
                       : 'none'
                   }
                   key={plantName.name}
