@@ -5,9 +5,7 @@ import { NavbarActions } from './NavbarActions';
 import { Searchbox } from './Searchbox';
 import { Text } from '@chakra-ui/react';
 
-interface NavbarProps {}
-
-export const Navbar: React.FC<NavbarProps> = ({}) => {
+export const Navbar: React.FC = ({}) => {
   return (
     <Box
       bg='green.600'
