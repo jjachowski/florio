@@ -8,29 +8,48 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Intensity, Season } from './conditionsEnums';
 import { Plant } from './Plant';
 
 @ObjectType()
 @Entity()
-export class PlantName extends BaseEntity {
+export class OptimalConditions extends BaseEntity {
   @Field()
   @PrimaryGeneratedColumn()
   id!: number;
 
   @Field()
-  @Column()
-  name!: string;
+  @Column('int2')
+  season!: Season;
+
+  @Field()
+  @Column('int4')
+  water!: Intensity;
+
+  @Field()
+  @Column('int4')
+  sun!: Intensity;
+
+  @Field()
+  @Column('int4')
+  airHumidity!: Intensity;
 
   @Field()
   @Column()
-  isPrimary!: boolean;
+  temperatureLow: number;
+
+  @Field()
+  @Column()
+  temperatureHigh: number;
 
   @Field()
   @Column()
   plantId: number;
 
   @Field(() => Plant)
-  @ManyToOne(() => Plant, (plant) => plant.names, { cascade: true })
+  @ManyToOne(() => Plant, (plant) => plant.optimalConditions, {
+    cascade: true,
+  })
   plant: Plant;
 
   @Field(() => String)

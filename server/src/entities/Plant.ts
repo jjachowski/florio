@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { OptimalConditions } from './OptimalConditions';
 import { PlantName } from './PlantName';
 
 @ObjectType()
@@ -22,6 +23,12 @@ export class Plant extends BaseEntity {
     eager: true,
   })
   names!: PlantName[];
+
+  @Field(() => [OptimalConditions])
+  @OneToMany(() => OptimalConditions, (conditions) => conditions.plant, {
+    eager: true,
+  })
+  optimalConditions!: OptimalConditions[];
 
   @Field()
   @Column({ nullable: true })

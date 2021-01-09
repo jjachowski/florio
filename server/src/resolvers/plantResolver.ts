@@ -1,32 +1,9 @@
-import {
-  Arg,
-  Field,
-  Int,
-  Mutation,
-  ObjectType,
-  Query,
-  Resolver,
-} from 'type-graphql';
+import { Arg, Int, Mutation, Query, Resolver } from 'type-graphql';
 import { getConnection } from 'typeorm';
+import { OptimalConditions } from '../entities/OptimalConditions';
 import { Plant } from '../entities/Plant';
 import { PlantName } from '../entities/PlantName';
-
-@ObjectType()
-class PlantError {
-  @Field()
-  field: string;
-  @Field()
-  message: string;
-}
-
-@ObjectType()
-class PlantResponse {
-  @Field(() => [PlantError], { nullable: true })
-  errors?: PlantError[];
-
-  @Field(() => Plant, { nullable: true })
-  plant?: Plant;
-}
+import { PlantFieldsInput, PlantResponse } from './PlantExtras';
 
 @Resolver(Plant)
 export class PlantResolver {
@@ -54,16 +31,23 @@ export class PlantResolver {
 
   @Mutation(() => PlantResponse)
   async addPlant(
-    @Arg('primaryName') primaryName: string,
-    @Arg('otherNames', () => [String]) otherNames: string[],
-    @Arg('description') description: string,
-    @Arg('imageUrl') imageUrl: string,
-    @Arg('characteristics', () => [String]) characteristics: string[]
+    @Arg('data') data: PlantFieldsInput
+    // @Arg('primaryName') primaryName: string,
+    // @Arg('otherNames', () => [String]) otherNames: string[],
+    // @Arg('description') description: string,
+    // @Arg('imageUrl') imageUrl: string,
+    // @Arg('characteristics', () => [String]) characteristics: string[]
   ): Promise<PlantResponse> {
+    const {
+      description,
+      imageUrl,
+      primaryName,
+      otherNames,
+      optimalConditions,
+    } = data;
     const plant = Plant.create({
       description,
       imageUrl,
-      characteristics,
     });
 
     await plant.save();
@@ -87,14 +71,46 @@ export class PlantResolver {
       )
     );
 
+    const plantConditions: OptimalConditions[] = [];
+
+    optimalConditions.forEach((condition) => {
+      const {
+        airHumidity,
+        season,
+        water,
+        sun,
+        temperatureLow,
+        temperatureHigh,
+      } = condition;
+      plantConditions.push(
+        OptimalConditions.create({
+          plantId: plant.id,
+          season,
+          water,
+          sun,
+          airHumidity,
+          temperatureLow,
+          temperatureHigh,
+        })
+      );
+    });
+
     await getConnection()
       .createQueryBuilder()
       .insert()
       .into(PlantName)
-      .values([...plantNames])
+      .values(plantNames)
+      .execute();
+
+    await getConnection()
+      .createQueryBuilder()
+      .insert()
+      .into(OptimalConditions)
+      .values(plantConditions)
       .execute();
 
     plant.names = plantNames;
+    plant.optimalConditions = plantConditions;
 
     return { plant };
   }
