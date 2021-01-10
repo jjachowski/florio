@@ -1,0 +1,14 @@
+fragment PlantPreview on Plant {
+  id
+  imageUrl
+  createdAt
+  updatedAt
+  names {
+    name
+    isPrimary
+  }
+  creator {
+    username
+  }
+  descriptionSnippet
+}

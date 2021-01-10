@@ -8,4 +8,12 @@ fragment FullPlant on Plant {
     isPrimary
   }
   description
+  optimalConditions {
+    season
+    water
+    sun
+    airHumidity
+    temperatureLow
+    temperatureHigh
+  }
 }

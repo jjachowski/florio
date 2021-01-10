@@ -1,16 +1,16 @@
 import { Box } from '@chakra-ui/react';
 import React from 'react';
-import { FullPlantFragment } from '../generated/graphql';
+import { PlantPreviewFragment } from '../generated/graphql';
 
 interface PlantOtherNamesProps {
-  plant: FullPlantFragment;
+  plant: PlantPreviewFragment;
 }
 
 export const PlantOtherNames: React.FC<PlantOtherNamesProps> = ({ plant }) => {
   return (
     <Box>
       {plant.names.length > 0 && (
-        <Box mb={6} color="gray.500">
+        <Box mb={6} color='gray.500'>
           inaczej:{' '}
           {plant.names
             .filter((n) => !n.isPrimary)

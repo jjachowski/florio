@@ -1,17 +1,5 @@
-mutation AddPlant(
-  $primaryName: String!
-  $otherNames: [String!]!
-  $description: String!
-  $characteristics: [String!]!
-  $imageUrl: String!
-) {
-  addPlant(
-    primaryName: $primaryName
-    otherNames: $otherNames
-    description: $description
-    characteristics: $characteristics
-    imageUrl: $imageUrl
-  ) {
+mutation AddPlant($data: PlantFieldsInput!) {
+  addPlant(data: $data) {
     errors {
       field
       message
@@ -22,6 +10,14 @@ mutation AddPlant(
         isPrimary
       }
       description
+      optimalConditions {
+        season
+        water
+        sun
+        airHumidity
+        temperatureLow
+        temperatureHigh
+      }
     }
   }
 }

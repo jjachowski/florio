@@ -1,16 +1,34 @@
-import { Arg, Int, Mutation, Query, Resolver } from 'type-graphql';
+import {
+  Arg,
+  Ctx,
+  FieldResolver,
+  Int,
+  Mutation,
+  Query,
+  Resolver,
+  Root,
+} from 'type-graphql';
 import { getConnection } from 'typeorm';
 import { OptimalConditions } from '../entities/OptimalConditions';
 import { Plant } from '../entities/Plant';
 import { PlantName } from '../entities/PlantName';
+import { MyContext } from '../types';
 import { PlantFieldsInput, PlantResponse } from './PlantExtras';
 
 @Resolver(Plant)
 export class PlantResolver {
+  @FieldResolver(() => String)
+  descriptionSnippet(@Root() root: Plant) {
+    let snippet = root.description.slice(0, 100);
+    if (root.description.length > 100) {
+      snippet = snippet + '...';
+    }
+    return snippet;
+  }
+
   @Query(() => [Plant])
   async plants(): Promise<Plant[]> {
     const plants = await Plant.find();
-    console.log(plants);
 
     return plants;
   }
@@ -31,12 +49,8 @@ export class PlantResolver {
 
   @Mutation(() => PlantResponse)
   async addPlant(
-    @Arg('data') data: PlantFieldsInput
-    // @Arg('primaryName') primaryName: string,
-    // @Arg('otherNames', () => [String]) otherNames: string[],
-    // @Arg('description') description: string,
-    // @Arg('imageUrl') imageUrl: string,
-    // @Arg('characteristics', () => [String]) characteristics: string[]
+    @Arg('data') data: PlantFieldsInput,
+    @Ctx() { req }: MyContext
   ): Promise<PlantResponse> {
     const {
       description,
@@ -45,9 +59,11 @@ export class PlantResolver {
       otherNames,
       optimalConditions,
     } = data;
+
     const plant = Plant.create({
       description,
       imageUrl,
+      creatorId: req.session.userId,
     });
 
     await plant.save();

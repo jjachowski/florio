@@ -4,11 +4,11 @@ import React from 'react';
 import { Layout } from '../components/Layout';
 import { Navbar } from '../components/Navbar';
 import { PlantCard } from '../components/PlantCard';
-import { usePlantsQuery } from '../generated/graphql';
+import { usePlantsPreviewQuery, usePlantsQuery } from '../generated/graphql';
 import NavLink from 'next/link';
 import { useRouter } from 'next/router';
 const Index = () => {
-  const { data } = usePlantsQuery();
+  const { data } = usePlantsPreviewQuery();
   const router = useRouter();
 
   return (

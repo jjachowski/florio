@@ -29,10 +29,24 @@ export type QueryPlantArgs = {
 export type Plant = {
   __typename?: 'Plant';
   id: Scalars['Float'];
+  creatorId: Scalars['Float'];
+  creator: User;
   names: Array<PlantName>;
+  optimalConditions: Array<OptimalConditions>;
   imageUrl: Scalars['String'];
   characteristics: Array<Scalars['String']>;
   description: Scalars['String'];
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+  descriptionSnippet: Scalars['String'];
+};
+
+export type User = {
+  __typename?: 'User';
+  id: Scalars['Float'];
+  accountType: Scalars['Int'];
+  email: Scalars['String'];
+  username: Scalars['String'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -48,12 +62,17 @@ export type PlantName = {
   updatedAt: Scalars['String'];
 };
 
-export type User = {
-  __typename?: 'User';
+export type OptimalConditions = {
+  __typename?: 'OptimalConditions';
   id: Scalars['Float'];
-  accountType: Scalars['Int'];
-  email: Scalars['String'];
-  username: Scalars['String'];
+  season: Scalars['Float'];
+  water: Scalars['Float'];
+  sun: Scalars['Float'];
+  airHumidity: Scalars['Float'];
+  temperatureLow: Scalars['Float'];
+  temperatureHigh: Scalars['Float'];
+  plantId: Scalars['Float'];
+  plant: Plant;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -68,11 +87,7 @@ export type Mutation = {
 
 
 export type MutationAddPlantArgs = {
-  characteristics: Array<Scalars['String']>;
-  imageUrl: Scalars['String'];
-  description: Scalars['String'];
-  otherNames: Array<Scalars['String']>;
-  primaryName: Scalars['String'];
+  data: PlantFieldsInput;
 };
 
 
@@ -96,6 +111,23 @@ export type PlantError = {
   __typename?: 'PlantError';
   field: Scalars['String'];
   message: Scalars['String'];
+};
+
+export type PlantFieldsInput = {
+  primaryName: Scalars['String'];
+  otherNames: Array<Scalars['String']>;
+  description: Scalars['String'];
+  imageUrl: Scalars['String'];
+  optimalConditions: Array<OptimalConditionsInput>;
+};
+
+export type OptimalConditionsInput = {
+  season: Scalars['Int'];
+  water: Scalars['Int'];
+  sun: Scalars['Int'];
+  airHumidity: Scalars['Int'];
+  temperatureLow: Scalars['Float'];
+  temperatureHigh: Scalars['Float'];
 };
 
 export type UserResponse = {
@@ -122,15 +154,26 @@ export type FullPlantFragment = (
   & { names: Array<(
     { __typename?: 'PlantName' }
     & Pick<PlantName, 'name' | 'isPrimary'>
+  )>, optimalConditions: Array<(
+    { __typename?: 'OptimalConditions' }
+    & Pick<OptimalConditions, 'season' | 'water' | 'sun' | 'airHumidity' | 'temperatureLow' | 'temperatureHigh'>
   )> }
 );
 
+export type PlantPreviewFragment = (
+  { __typename?: 'Plant' }
+  & Pick<Plant, 'id' | 'imageUrl' | 'createdAt' | 'updatedAt' | 'descriptionSnippet'>
+  & { names: Array<(
+    { __typename?: 'PlantName' }
+    & Pick<PlantName, 'name' | 'isPrimary'>
+  )>, creator: (
+    { __typename?: 'User' }
+    & Pick<User, 'username'>
+  ) }
+);
+
 export type AddPlantMutationVariables = Exact<{
-  primaryName: Scalars['String'];
-  otherNames: Array<Scalars['String']>;
-  description: Scalars['String'];
-  characteristics: Array<Scalars['String']>;
-  imageUrl: Scalars['String'];
+  data: PlantFieldsInput;
 }>;
 
 
@@ -147,6 +190,9 @@ export type AddPlantMutation = (
       & { names: Array<(
         { __typename?: 'PlantName' }
         & Pick<PlantName, 'name' | 'isPrimary'>
+      )>, optimalConditions: Array<(
+        { __typename?: 'OptimalConditions' }
+        & Pick<OptimalConditions, 'season' | 'water' | 'sun' | 'airHumidity' | 'temperatureLow' | 'temperatureHigh'>
       )> }
     )> }
   ) }
@@ -247,6 +293,17 @@ export type PlantsQuery = (
   )> }
 );
 
+export type PlantsPreviewQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type PlantsPreviewQuery = (
+  { __typename?: 'Query' }
+  & { plants: Array<(
+    { __typename?: 'Plant' }
+    & PlantPreviewFragment
+  )> }
+);
+
 export const FullPlantFragmentDoc = gql`
     fragment FullPlant on Plant {
   id
@@ -258,17 +315,35 @@ export const FullPlantFragmentDoc = gql`
     isPrimary
   }
   description
+  optimalConditions {
+    season
+    water
+    sun
+    airHumidity
+    temperatureLow
+    temperatureHigh
+  }
+}
+    `;
+export const PlantPreviewFragmentDoc = gql`
+    fragment PlantPreview on Plant {
+  id
+  imageUrl
+  createdAt
+  updatedAt
+  names {
+    name
+    isPrimary
+  }
+  creator {
+    username
+  }
+  descriptionSnippet
 }
     `;
 export const AddPlantDocument = gql`
-    mutation AddPlant($primaryName: String!, $otherNames: [String!]!, $description: String!, $characteristics: [String!]!, $imageUrl: String!) {
-  addPlant(
-    primaryName: $primaryName
-    otherNames: $otherNames
-    description: $description
-    characteristics: $characteristics
-    imageUrl: $imageUrl
-  ) {
+    mutation AddPlant($data: PlantFieldsInput!) {
+  addPlant(data: $data) {
     errors {
       field
       message
@@ -279,6 +354,14 @@ export const AddPlantDocument = gql`
         isPrimary
       }
       description
+      optimalConditions {
+        season
+        water
+        sun
+        airHumidity
+        temperatureLow
+        temperatureHigh
+      }
     }
   }
 }
@@ -298,11 +381,7 @@ export type AddPlantMutationFn = Apollo.MutationFunction<AddPlantMutation, AddPl
  * @example
  * const [addPlantMutation, { data, loading, error }] = useAddPlantMutation({
  *   variables: {
- *      primaryName: // value for 'primaryName'
- *      otherNames: // value for 'otherNames'
- *      description: // value for 'description'
- *      characteristics: // value for 'characteristics'
- *      imageUrl: // value for 'imageUrl'
+ *      data: // value for 'data'
  *   },
  * });
  */
@@ -560,3 +639,35 @@ export function usePlantsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Pla
 export type PlantsQueryHookResult = ReturnType<typeof usePlantsQuery>;
 export type PlantsLazyQueryHookResult = ReturnType<typeof usePlantsLazyQuery>;
 export type PlantsQueryResult = Apollo.QueryResult<PlantsQuery, PlantsQueryVariables>;
+export const PlantsPreviewDocument = gql`
+    query PlantsPreview {
+  plants {
+    ...PlantPreview
+  }
+}
+    ${PlantPreviewFragmentDoc}`;
+
+/**
+ * __usePlantsPreviewQuery__
+ *
+ * To run a query within a React component, call `usePlantsPreviewQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePlantsPreviewQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = usePlantsPreviewQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function usePlantsPreviewQuery(baseOptions?: Apollo.QueryHookOptions<PlantsPreviewQuery, PlantsPreviewQueryVariables>) {
+        return Apollo.useQuery<PlantsPreviewQuery, PlantsPreviewQueryVariables>(PlantsPreviewDocument, baseOptions);
+      }
+export function usePlantsPreviewLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<PlantsPreviewQuery, PlantsPreviewQueryVariables>) {
+          return Apollo.useLazyQuery<PlantsPreviewQuery, PlantsPreviewQueryVariables>(PlantsPreviewDocument, baseOptions);
+        }
+export type PlantsPreviewQueryHookResult = ReturnType<typeof usePlantsPreviewQuery>;
+export type PlantsPreviewLazyQueryHookResult = ReturnType<typeof usePlantsPreviewLazyQuery>;
+export type PlantsPreviewQueryResult = Apollo.QueryResult<PlantsPreviewQuery, PlantsPreviewQueryVariables>;

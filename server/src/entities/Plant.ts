@@ -4,12 +4,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { OptimalConditions } from './OptimalConditions';
 import { PlantName } from './PlantName';
+import { User } from './User';
 
 @ObjectType()
 @Entity()
@@ -17,6 +19,14 @@ export class Plant extends BaseEntity {
   @Field()
   @PrimaryGeneratedColumn()
   id!: number;
+
+  @Field()
+  @Column()
+  creatorId: number;
+
+  @Field()
+  @ManyToOne(() => User, (user) => user.addedPlants, { eager: true })
+  creator: User;
 
   @Field(() => [PlantName])
   @OneToMany(() => PlantName, (plantName) => plantName.plant, {

@@ -1,6 +1,5 @@
 import { Field, InputType, Int, ObjectType } from 'type-graphql';
 import { Intensity, Season } from '../entities/conditionsEnums';
-import { OptimalConditions } from '../entities/OptimalConditions';
 import { Plant } from '../entities/Plant';
 
 @ObjectType()

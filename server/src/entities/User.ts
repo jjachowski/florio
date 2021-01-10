@@ -1,12 +1,14 @@
-import { Field, Int, ObjectType } from "type-graphql";
+import { Field, Int, ObjectType } from 'type-graphql';
 import {
   BaseEntity,
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
-} from "typeorm";
+} from 'typeorm';
+import { Plant } from './Plant';
 
 export enum AccountType {
   user,
@@ -21,7 +23,7 @@ export class User extends BaseEntity {
   id!: number;
 
   @Field(() => Int)
-  @Column("int")
+  @Column('int')
   accountType!: AccountType;
 
   @Field()
@@ -34,6 +36,9 @@ export class User extends BaseEntity {
 
   @Column()
   password!: string;
+
+  @OneToMany(() => Plant, (plant) => plant.creator)
+  addedPlants: Plant[];
 
   @Field(() => String)
   @CreateDateColumn()
