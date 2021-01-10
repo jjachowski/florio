@@ -27,7 +27,7 @@ export const PlantCard: React.FC<PlantCardProps> = ({ plant }) => {
         >
           <Heading>{plant.names.find((n) => n.isPrimary)?.name}</Heading>
         </Link>
-        <PlantOtherNames plant={plant} />
+        <PlantOtherNames names={plant.names} />
         <Box mb={4}>
           {plant.descriptionSnippet}
 

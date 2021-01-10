@@ -1,6 +1,7 @@
 import { MoonIcon, SunIcon, TimeIcon } from '@chakra-ui/icons';
 import { Box, Flex, Heading, HStack, Image } from '@chakra-ui/react';
 import React from 'react';
+import { Bar } from '../../components/Bar';
 import { Layout } from '../../components/Layout';
 import { Navbar } from '../../components/Navbar';
 import { PlantOtherNames } from '../../components/PlantOtherNames';
@@ -20,7 +21,7 @@ const Plant: React.FC = () => {
             rounded={20}
             objectFit='cover'
             w='30%'
-            src='https://zielony-parapet.pl/5136-thickbox_default/calathea-lancifolia-kalatea-lancetolistna.jpg'
+            src={data?.plant?.imageUrl}
             alt='Kalatea'
             mr={20}
           />
@@ -31,7 +32,7 @@ const Plant: React.FC = () => {
                   {data?.plant?.names.find((n) => n.isPrimary)?.name}
                 </Heading>
                 <Box>
-                  {data?.plant && <PlantOtherNames plant={data?.plant} />}
+                  {data?.plant && <PlantOtherNames names={data?.plant.names} />}
                 </Box>
               </Flex>
               <HStack mb='auto' spacing={2} ml='auto' fontSize='3rem'>
@@ -42,6 +43,7 @@ const Plant: React.FC = () => {
             </Flex>
 
             <Box>{data?.plant?.description}</Box>
+            <Bar value={1} of={7} />
           </Flex>
         </Flex>
       </Layout>

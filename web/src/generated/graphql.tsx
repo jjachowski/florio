@@ -151,7 +151,10 @@ export type RegisterCredentials = {
 export type FullPlantFragment = (
   { __typename?: 'Plant' }
   & Pick<Plant, 'id' | 'createdAt' | 'updatedAt' | 'imageUrl' | 'description'>
-  & { names: Array<(
+  & { creator: (
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'username'>
+  ), names: Array<(
     { __typename?: 'PlantName' }
     & Pick<PlantName, 'name' | 'isPrimary'>
   )>, optimalConditions: Array<(
@@ -307,6 +310,10 @@ export type PlantsPreviewQuery = (
 export const FullPlantFragmentDoc = gql`
     fragment FullPlant on Plant {
   id
+  creator {
+    id
+    username
+  }
   createdAt
   updatedAt
   imageUrl

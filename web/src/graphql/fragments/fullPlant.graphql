@@ -1,5 +1,9 @@
 fragment FullPlant on Plant {
   id
+  creator {
+    id
+    username
+  }
   createdAt
   updatedAt
   imageUrl
