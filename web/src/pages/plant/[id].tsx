@@ -1,7 +1,6 @@
 import { MoonIcon, SunIcon, TimeIcon } from '@chakra-ui/icons';
 import { Box, Flex, Heading, HStack, Image } from '@chakra-ui/react';
 import React from 'react';
-import { Bar } from '../../components/Bar';
 import { ConditionBars } from '../../components/ConditionBars';
 import { Layout } from '../../components/Layout';
 import { Navbar } from '../../components/Navbar';
