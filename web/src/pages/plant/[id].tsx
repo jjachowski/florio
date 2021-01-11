@@ -1,7 +1,8 @@
 import { MoonIcon, SunIcon, TimeIcon } from '@chakra-ui/icons';
-import { Box, Flex, Heading, HStack, Image } from '@chakra-ui/react';
+import { Box, Flex, Heading, HStack, Icon, Image } from '@chakra-ui/react';
 import React from 'react';
 import { ConditionBars } from '../../components/ConditionBars';
+import { ConditionSeasonsSwitch } from '../../components/ConditionSeasonsSwitch';
 import { Layout } from '../../components/Layout';
 import { Navbar } from '../../components/Navbar';
 import { PlantOtherNames } from '../../components/PlantOtherNames';
@@ -11,6 +12,7 @@ import useGetIntId from '../../utils/useGetIntId';
 const Plant: React.FC = () => {
   const id = useGetIntId();
   const { data } = usePlantQuery({ variables: { id } });
+  const test = data?.plant?.optimalConditions;
   return (
     <>
       <Navbar />
@@ -21,6 +23,7 @@ const Plant: React.FC = () => {
             rounded={20}
             objectFit='cover'
             height='40rem'
+            maxW='30rem'
             src={data?.plant?.imageUrl}
             alt='Kalatea'
             mr={20}
@@ -44,14 +47,8 @@ const Plant: React.FC = () => {
                   <TimeIcon />
                 </HStack>
               </Flex>
-
-              <ConditionBars />
-
-              {/* <Bar value={1} of={5} color='yellow.100' />
-              <Bar value={1} of={3} color='green.100' /> */}
-
-              {/* <Box>{data?.plant?.description}</Box>
-              <Bar value={1} of={7} color='blue.100' /> */}
+              <ConditionSeasonsSwitch seasonsToDisplay={['all']} />
+              <ConditionBars conditions={data?.plant?.optimalConditions} />
             </Flex>
             <Flex p={10} mt={8} direction='column' shadow='2xl' rounded={20}>
               <Heading size='md'>Opis</Heading>

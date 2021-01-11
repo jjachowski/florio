@@ -1,10 +1,25 @@
 import { Heading, VStack } from '@chakra-ui/react';
 import React from 'react';
+import { OptimalConditions, usePlantQuery } from '../generated/graphql';
 import { Bar } from './Bar';
 
-interface ConditionBarsProps {}
+interface ConditionBarsProps {
+  conditions:
+    | ({
+        __typename?: 'OptimalConditions' | undefined;
+      } & Pick<
+        OptimalConditions,
+        | 'season'
+        | 'water'
+        | 'sun'
+        | 'airHumidity'
+        | 'temperatureLow'
+        | 'temperatureHigh'
+      >)[]
+    | undefined;
+}
 
-export const ConditionBars: React.FC<ConditionBarsProps> = ({}) => {
+export const ConditionBars: React.FC<ConditionBarsProps> = ({ conditions }) => {
   return (
     <>
       <VStack spacing={1}>
