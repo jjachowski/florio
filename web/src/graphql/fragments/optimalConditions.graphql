@@ -1,0 +1,9 @@
+fragment OptimalConditions on OptimalConditions {
+  season
+  water
+  sun
+  airHumidityLow
+  airHumidityHigh
+  temperatureLow
+  temperatureHigh
+}

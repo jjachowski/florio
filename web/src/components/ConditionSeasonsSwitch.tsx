@@ -3,50 +3,51 @@ import React, { useState } from 'react';
 import { BsSun } from 'react-icons/bs';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import { GiFlowerEmblem, GiSnowing } from 'react-icons/gi';
+import { Season } from '../utils/seasonConditionsHelpers';
 import { SeasonIcon } from './SeasonIcon';
 
 interface ConditionSeasonsSwitchProps {
-  // selectedSeason: 'spring' | 'summer' | 'autumn' | 'winter';
-  seasonsToDisplay: ('spring' | 'summer' | 'autumn' | 'winter' | 'all')[];
+  seasonsToDisplay: Season[];
+  onSeasonSelected: React.Dispatch<React.SetStateAction<Season>>;
+  currentlySelected: Season;
 }
 
 export const ConditionSeasonsSwitch: React.FC<ConditionSeasonsSwitchProps> = ({
   seasonsToDisplay,
+  onSeasonSelected,
+  currentlySelected,
 }) => {
-  const [currentlySelected, setCurrentlySelected] = useState<
-    'spring' | 'summer' | 'autumn' | 'winter' | null
-  >(null);
   return (
     <Flex direction='row' justifyContent='space-evenly'>
-      {seasonsToDisplay.find((s) => s === 'spring' || s === 'all') && (
+      {seasonsToDisplay.find((s) => s === 'spring') && (
         <SeasonIcon
           icon={GiFlowerEmblem}
           season='spring'
-          handleClick={setCurrentlySelected}
+          handleClick={onSeasonSelected}
           currentlySelected={currentlySelected}
         />
       )}
-      {seasonsToDisplay.find((s) => s === 'summer' || s === 'all') && (
+      {seasonsToDisplay.find((s) => s === 'summer') && (
         <SeasonIcon
           icon={BsSun}
           season='summer'
-          handleClick={setCurrentlySelected}
+          handleClick={onSeasonSelected}
           currentlySelected={currentlySelected}
         />
       )}
-      {seasonsToDisplay.find((s) => s === 'autumn' || s === 'all') && (
+      {seasonsToDisplay.find((s) => s === 'autumn') && (
         <SeasonIcon
           icon={FaCanadianMapleLeaf}
           season='autumn'
-          handleClick={setCurrentlySelected}
+          handleClick={onSeasonSelected}
           currentlySelected={currentlySelected}
         />
       )}
-      {seasonsToDisplay.find((s) => s === 'winter' || s === 'all') && (
+      {seasonsToDisplay.find((s) => s === 'winter') && (
         <SeasonIcon
           icon={GiSnowing}
           season='winter'
-          handleClick={setCurrentlySelected}
+          handleClick={onSeasonSelected}
           currentlySelected={currentlySelected}
         />
       )}

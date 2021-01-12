@@ -91,7 +91,8 @@ export class PlantResolver {
 
     optimalConditions.forEach((condition) => {
       const {
-        airHumidity,
+        airHumidityLow,
+        airHumidityHigh,
         season,
         water,
         sun,
@@ -104,7 +105,8 @@ export class PlantResolver {
           season,
           water,
           sun,
-          airHumidity,
+          airHumidityLow,
+          airHumidityHigh,
           temperatureLow,
           temperatureHigh,
         })

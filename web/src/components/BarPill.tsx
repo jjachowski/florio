@@ -2,7 +2,7 @@ import { Box } from '@chakra-ui/react';
 import React from 'react';
 
 interface BarPillProps {
-  width: number;
+  width: number | string;
   height: number;
   color?: string;
 }

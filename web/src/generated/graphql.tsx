@@ -68,7 +68,8 @@ export type OptimalConditions = {
   season: Scalars['Float'];
   water: Scalars['Float'];
   sun: Scalars['Float'];
-  airHumidity: Scalars['Float'];
+  airHumidityLow: Scalars['Float'];
+  airHumidityHigh: Scalars['Float'];
   temperatureLow: Scalars['Float'];
   temperatureHigh: Scalars['Float'];
   plantId: Scalars['Float'];
@@ -125,7 +126,8 @@ export type OptimalConditionsInput = {
   season: Scalars['Int'];
   water: Scalars['Int'];
   sun: Scalars['Int'];
-  airHumidity: Scalars['Int'];
+  airHumidityLow: Scalars['Float'];
+  airHumidityHigh: Scalars['Float'];
   temperatureLow: Scalars['Float'];
   temperatureHigh: Scalars['Float'];
 };
@@ -159,8 +161,13 @@ export type FullPlantFragment = (
     & Pick<PlantName, 'name' | 'isPrimary'>
   )>, optimalConditions: Array<(
     { __typename?: 'OptimalConditions' }
-    & Pick<OptimalConditions, 'season' | 'water' | 'sun' | 'airHumidity' | 'temperatureLow' | 'temperatureHigh'>
+    & OptimalConditionsFragment
   )> }
+);
+
+export type OptimalConditionsFragment = (
+  { __typename?: 'OptimalConditions' }
+  & Pick<OptimalConditions, 'season' | 'water' | 'sun' | 'airHumidityLow' | 'airHumidityHigh' | 'temperatureLow' | 'temperatureHigh'>
 );
 
 export type PlantPreviewFragment = (
@@ -195,7 +202,7 @@ export type AddPlantMutation = (
         & Pick<PlantName, 'name' | 'isPrimary'>
       )>, optimalConditions: Array<(
         { __typename?: 'OptimalConditions' }
-        & Pick<OptimalConditions, 'season' | 'water' | 'sun' | 'airHumidity' | 'temperatureLow' | 'temperatureHigh'>
+        & Pick<OptimalConditions, 'season' | 'water' | 'sun' | 'airHumidityLow' | 'airHumidityHigh' | 'temperatureLow' | 'temperatureHigh'>
       )> }
     )> }
   ) }
@@ -307,6 +314,17 @@ export type PlantsPreviewQuery = (
   )> }
 );
 
+export const OptimalConditionsFragmentDoc = gql`
+    fragment OptimalConditions on OptimalConditions {
+  season
+  water
+  sun
+  airHumidityLow
+  airHumidityHigh
+  temperatureLow
+  temperatureHigh
+}
+    `;
 export const FullPlantFragmentDoc = gql`
     fragment FullPlant on Plant {
   id
@@ -323,15 +341,10 @@ export const FullPlantFragmentDoc = gql`
   }
   description
   optimalConditions {
-    season
-    water
-    sun
-    airHumidity
-    temperatureLow
-    temperatureHigh
+    ...OptimalConditions
   }
 }
-    `;
+    ${OptimalConditionsFragmentDoc}`;
 export const PlantPreviewFragmentDoc = gql`
     fragment PlantPreview on Plant {
   id
@@ -365,7 +378,8 @@ export const AddPlantDocument = gql`
         season
         water
         sun
-        airHumidity
+        airHumidityLow
+        airHumidityHigh
         temperatureLow
         temperatureHigh
       }

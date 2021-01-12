@@ -1,18 +1,30 @@
 import { MoonIcon, SunIcon, TimeIcon } from '@chakra-ui/icons';
-import { Box, Flex, Heading, HStack, Icon, Image } from '@chakra-ui/react';
-import React from 'react';
+import { Box, Flex, Heading, HStack, Image } from '@chakra-ui/react';
+import React, { useEffect, useState } from 'react';
 import { ConditionBars } from '../../components/ConditionBars';
 import { ConditionSeasonsSwitch } from '../../components/ConditionSeasonsSwitch';
 import { Layout } from '../../components/Layout';
 import { Navbar } from '../../components/Navbar';
 import { PlantOtherNames } from '../../components/PlantOtherNames';
 import { usePlantQuery } from '../../generated/graphql';
+import {
+  conditionsToStringArray,
+  intToSeason,
+} from '../../utils/seasonConditionsHelpers';
 import useGetIntId from '../../utils/useGetIntId';
 
 const Plant: React.FC = () => {
   const id = useGetIntId();
   const { data } = usePlantQuery({ variables: { id } });
-  const test = data?.plant?.optimalConditions;
+  const [selectedSeason, setSelectedSeason] = useState<
+    'spring' | 'summer' | 'autumn' | 'winter' | null
+  >(null);
+
+  useEffect(() => {
+    if (!selectedSeason && data) {
+      setSelectedSeason(intToSeason(data?.plant?.optimalConditions[0].season));
+    }
+  }, [data]);
   return (
     <>
       <Navbar />
@@ -47,8 +59,17 @@ const Plant: React.FC = () => {
                   <TimeIcon />
                 </HStack>
               </Flex>
-              <ConditionSeasonsSwitch seasonsToDisplay={['all']} />
-              <ConditionBars conditions={data?.plant?.optimalConditions} />
+              <ConditionSeasonsSwitch
+                currentlySelected={selectedSeason}
+                onSeasonSelected={setSelectedSeason}
+                seasonsToDisplay={conditionsToStringArray(
+                  data?.plant?.optimalConditions
+                )}
+              />
+              <ConditionBars
+                conditions={data?.plant?.optimalConditions}
+                selectedSeason={selectedSeason}
+              />
             </Flex>
             <Flex p={10} mt={8} direction='column' shadow='2xl' rounded={20}>
               <Heading size='md'>Opis</Heading>

@@ -14,7 +14,8 @@ mutation AddPlant($data: PlantFieldsInput!) {
         season
         water
         sun
-        airHumidity
+        airHumidityLow
+        airHumidityHigh
         temperatureLow
         temperatureHigh
       }

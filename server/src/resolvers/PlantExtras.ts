@@ -32,8 +32,10 @@ export class OptimalConditionsInput {
   water: Intensity;
   @Field(() => Int)
   sun: Intensity;
-  @Field(() => Int)
-  airHumidity: Intensity;
+  @Field()
+  airHumidityLow: number;
+  @Field()
+  airHumidityHigh: number;
   @Field()
   temperatureLow: number;
   @Field()

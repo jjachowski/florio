@@ -1,42 +1,62 @@
 import { Heading, VStack } from '@chakra-ui/react';
 import React from 'react';
-import { OptimalConditions, usePlantQuery } from '../generated/graphql';
+import {
+  OptimalConditions,
+  OptimalConditionsFragment,
+  usePlantQuery,
+} from '../generated/graphql';
+import { Season, seasonToInt } from '../utils/seasonConditionsHelpers';
 import { Bar } from './Bar';
+import { BarRange } from './BarRange';
 
 interface ConditionBarsProps {
-  conditions:
-    | ({
-        __typename?: 'OptimalConditions' | undefined;
-      } & Pick<
-        OptimalConditions,
-        | 'season'
-        | 'water'
-        | 'sun'
-        | 'airHumidity'
-        | 'temperatureLow'
-        | 'temperatureHigh'
-      >)[]
-    | undefined;
+  conditions: OptimalConditionsFragment[] | undefined;
+  selectedSeason: Season;
 }
 
-export const ConditionBars: React.FC<ConditionBarsProps> = ({ conditions }) => {
+export const ConditionBars: React.FC<ConditionBarsProps> = ({
+  conditions,
+  selectedSeason,
+}) => {
+  console.log(selectedSeason);
+
+  const currentConditions = conditions?.find(
+    (c) => c.season === seasonToInt(selectedSeason)
+  );
+  if (!currentConditions) {
+    return null;
+  }
+
   return (
     <>
       <VStack spacing={1}>
         <Heading size='sm'>Woda</Heading>
-        <Bar value={1} of={7} color='blue.400' height={8} />
+        <Bar
+          value={currentConditions.water}
+          of={5}
+          color='blue.400'
+          height={4}
+        />
 
         <Heading size='sm'>Temperatura</Heading>
-        <Bar
-          color='blue.400'
-          gradientInto='red.400'
-          value={6}
-          of={7}
-          height={8}
+        <BarRange
+          color='temperature'
+          rangeBottom={15}
+          rangeTop={40}
+          low={currentConditions.temperatureLow}
+          high={currentConditions.temperatureHigh}
+          height={4}
         />
 
         <Heading size='sm'>Wilgotność powietrza</Heading>
-        <Bar value={4} of={7} color='blue.100' height={8} />
+        <BarRange
+          color='blue.100'
+          rangeBottom={0}
+          rangeTop={100}
+          low={currentConditions.airHumidityLow}
+          high={currentConditions.airHumidityHigh}
+          height={4}
+        />
       </VStack>
     </>
   );

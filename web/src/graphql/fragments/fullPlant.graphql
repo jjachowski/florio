@@ -13,11 +13,6 @@ fragment FullPlant on Plant {
   }
   description
   optimalConditions {
-    season
-    water
-    sun
-    airHumidity
-    temperatureLow
-    temperatureHigh
+    ...OptimalConditions
   }
 }

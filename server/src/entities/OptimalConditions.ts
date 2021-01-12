@@ -31,8 +31,12 @@ export class OptimalConditions extends BaseEntity {
   sun!: Intensity;
 
   @Field()
-  @Column('int4')
-  airHumidity!: Intensity;
+  @Column()
+  airHumidityLow: number;
+
+  @Field()
+  @Column()
+  airHumidityHigh: number;
 
   @Field()
   @Column()
