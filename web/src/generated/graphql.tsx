@@ -80,10 +80,17 @@ export type OptimalConditions = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addOptimalConditions: OptimalConditionsResponse;
   addPlant: PlantResponse;
   register: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
+};
+
+
+export type MutationAddOptimalConditionsArgs = {
+  data: OptimalConditionsInput;
+  plantId: Scalars['Int'];
 };
 
 
@@ -102,24 +109,16 @@ export type MutationLoginArgs = {
   usernameOrEmail: Scalars['String'];
 };
 
-export type PlantResponse = {
-  __typename?: 'PlantResponse';
-  errors?: Maybe<Array<PlantError>>;
-  plant?: Maybe<Plant>;
+export type OptimalConditionsResponse = {
+  __typename?: 'OptimalConditionsResponse';
+  errors?: Maybe<Array<FieldError>>;
+  optimalConditions?: Maybe<OptimalConditions>;
 };
 
-export type PlantError = {
-  __typename?: 'PlantError';
+export type FieldError = {
+  __typename?: 'FieldError';
   field: Scalars['String'];
   message: Scalars['String'];
-};
-
-export type PlantFieldsInput = {
-  primaryName: Scalars['String'];
-  otherNames: Array<Scalars['String']>;
-  description: Scalars['String'];
-  imageUrl: Scalars['String'];
-  optimalConditions: Array<OptimalConditionsInput>;
 };
 
 export type OptimalConditionsInput = {
@@ -132,16 +131,24 @@ export type OptimalConditionsInput = {
   temperatureHigh: Scalars['Float'];
 };
 
+export type PlantResponse = {
+  __typename?: 'PlantResponse';
+  errors?: Maybe<Array<FieldError>>;
+  plant?: Maybe<Plant>;
+};
+
+export type PlantFieldsInput = {
+  primaryName: Scalars['String'];
+  otherNames: Array<Scalars['String']>;
+  description: Scalars['String'];
+  imageUrl: Scalars['String'];
+  optimalConditions: Array<OptimalConditionsInput>;
+};
+
 export type UserResponse = {
   __typename?: 'UserResponse';
   errors?: Maybe<Array<FieldError>>;
   user?: Maybe<User>;
-};
-
-export type FieldError = {
-  __typename?: 'FieldError';
-  field: Scalars['String'];
-  message: Scalars['String'];
 };
 
 export type RegisterCredentials = {
@@ -182,6 +189,27 @@ export type PlantPreviewFragment = (
   ) }
 );
 
+export type AddOptimalConditionsMutationVariables = Exact<{
+  plantId: Scalars['Int'];
+  data: OptimalConditionsInput;
+}>;
+
+
+export type AddOptimalConditionsMutation = (
+  { __typename?: 'Mutation' }
+  & { addOptimalConditions: (
+    { __typename?: 'OptimalConditionsResponse' }
+    & { optimalConditions?: Maybe<(
+      { __typename?: 'OptimalConditions' }
+      & Pick<OptimalConditions, 'id' | 'plantId'>
+      & OptimalConditionsFragment
+    )>, errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>> }
+  ) }
+);
+
 export type AddPlantMutationVariables = Exact<{
   data: PlantFieldsInput;
 }>;
@@ -192,8 +220,8 @@ export type AddPlantMutation = (
   & { addPlant: (
     { __typename?: 'PlantResponse' }
     & { errors?: Maybe<Array<(
-      { __typename?: 'PlantError' }
-      & Pick<PlantError, 'field' | 'message'>
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
     )>>, plant?: Maybe<(
       { __typename?: 'Plant' }
       & Pick<Plant, 'description'>
@@ -202,7 +230,7 @@ export type AddPlantMutation = (
         & Pick<PlantName, 'name' | 'isPrimary'>
       )>, optimalConditions: Array<(
         { __typename?: 'OptimalConditions' }
-        & Pick<OptimalConditions, 'season' | 'water' | 'sun' | 'airHumidityLow' | 'airHumidityHigh' | 'temperatureLow' | 'temperatureHigh'>
+        & OptimalConditionsFragment
       )> }
     )> }
   ) }
@@ -361,6 +389,47 @@ export const PlantPreviewFragmentDoc = gql`
   descriptionSnippet
 }
     `;
+export const AddOptimalConditionsDocument = gql`
+    mutation AddOptimalConditions($plantId: Int!, $data: OptimalConditionsInput!) {
+  addOptimalConditions(plantId: $plantId, data: $data) {
+    optimalConditions {
+      id
+      plantId
+      ...OptimalConditions
+    }
+    errors {
+      field
+      message
+    }
+  }
+}
+    ${OptimalConditionsFragmentDoc}`;
+export type AddOptimalConditionsMutationFn = Apollo.MutationFunction<AddOptimalConditionsMutation, AddOptimalConditionsMutationVariables>;
+
+/**
+ * __useAddOptimalConditionsMutation__
+ *
+ * To run a mutation, you first call `useAddOptimalConditionsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAddOptimalConditionsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [addOptimalConditionsMutation, { data, loading, error }] = useAddOptimalConditionsMutation({
+ *   variables: {
+ *      plantId: // value for 'plantId'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useAddOptimalConditionsMutation(baseOptions?: Apollo.MutationHookOptions<AddOptimalConditionsMutation, AddOptimalConditionsMutationVariables>) {
+        return Apollo.useMutation<AddOptimalConditionsMutation, AddOptimalConditionsMutationVariables>(AddOptimalConditionsDocument, baseOptions);
+      }
+export type AddOptimalConditionsMutationHookResult = ReturnType<typeof useAddOptimalConditionsMutation>;
+export type AddOptimalConditionsMutationResult = Apollo.MutationResult<AddOptimalConditionsMutation>;
+export type AddOptimalConditionsMutationOptions = Apollo.BaseMutationOptions<AddOptimalConditionsMutation, AddOptimalConditionsMutationVariables>;
 export const AddPlantDocument = gql`
     mutation AddPlant($data: PlantFieldsInput!) {
   addPlant(data: $data) {
@@ -375,18 +444,12 @@ export const AddPlantDocument = gql`
       }
       description
       optimalConditions {
-        season
-        water
-        sun
-        airHumidityLow
-        airHumidityHigh
-        temperatureLow
-        temperatureHigh
+        ...OptimalConditions
       }
     }
   }
 }
-    `;
+    ${OptimalConditionsFragmentDoc}`;
 export type AddPlantMutationFn = Apollo.MutationFunction<AddPlantMutation, AddPlantMutationVariables>;
 
 /**

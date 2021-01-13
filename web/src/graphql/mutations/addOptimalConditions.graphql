@@ -1,0 +1,13 @@
+mutation AddOptimalConditions($plantId: Int!, $data: OptimalConditionsInput!) {
+  addOptimalConditions(plantId: $plantId, data: $data) {
+    optimalConditions {
+      id
+      plantId
+      ...OptimalConditions
+    }
+    errors {
+      field
+      message
+    }
+  }
+}

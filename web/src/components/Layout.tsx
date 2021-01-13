@@ -28,7 +28,12 @@ export const Layout: React.FC<LayoutProps> = ({
   }
 
   return (
-    <Box {...otherProps} mx="auto" maxW={maxWidth} w="100%">
+    <Box
+      {...otherProps}
+      mx='auto'
+      maxW={{ base: '100%', sm: maxWidth }}
+      w='100%'
+    >
       {children}
     </Box>
   );

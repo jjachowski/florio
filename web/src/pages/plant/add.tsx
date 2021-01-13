@@ -1,4 +1,4 @@
-import { Box, Button, Heading, useToast } from '@chakra-ui/react';
+import { Box, Button, Heading, useToast, VStack } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -24,21 +24,22 @@ const AddPlant: React.FC = ({}) => {
             primaryName: '',
             otherNames: '',
             description: '',
-            characteristics: '',
             imageUrl: '',
           }}
           onSubmit={async (values, { setErrors }) => {
             const { primaryName, description, imageUrl } = values;
-            const variables = {
+            const plant = {
               primaryName,
               description,
               imageUrl,
               otherNames: values.otherNames.split(',').map((n) => n.trim()),
-              characteristics: values.characteristics
-                .split(',')
-                .map((n) => n.trim()),
+              optimalConditions: [],
             };
-            const response = await addPlant({ variables });
+            const response = await addPlant({
+              variables: {
+                data: plant,
+              },
+            });
 
             if (response.data?.addPlant.errors) {
               setErrors(toErrorMap(response.data.addPlant.errors));
@@ -55,35 +56,32 @@ const AddPlant: React.FC = ({}) => {
           {(props) => (
             <Box>
               <Form>
-                <FormField
-                  name='primaryName'
-                  isRequired
-                  placeholder='Maranta Fascinator'
-                  label='Nazwa rośliny'
-                />
-                <FormField
-                  name='otherNames'
-                  placeholder='Fascinator Tricolor'
-                  label='Pozostałe nazwy (oddziel przecinkiem)'
-                />
-                <FormField
-                  name='description'
-                  isRequired
-                  placeholder='Odmiana Fascinator Tricolor jest...'
-                  label='Opis'
-                />
-                <FormField
-                  name='characteristics'
-                  isRequired
-                  placeholder='Water, sun'
-                  label='Cechy'
-                />
-                <FormField
-                  name='imageUrl'
-                  isRequired
-                  placeholder='https://zielony-parapet ... .jpg'
-                  label='Link do grafiki'
-                />
+                <VStack spacing={4}>
+                  <FormField
+                    name='primaryName'
+                    isRequired
+                    placeholder='Maranta Fascinator'
+                    label='Nazwa rośliny'
+                  />
+                  <FormField
+                    name='otherNames'
+                    placeholder='Fascinator Tricolor'
+                    label='Pozostałe nazwy (oddziel przecinkiem)'
+                  />
+                  <FormField
+                    name='description'
+                    isRequired
+                    placeholder='Odmiana Fascinator Tricolor jest...'
+                    label='Opis'
+                  />
+                  <FormField
+                    name='imageUrl'
+                    isRequired
+                    placeholder='https://zielony-parapet ... .jpg'
+                    label='Link do grafiki'
+                  />
+                </VStack>
+
                 <Button
                   mt={4}
                   colorScheme='green'

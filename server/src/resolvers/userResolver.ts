@@ -15,14 +15,7 @@ import { COOKIE_NAME } from '../constants';
 import { MyContext } from '../types';
 import { RegisterCredentials } from '../inputTypes/registerCredentials';
 import { validateRegister } from '../utils/validators';
-
-@ObjectType()
-class FieldError {
-  @Field()
-  field: string;
-  @Field()
-  message: string;
-}
+import { FieldError } from '../shared/graphqlTypes';
 
 @ObjectType()
 class UserResponse {

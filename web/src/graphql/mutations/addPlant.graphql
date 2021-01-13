@@ -11,13 +11,7 @@ mutation AddPlant($data: PlantFieldsInput!) {
       }
       description
       optimalConditions {
-        season
-        water
-        sun
-        airHumidityLow
-        airHumidityHigh
-        temperatureLow
-        temperatureHigh
+        ...OptimalConditions
       }
     }
   }

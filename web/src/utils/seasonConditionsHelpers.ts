@@ -1,3 +1,4 @@
+import { SelectOption } from '../components/FormSelectField';
 import {
   OptimalConditions,
   OptimalConditionsFragment,
@@ -47,3 +48,45 @@ export const conditionsToStringArray = (
   });
   return stringified;
 };
+
+export const seasonSelectOptions: SelectOption[] = [
+  {
+    displayName: 'Wiosna',
+    value: 0,
+  },
+  {
+    displayName: 'Lato',
+    value: 1,
+  },
+  {
+    displayName: 'Jesień',
+    value: 2,
+  },
+  {
+    displayName: 'Zima',
+    value: 3,
+  },
+];
+
+export const amountSelectOptions: SelectOption[] = [
+  {
+    displayName: 'małe',
+    value: 0,
+  },
+  {
+    displayName: 'umiarkowanie małe',
+    value: 1,
+  },
+  {
+    displayName: 'średnie',
+    value: 2,
+  },
+  {
+    displayName: 'umiarkowanie duże',
+    value: 3,
+  },
+  {
+    displayName: 'duże',
+    value: 4,
+  },
+];

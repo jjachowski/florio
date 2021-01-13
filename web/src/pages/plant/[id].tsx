@@ -1,5 +1,5 @@
-import { MoonIcon, SunIcon, TimeIcon } from '@chakra-ui/icons';
-import { Box, Flex, Heading, HStack, Image } from '@chakra-ui/react';
+import { AddIcon, MoonIcon, SunIcon, TimeIcon } from '@chakra-ui/icons';
+import { Box, Button, Flex, Heading, HStack, Image } from '@chakra-ui/react';
 import React, { useEffect, useState } from 'react';
 import { ConditionBars } from '../../components/ConditionBars';
 import { ConditionSeasonsSwitch } from '../../components/ConditionSeasonsSwitch';
@@ -22,7 +22,10 @@ const Plant: React.FC = () => {
 
   useEffect(() => {
     if (!selectedSeason && data) {
-      setSelectedSeason(intToSeason(data?.plant?.optimalConditions[0].season));
+      const season = intToSeason(data?.plant?.optimalConditions[0]?.season);
+      if (season) {
+        setSelectedSeason(season);
+      }
     }
   }, [data]);
   return (
@@ -58,6 +61,15 @@ const Plant: React.FC = () => {
                   <MoonIcon />
                   <TimeIcon />
                 </HStack>
+              </Flex>
+              <Flex>
+                <Button colorScheme='green'>
+                  {data?.plant?.optimalConditions?.length ?? 0 < 3
+                    ? 'Dodaj'
+                    : 'Edytuj'}{' '}
+                  optymalne warunki
+                  <AddIcon ml={2} />
+                </Button>
               </Flex>
               <ConditionSeasonsSwitch
                 currentlySelected={selectedSeason}

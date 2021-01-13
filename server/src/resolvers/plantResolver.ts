@@ -13,7 +13,12 @@ import { OptimalConditions } from '../entities/OptimalConditions';
 import { Plant } from '../entities/Plant';
 import { PlantName } from '../entities/PlantName';
 import { MyContext } from '../types';
-import { PlantFieldsInput, PlantResponse } from './PlantExtras';
+import {
+  OptimalConditionsInput,
+  OptimalConditionsResponse,
+  PlantFieldsInput,
+  PlantResponse,
+} from './PlantExtras';
 
 @Resolver(Plant)
 export class PlantResolver {
@@ -45,6 +50,59 @@ export class PlantResolver {
     const plantNames = await PlantName.find();
 
     return plantNames;
+  }
+
+  @Mutation(() => OptimalConditionsResponse)
+  async addOptimalConditions(
+    @Arg('plantId', () => Int) plantId: number,
+    @Arg('data') data: OptimalConditionsInput
+  ): Promise<OptimalConditionsResponse> {
+    const plant = await Plant.findOne(plantId);
+    if (!plant) {
+      return {
+        errors: [
+          { field: 'plantId', message: 'Plant with this id does not exist' },
+        ],
+      };
+    }
+
+    let optimalConditions = await OptimalConditions.findOne({
+      plantId: plant.id,
+      season: data.season,
+    });
+
+    if (optimalConditions) {
+      Object.assign(optimalConditions, data);
+      optimalConditions.save();
+    } else {
+      optimalConditions = OptimalConditions.create({
+        ...data,
+        plantId: plant.id,
+      });
+      await optimalConditions.save();
+    }
+
+    // let optimalConditions;
+    // const currentOptimalConditions = plant.optimalConditions.find(
+    //   (o) => o.season === data.season
+    // );
+    // if (currentOptimalConditions !== undefined) {
+    //   optimalConditions = currentOptimalConditions;
+    //   optimalConditions = {
+    //     ...optimalConditions,
+    //     ...data,
+    //     plantId: plant.id,
+    //   } as OptimalConditions;
+    //   await plant.save();
+    // } else {
+    //   optimalConditions = OptimalConditions.create({
+    //     ...data,
+    //     plantId: plant.id,
+    //   });
+    //   await optimalConditions.save();
+    // }
+
+    return { optimalConditions };
   }
 
   @Mutation(() => PlantResponse)

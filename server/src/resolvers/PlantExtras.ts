@@ -1,14 +1,8 @@
 import { Field, InputType, Int, ObjectType } from 'type-graphql';
 import { Intensity, Season } from '../entities/conditionsEnums';
+import { OptimalConditions } from '../entities/OptimalConditions';
 import { Plant } from '../entities/Plant';
-
-@ObjectType()
-export class PlantError {
-  @Field()
-  field: string;
-  @Field()
-  message: string;
-}
+import { FieldError } from '../shared/graphqlTypes';
 
 @InputType()
 export class PlantFieldsInput {
@@ -44,9 +38,18 @@ export class OptimalConditionsInput {
 
 @ObjectType()
 export class PlantResponse {
-  @Field(() => [PlantError], { nullable: true })
-  errors?: PlantError[];
+  @Field(() => [FieldError], { nullable: true })
+  errors?: FieldError[];
 
   @Field(() => Plant, { nullable: true })
   plant?: Plant;
+}
+
+@ObjectType()
+export class OptimalConditionsResponse {
+  @Field(() => [FieldError], { nullable: true })
+  errors?: FieldError[];
+
+  @Field(() => OptimalConditions, { nullable: true })
+  optimalConditions?: OptimalConditions;
 }
