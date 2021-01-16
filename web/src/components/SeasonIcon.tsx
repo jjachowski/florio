@@ -1,14 +1,13 @@
 import { Icon } from '@chakra-ui/react';
 import React from 'react';
 import { IconType } from 'react-icons/lib/cjs/iconBase';
+import { Season } from '../utils/seasonConditionsHelpers';
 
 interface SeasonIconProps {
-  currentlySelected: 'spring' | 'summer' | 'autumn' | 'winter' | null;
-  season: 'spring' | 'summer' | 'autumn' | 'winter';
+  currentlySelected: Season;
+  season: Season;
   icon: IconType;
-  handleClick: React.Dispatch<
-    React.SetStateAction<'spring' | 'summer' | 'autumn' | 'winter' | null>
-  >;
+  handleClick: React.Dispatch<React.SetStateAction<Season>>;
 }
 
 export const SeasonIcon: React.FC<SeasonIconProps> = ({

@@ -9,7 +9,6 @@ import {
   Modal,
   ModalContent,
   ModalOverlay,
-  ScaleFade,
   useDisclosure,
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';

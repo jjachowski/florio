@@ -1,37 +1,38 @@
-import { Heading, toast, Box, VStack, Button, Flex } from '@chakra-ui/react';
-import { Formik, Form } from 'formik';
-import router from 'next/dist/next-server/lib/router/router';
+import { Box, Button, Flex, Heading, useToast, VStack } from '@chakra-ui/react';
+import { Form, Formik } from 'formik';
+import { useRouter } from 'next/router';
 import React from 'react';
 import { FormField } from '../../../components/FormField';
-import {
-  FormSelectField,
-  SelectOption,
-} from '../../../components/FormSelectField';
+import { FormSelectField } from '../../../components/FormSelectField';
 import { Layout } from '../../../components/Layout';
 import { Navbar } from '../../../components/Navbar';
-import { toErrorMap } from '../../../utils/toFormikErrorMap';
 import {
-  seasonSelectOptions,
+  OptimalConditionsInput,
+  useAddOptimalConditionsMutation,
+} from '../../../generated/graphql';
+import {
   amountSelectOptions,
+  seasonSelectOptions,
 } from '../../../utils/seasonConditionsHelpers';
-import { useAddOptimalConditionsMutation } from '../../../generated/graphql';
-import useGetIntId from '../../../utils/useGetIntId';
+import { toErrorMap } from '../../../utils/toFormikErrorMap';
+import useGetIdFromRoute from '../../../utils/useGetIntId';
 
 interface ConditionsProps {}
 
 const Conditions: React.FC<ConditionsProps> = ({}) => {
   const [addOptimalConditions] = useAddOptimalConditionsMutation();
-  const plantId = useGetIntId();
-  // const [addPlant, { loading }] = useAddPlantMutation({
-  //     notifyOnNetworkStatusChange: true,
-  //   });
-  //   const toast = useToast();
-  //   const router = useRouter()
+  const plantId = useGetIdFromRoute();
+  const toast = useToast();
+  const router = useRouter();
   return (
     <>
       <Navbar />
       <Layout mt={4} variant='regular'>
         <Heading>Dodaj optymalne warunki dla rośliny</Heading>
+        <Box mb={6} color='gray.500'>
+          Jeżeli roślina posiada optymalne warunki dla wybranej pory roku
+          zostaną one nadpisane!
+        </Box>
         <Formik
           initialValues={{
             season: 0,
@@ -43,32 +44,34 @@ const Conditions: React.FC<ConditionsProps> = ({}) => {
             temperatureHigh: 0,
           }}
           onSubmit={async (values, { setErrors }) => {
-            const { season } = values;
+            const parsedValues: { [k: string]: number } = {};
+            Object.entries(values).forEach(([key, value]) => {
+              parsedValues[key] = parseInt(value.toString());
+            });
+
             const response = await addOptimalConditions({
               variables: {
                 plantId,
                 data: {
-                  ...values,
+                  ...(parsedValues as OptimalConditionsInput),
                 },
+              },
+              update: (cache) => {
+                cache.evict({
+                  id: 'Plant:' + plantId,
+                });
               },
             });
 
-            // const response = await addPlant({
-            //   variables: {
-            //     data: plant,
-            //   },
-            // });
-
-            // if (response.data?.addPlant.errors) {
-            //   setErrors(toErrorMap(response.data.addPlant.errors));
-            // } else {
-            //   console.log(response);
-            //   toast({
-            //     title: 'Udało się! Dziękujemy 🥰',
-            //     status: 'success',
-            //   });
-            //   router.push('/');
-            // }
+            if (response.data?.addOptimalConditions.errors) {
+              setErrors(toErrorMap(response.data.addOptimalConditions.errors));
+            } else {
+              toast({
+                title: 'Udało się! Dziękujemy 🥰',
+                status: 'success',
+              });
+              router.push('/plant/' + plantId);
+            }
           }}
         >
           {(props) => (
@@ -96,7 +99,7 @@ const Conditions: React.FC<ConditionsProps> = ({}) => {
                     label='Zapotrzebowanie na słońce'
                     options={amountSelectOptions}
                   />
-                  <Flex direction={{ base: 'column', md: 'row' }} w='full'>
+                  <Flex direction={{ base: 'column', sm: 'row' }} w='full'>
                     <FormField
                       name='airHumidityLow'
                       isRequired
@@ -134,6 +137,7 @@ const Conditions: React.FC<ConditionsProps> = ({}) => {
                   mt={4}
                   colorScheme='green'
                   isLoading={props.isSubmitting}
+                  disabled={!props.isValid}
                   type='submit'
                   mr={4}
                 >

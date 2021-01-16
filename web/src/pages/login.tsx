@@ -24,7 +24,6 @@ const Login: React.FC<LoginProps> = ({}) => {
               cache.evict({ fieldName: 'me' });
             },
           });
-          console.log(response);
           if (response.data?.login.errors) {
             // should i mark the fields red and display field error?
             // setErrors({ usernameOrEmail: '', password: '' });
@@ -42,23 +41,23 @@ const Login: React.FC<LoginProps> = ({}) => {
           <Box>
             <Form>
               <FormField
-                name="usernameOrEmail"
+                name='usernameOrEmail'
                 isRequired
-                placeholder="janusz kowalski"
-                label="Nazwa użytkownika lub email"
+                placeholder='janusz kowalski'
+                label='Nazwa użytkownika lub email'
               />
               <FormField
-                name="password"
+                name='password'
                 isRequired
-                placeholder="SuperStr0ngP@ssword"
-                label="Hasło"
-                type="password"
+                placeholder='SuperStr0ngP@ssword'
+                label='Hasło'
+                type='password'
               />
               <Button
                 mt={4}
-                colorScheme="green"
+                colorScheme='green'
                 isLoading={props.isSubmitting}
-                type="submit"
+                type='submit'
                 mr={4}
               >
                 Zaloguj

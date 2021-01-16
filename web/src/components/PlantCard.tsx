@@ -25,9 +25,9 @@ export const PlantCard: React.FC<PlantCardProps> = ({ plant }) => {
             router.push(`/plant/${plant.id}`);
           }}
         >
-          <Heading>{plant.names.find((n) => n.isPrimary)?.name}</Heading>
+          <Heading>{plant.primaryName}</Heading>
         </Link>
-        <PlantOtherNames names={plant.names} />
+        <PlantOtherNames names={plant.otherNames} />
         <Box mb={4}>
           {plant.descriptionSnippet}
 
@@ -41,7 +41,7 @@ export const PlantCard: React.FC<PlantCardProps> = ({ plant }) => {
           </Link>
         </Box>
         <Box mt='auto' ml='auto'>
-          <Box>dodano przez: {plant.creator.username}</Box>
+          <Box textColor='gray.500'>dodano przez: {plant.creator.username}</Box>
         </Box>
       </Flex>
     </Flex>

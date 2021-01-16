@@ -31,10 +31,10 @@ export type Plant = {
   id: Scalars['Float'];
   creatorId: Scalars['Float'];
   creator: User;
-  names: Array<PlantName>;
-  optimalConditions: Array<OptimalConditions>;
+  primaryName: Scalars['String'];
+  otherNames: Array<Scalars['String']>;
+  optimalConditions?: Maybe<Array<OptimalConditions>>;
   imageUrl: Scalars['String'];
-  characteristics: Array<Scalars['String']>;
   description: Scalars['String'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -47,17 +47,6 @@ export type User = {
   accountType: Scalars['Int'];
   email: Scalars['String'];
   username: Scalars['String'];
-  createdAt: Scalars['String'];
-  updatedAt: Scalars['String'];
-};
-
-export type PlantName = {
-  __typename?: 'PlantName';
-  id: Scalars['Float'];
-  name: Scalars['String'];
-  isPrimary: Scalars['Boolean'];
-  plantId: Scalars['Float'];
-  plant: Plant;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
 };
@@ -78,13 +67,26 @@ export type OptimalConditions = {
   updatedAt: Scalars['String'];
 };
 
+export type PlantName = {
+  __typename?: 'PlantName';
+  plantId: Scalars['Int'];
+  name: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  editPlant: PlantResponse;
   addOptimalConditions: OptimalConditionsResponse;
   addPlant: PlantResponse;
   register: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
+};
+
+
+export type MutationEditPlantArgs = {
+  editData: PlantFieldsInput;
+  id: Scalars['Int'];
 };
 
 
@@ -109,16 +111,29 @@ export type MutationLoginArgs = {
   usernameOrEmail: Scalars['String'];
 };
 
-export type OptimalConditionsResponse = {
-  __typename?: 'OptimalConditionsResponse';
+export type PlantResponse = {
+  __typename?: 'PlantResponse';
   errors?: Maybe<Array<FieldError>>;
-  optimalConditions?: Maybe<OptimalConditions>;
+  plant?: Maybe<Plant>;
 };
 
 export type FieldError = {
   __typename?: 'FieldError';
   field: Scalars['String'];
   message: Scalars['String'];
+};
+
+export type PlantFieldsInput = {
+  primaryName: Scalars['String'];
+  otherNames: Array<Scalars['String']>;
+  description: Scalars['String'];
+  imageUrl: Scalars['String'];
+};
+
+export type OptimalConditionsResponse = {
+  __typename?: 'OptimalConditionsResponse';
+  errors?: Maybe<Array<FieldError>>;
+  optimalConditions?: Maybe<OptimalConditions>;
 };
 
 export type OptimalConditionsInput = {
@@ -129,20 +144,6 @@ export type OptimalConditionsInput = {
   airHumidityHigh: Scalars['Float'];
   temperatureLow: Scalars['Float'];
   temperatureHigh: Scalars['Float'];
-};
-
-export type PlantResponse = {
-  __typename?: 'PlantResponse';
-  errors?: Maybe<Array<FieldError>>;
-  plant?: Maybe<Plant>;
-};
-
-export type PlantFieldsInput = {
-  primaryName: Scalars['String'];
-  otherNames: Array<Scalars['String']>;
-  description: Scalars['String'];
-  imageUrl: Scalars['String'];
-  optimalConditions: Array<OptimalConditionsInput>;
 };
 
 export type UserResponse = {
@@ -159,17 +160,14 @@ export type RegisterCredentials = {
 
 export type FullPlantFragment = (
   { __typename?: 'Plant' }
-  & Pick<Plant, 'id' | 'createdAt' | 'updatedAt' | 'imageUrl' | 'description'>
+  & Pick<Plant, 'id' | 'createdAt' | 'updatedAt' | 'imageUrl' | 'primaryName' | 'otherNames' | 'description'>
   & { creator: (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'username'>
-  ), names: Array<(
-    { __typename?: 'PlantName' }
-    & Pick<PlantName, 'name' | 'isPrimary'>
-  )>, optimalConditions: Array<(
+  ), optimalConditions?: Maybe<Array<(
     { __typename?: 'OptimalConditions' }
     & OptimalConditionsFragment
-  )> }
+  )>> }
 );
 
 export type OptimalConditionsFragment = (
@@ -179,11 +177,8 @@ export type OptimalConditionsFragment = (
 
 export type PlantPreviewFragment = (
   { __typename?: 'Plant' }
-  & Pick<Plant, 'id' | 'imageUrl' | 'createdAt' | 'updatedAt' | 'descriptionSnippet'>
-  & { names: Array<(
-    { __typename?: 'PlantName' }
-    & Pick<PlantName, 'name' | 'isPrimary'>
-  )>, creator: (
+  & Pick<Plant, 'id' | 'imageUrl' | 'createdAt' | 'updatedAt' | 'primaryName' | 'otherNames' | 'descriptionSnippet'>
+  & { creator: (
     { __typename?: 'User' }
     & Pick<User, 'username'>
   ) }
@@ -224,14 +219,31 @@ export type AddPlantMutation = (
       & Pick<FieldError, 'field' | 'message'>
     )>>, plant?: Maybe<(
       { __typename?: 'Plant' }
-      & Pick<Plant, 'description'>
-      & { names: Array<(
-        { __typename?: 'PlantName' }
-        & Pick<PlantName, 'name' | 'isPrimary'>
-      )>, optimalConditions: Array<(
+      & Pick<Plant, 'primaryName' | 'otherNames' | 'description'>
+      & { optimalConditions?: Maybe<Array<(
         { __typename?: 'OptimalConditions' }
         & OptimalConditionsFragment
-      )> }
+      )>> }
+    )> }
+  ) }
+);
+
+export type EditPlantMutationVariables = Exact<{
+  id: Scalars['Int'];
+  data: PlantFieldsInput;
+}>;
+
+
+export type EditPlantMutation = (
+  { __typename?: 'Mutation' }
+  & { editPlant: (
+    { __typename?: 'PlantResponse' }
+    & { errors?: Maybe<Array<(
+      { __typename?: 'FieldError' }
+      & Pick<FieldError, 'field' | 'message'>
+    )>>, plant?: Maybe<(
+      { __typename?: 'Plant' }
+      & Pick<Plant, 'id' | 'primaryName' | 'otherNames' | 'description' | 'imageUrl'>
     )> }
   ) }
 );
@@ -316,7 +328,7 @@ export type PlantNamesQuery = (
   { __typename?: 'Query' }
   & { plantNames: Array<(
     { __typename?: 'PlantName' }
-    & Pick<PlantName, 'name' | 'isPrimary' | 'plantId'>
+    & Pick<PlantName, 'plantId' | 'name'>
   )> }
 );
 
@@ -363,10 +375,8 @@ export const FullPlantFragmentDoc = gql`
   createdAt
   updatedAt
   imageUrl
-  names {
-    name
-    isPrimary
-  }
+  primaryName
+  otherNames
   description
   optimalConditions {
     ...OptimalConditions
@@ -379,10 +389,8 @@ export const PlantPreviewFragmentDoc = gql`
   imageUrl
   createdAt
   updatedAt
-  names {
-    name
-    isPrimary
-  }
+  primaryName
+  otherNames
   creator {
     username
   }
@@ -438,10 +446,8 @@ export const AddPlantDocument = gql`
       message
     }
     plant {
-      names {
-        name
-        isPrimary
-      }
+      primaryName
+      otherNames
       description
       optimalConditions {
         ...OptimalConditions
@@ -475,6 +481,49 @@ export function useAddPlantMutation(baseOptions?: Apollo.MutationHookOptions<Add
 export type AddPlantMutationHookResult = ReturnType<typeof useAddPlantMutation>;
 export type AddPlantMutationResult = Apollo.MutationResult<AddPlantMutation>;
 export type AddPlantMutationOptions = Apollo.BaseMutationOptions<AddPlantMutation, AddPlantMutationVariables>;
+export const EditPlantDocument = gql`
+    mutation EditPlant($id: Int!, $data: PlantFieldsInput!) {
+  editPlant(id: $id, editData: $data) {
+    errors {
+      field
+      message
+    }
+    plant {
+      id
+      primaryName
+      otherNames
+      description
+      imageUrl
+    }
+  }
+}
+    `;
+export type EditPlantMutationFn = Apollo.MutationFunction<EditPlantMutation, EditPlantMutationVariables>;
+
+/**
+ * __useEditPlantMutation__
+ *
+ * To run a mutation, you first call `useEditPlantMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useEditPlantMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [editPlantMutation, { data, loading, error }] = useEditPlantMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *      data: // value for 'data'
+ *   },
+ * });
+ */
+export function useEditPlantMutation(baseOptions?: Apollo.MutationHookOptions<EditPlantMutation, EditPlantMutationVariables>) {
+        return Apollo.useMutation<EditPlantMutation, EditPlantMutationVariables>(EditPlantDocument, baseOptions);
+      }
+export type EditPlantMutationHookResult = ReturnType<typeof useEditPlantMutation>;
+export type EditPlantMutationResult = Apollo.MutationResult<EditPlantMutation>;
+export type EditPlantMutationOptions = Apollo.BaseMutationOptions<EditPlantMutation, EditPlantMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($usernameOrEmail: String!, $password: String!) {
   login(usernameOrEmail: $usernameOrEmail, password: $password) {
@@ -660,9 +709,8 @@ export type PlantQueryResult = Apollo.QueryResult<PlantQuery, PlantQueryVariable
 export const PlantNamesDocument = gql`
     query PlantNames {
   plantNames {
-    name
-    isPrimary
     plantId
+    name
   }
 }
     `;

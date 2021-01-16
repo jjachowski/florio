@@ -23,7 +23,7 @@ export const Navbar: React.FC = ({}) => {
               <Link>
                 <Flex direction='row'>
                   <Text color='gray.800'>Flor.</Text>
-                  <Text color='gray.300'>io</Text>
+                  <Text color='gray.200'>io</Text>
                 </Flex>
               </Link>
             </NextLink>

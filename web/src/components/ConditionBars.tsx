@@ -10,7 +10,7 @@ import { Bar } from './Bar';
 import { BarRange } from './BarRange';
 
 interface ConditionBarsProps {
-  conditions: OptimalConditionsFragment[] | undefined;
+  conditions: OptimalConditionsFragment[] | undefined | null;
   selectedSeason: Season;
 }
 
@@ -18,8 +18,6 @@ export const ConditionBars: React.FC<ConditionBarsProps> = ({
   conditions,
   selectedSeason,
 }) => {
-  console.log(selectedSeason);
-
   const currentConditions = conditions?.find(
     (c) => c.season === seasonToInt(selectedSeason)
   );

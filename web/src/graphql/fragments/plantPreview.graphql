@@ -3,10 +3,8 @@ fragment PlantPreview on Plant {
   imageUrl
   createdAt
   updatedAt
-  names {
-    name
-    isPrimary
-  }
+  primaryName
+  otherNames
   creator {
     username
   }

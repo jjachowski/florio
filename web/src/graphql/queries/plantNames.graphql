@@ -1,7 +1,6 @@
 query PlantNames {
   plantNames {
-    name
-    isPrimary
     plantId
+    name
   }
 }

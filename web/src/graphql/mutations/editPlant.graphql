@@ -1,0 +1,15 @@
+mutation EditPlant($id: Int!, $data: PlantFieldsInput!) {
+  editPlant(id: $id, editData: $data) {
+    errors {
+      field
+      message
+    }
+    plant {
+      id
+      primaryName
+      otherNames
+      description
+      imageUrl
+    }
+  }
+}

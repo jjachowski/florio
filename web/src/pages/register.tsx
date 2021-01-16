@@ -21,7 +21,6 @@ const Register: React.FC = ({}) => {
         if (response.data?.register.errors) {
           setErrors(toErrorMap(response.data.register.errors));
         } else {
-          console.log(response);
           toast({
             title: 'Konto utworzone - gratulacje 🥳🥳🥳',
             status: 'success',
@@ -34,29 +33,29 @@ const Register: React.FC = ({}) => {
         <Box>
           <Form>
             <FormField
-              name="username"
+              name='username'
               isRequired
-              placeholder="potezny_rośliniak_420"
-              label="Nazwa użytkownika"
+              placeholder='potezny_rośliniak_420'
+              label='Nazwa użytkownika'
             />
             <FormField
-              name="email"
+              name='email'
               isRequired
-              placeholder="jak.kowalski@email.com"
-              label="Adres email"
+              placeholder='jak.kowalski@email.com'
+              label='Adres email'
             />
             <FormField
-              name="password"
+              name='password'
               isRequired
-              placeholder="SuperStr0ngP@ssword"
-              label="Hasło"
-              type="password"
+              placeholder='SuperStr0ngP@ssword'
+              label='Hasło'
+              type='password'
             />
             <Button
               mt={4}
-              colorScheme="teal"
+              colorScheme='teal'
               isLoading={props.isSubmitting}
-              type="submit"
+              type='submit'
               mr={4}
             >
               Rejestruj

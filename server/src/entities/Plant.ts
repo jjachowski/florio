@@ -10,7 +10,6 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { OptimalConditions } from './OptimalConditions';
-import { PlantName } from './PlantName';
 import { User } from './User';
 
 @ObjectType()
@@ -28,25 +27,30 @@ export class Plant extends BaseEntity {
   @ManyToOne(() => User, (user) => user.addedPlants, { eager: true })
   creator: User;
 
-  @Field(() => [PlantName])
-  @OneToMany(() => PlantName, (plantName) => plantName.plant, {
-    eager: true,
-  })
-  names!: PlantName[];
+  @Field()
+  @Column({ unique: true })
+  primaryName!: string;
 
-  @Field(() => [OptimalConditions])
+  @Field(() => [String])
+  @Column('text', { array: true, nullable: true, unique: true })
+  otherNames!: string[];
+
+  // @Field(() => [PlantName])
+  // @OneToMany(() => PlantName, (plantName) => plantName.plant, {
+  //   eager: true,
+  // })
+  // names!: PlantName[];
+
+  @Field(() => [OptimalConditions], { nullable: true })
   @OneToMany(() => OptimalConditions, (conditions) => conditions.plant, {
     eager: true,
+    nullable: true,
   })
-  optimalConditions!: OptimalConditions[];
+  optimalConditions: OptimalConditions[];
 
   @Field()
   @Column({ nullable: true })
   imageUrl!: string;
-
-  @Field(() => [String])
-  @Column('text', { array: true, nullable: true })
-  characteristics: string[];
 
   @Field()
   @Column()

@@ -8,15 +8,15 @@ import {
   Resolver,
   Root,
 } from 'type-graphql';
-import { getConnection } from 'typeorm';
 import { OptimalConditions } from '../entities/OptimalConditions';
 import { Plant } from '../entities/Plant';
-import { PlantName } from '../entities/PlantName';
 import { MyContext } from '../types';
+import { validateOptimalConditions } from '../utils/validators';
 import {
   OptimalConditionsInput,
   OptimalConditionsResponse,
   PlantFieldsInput,
+  PlantName,
   PlantResponse,
 } from './PlantExtras';
 
@@ -47,9 +47,42 @@ export class PlantResolver {
 
   @Query(() => [PlantName])
   async plantNames(): Promise<PlantName[]> {
-    const plantNames = await PlantName.find();
+    const plants = await Plant.find({
+      select: ['id', 'primaryName', 'otherNames'],
+    });
+
+    const plantNames: PlantName[] = [];
+
+    plants.forEach((plant) => {
+      plantNames.push({ plantId: plant.id, name: plant.primaryName });
+      plant.otherNames.forEach((otherName) => {
+        plantNames.push({ plantId: plant.id, name: otherName });
+      });
+    });
+    console.log(plantNames);
 
     return plantNames;
+  }
+
+  @Mutation(() => PlantResponse)
+  async editPlant(
+    @Arg('id', () => Int) id: number,
+    @Arg('editData') editData: PlantFieldsInput
+  ): Promise<PlantResponse> {
+    const plantToEdit = await Plant.findOne(id);
+    if (!plantToEdit) {
+      return {
+        errors: [{ field: 'id', message: 'Nie znaleziono takiej rośliny' }],
+      };
+    }
+    console.log(plantToEdit);
+
+    Object.assign(plantToEdit, editData);
+    console.log(plantToEdit);
+
+    await plantToEdit.save();
+
+    return { plant: plantToEdit };
   }
 
   @Mutation(() => OptimalConditionsResponse)
@@ -64,6 +97,11 @@ export class PlantResolver {
           { field: 'plantId', message: 'Plant with this id does not exist' },
         ],
       };
+    }
+
+    const fieldErrors = validateOptimalConditions(data);
+    if (fieldErrors) {
+      return { errors: fieldErrors };
     }
 
     let optimalConditions = await OptimalConditions.findOne({
@@ -82,26 +120,6 @@ export class PlantResolver {
       await optimalConditions.save();
     }
 
-    // let optimalConditions;
-    // const currentOptimalConditions = plant.optimalConditions.find(
-    //   (o) => o.season === data.season
-    // );
-    // if (currentOptimalConditions !== undefined) {
-    //   optimalConditions = currentOptimalConditions;
-    //   optimalConditions = {
-    //     ...optimalConditions,
-    //     ...data,
-    //     plantId: plant.id,
-    //   } as OptimalConditions;
-    //   await plant.save();
-    // } else {
-    //   optimalConditions = OptimalConditions.create({
-    //     ...data,
-    //     plantId: plant.id,
-    //   });
-    //   await optimalConditions.save();
-    // }
-
     return { optimalConditions };
   }
 
@@ -110,84 +128,45 @@ export class PlantResolver {
     @Arg('data') data: PlantFieldsInput,
     @Ctx() { req }: MyContext
   ): Promise<PlantResponse> {
-    const {
-      description,
-      imageUrl,
-      primaryName,
-      otherNames,
-      optimalConditions,
-    } = data;
+    const { description, imageUrl, primaryName, otherNames } = data;
 
     const plant = Plant.create({
       description,
       imageUrl,
       creatorId: req.session.userId,
+      primaryName,
+      otherNames,
     });
 
     await plant.save();
 
-    const plantNames: PlantName[] = [];
-    plantNames.push(
-      PlantName.create({
-        name: primaryName,
-        isPrimary: true,
-        plantId: plant.id,
-      })
-    );
+    // const plantNames: PlantName[] = [];
+    // plantNames.push(
+    //   PlantName.create({
+    //     name: primaryName,
+    //     isPrimary: true,
+    //     plantId: plant.id,
+    //   })
+    // );
 
-    otherNames.forEach((otherName) =>
-      plantNames.push(
-        PlantName.create({
-          name: otherName,
-          isPrimary: false,
-          plantId: plant.id,
-        })
-      )
-    );
+    // otherNames.forEach((otherName) =>
+    //   plantNames.push(
+    //     PlantName.create({
+    //       name: otherName,
+    //       isPrimary: false,
+    //       plantId: plant.id,
+    //     })
+    //   )
+    // );
 
-    const plantConditions: OptimalConditions[] = [];
+    // await getConnection()
+    //   .createQueryBuilder()
+    //   .insert()
+    //   .into(PlantName)
+    //   .values(plantNames)
+    //   .execute();
 
-    optimalConditions.forEach((condition) => {
-      const {
-        airHumidityLow,
-        airHumidityHigh,
-        season,
-        water,
-        sun,
-        temperatureLow,
-        temperatureHigh,
-      } = condition;
-      plantConditions.push(
-        OptimalConditions.create({
-          plantId: plant.id,
-          season,
-          water,
-          sun,
-          airHumidityLow,
-          airHumidityHigh,
-          temperatureLow,
-          temperatureHigh,
-        })
-      );
-    });
-
-    await getConnection()
-      .createQueryBuilder()
-      .insert()
-      .into(PlantName)
-      .values(plantNames)
-      .execute();
-
-    await getConnection()
-      .createQueryBuilder()
-      .insert()
-      .into(OptimalConditions)
-      .values(plantConditions)
-      .execute();
-
-    plant.names = plantNames;
-    plant.optimalConditions = plantConditions;
-
+    // plant.names = plantNames;
     return { plant };
   }
 }

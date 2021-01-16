@@ -14,8 +14,6 @@ export class PlantFieldsInput {
   description: string;
   @Field()
   imageUrl: string;
-  @Field(() => [OptimalConditionsInput])
-  optimalConditions: OptimalConditionsInput[];
 }
 
 @InputType()
@@ -52,4 +50,12 @@ export class OptimalConditionsResponse {
 
   @Field(() => OptimalConditions, { nullable: true })
   optimalConditions?: OptimalConditions;
+}
+
+@ObjectType()
+export class PlantName {
+  @Field(() => Int)
+  plantId: number;
+  @Field()
+  name: string;
 }

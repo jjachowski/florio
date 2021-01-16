@@ -5,10 +5,8 @@ mutation AddPlant($data: PlantFieldsInput!) {
       message
     }
     plant {
-      names {
-        name
-        isPrimary
-      }
+      primaryName
+      otherNames
       description
       optimalConditions {
         ...OptimalConditions

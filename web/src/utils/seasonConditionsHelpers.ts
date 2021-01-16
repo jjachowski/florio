@@ -37,7 +37,7 @@ export const intToSeason = (season: number | undefined): Season => {
 };
 
 export const conditionsToStringArray = (
-  conditions: OptimalConditionsFragment[] | undefined
+  conditions: OptimalConditionsFragment[] | null | undefined
 ): Season[] => {
   const stringified: Season[] = [];
   conditions?.forEach((c) => {
