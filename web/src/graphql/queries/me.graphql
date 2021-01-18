@@ -4,5 +4,6 @@ query Me {
     username
     accountType
     email
+    likedPlants
   }
 }

@@ -9,6 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Plant } from './Plant';
+import { Like } from './Like';
 
 export enum AccountType {
   user,
@@ -39,6 +40,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Plant, (plant) => plant.creator)
   addedPlants: Plant[];
+
+  @OneToMany(() => Like, (vote) => vote.creator, { eager: true })
+  likes: Like[];
 
   @Field(() => String)
   @CreateDateColumn()

@@ -31,6 +31,7 @@ export type Plant = {
   id: Scalars['Float'];
   creatorId: Scalars['Float'];
   creator: User;
+  score: Scalars['Float'];
   primaryName: Scalars['String'];
   otherNames: Array<Scalars['String']>;
   optimalConditions?: Maybe<Array<OptimalConditions>>;
@@ -49,6 +50,7 @@ export type User = {
   username: Scalars['String'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+  likedPlants: Array<Scalars['Int']>;
 };
 
 export type OptimalConditions = {
@@ -81,6 +83,8 @@ export type Mutation = {
   register: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
+  addLike: Scalars['Boolean'];
+  removeLike: Scalars['Boolean'];
 };
 
 
@@ -109,6 +113,16 @@ export type MutationRegisterArgs = {
 export type MutationLoginArgs = {
   password: Scalars['String'];
   usernameOrEmail: Scalars['String'];
+};
+
+
+export type MutationAddLikeArgs = {
+  plantId: Scalars['Int'];
+};
+
+
+export type MutationRemoveLikeArgs = {
+  plantId: Scalars['Int'];
 };
 
 export type PlantResponse = {
@@ -228,6 +242,16 @@ export type AddPlantMutation = (
   ) }
 );
 
+export type DislikePlantMutationVariables = Exact<{
+  plantId: Scalars['Int'];
+}>;
+
+
+export type DislikePlantMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'removeLike'>
+);
+
 export type EditPlantMutationVariables = Exact<{
   id: Scalars['Int'];
   data: PlantFieldsInput;
@@ -246,6 +270,16 @@ export type EditPlantMutation = (
       & Pick<Plant, 'id' | 'primaryName' | 'otherNames' | 'description' | 'imageUrl'>
     )> }
   ) }
+);
+
+export type LikePlantMutationVariables = Exact<{
+  plantId: Scalars['Int'];
+}>;
+
+
+export type LikePlantMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'addLike'>
 );
 
 export type LoginMutationVariables = Exact<{
@@ -304,7 +338,7 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username' | 'accountType' | 'email'>
+    & Pick<User, 'id' | 'username' | 'accountType' | 'email' | 'likedPlants'>
   )> }
 );
 
@@ -481,6 +515,36 @@ export function useAddPlantMutation(baseOptions?: Apollo.MutationHookOptions<Add
 export type AddPlantMutationHookResult = ReturnType<typeof useAddPlantMutation>;
 export type AddPlantMutationResult = Apollo.MutationResult<AddPlantMutation>;
 export type AddPlantMutationOptions = Apollo.BaseMutationOptions<AddPlantMutation, AddPlantMutationVariables>;
+export const DislikePlantDocument = gql`
+    mutation DislikePlant($plantId: Int!) {
+  removeLike(plantId: $plantId)
+}
+    `;
+export type DislikePlantMutationFn = Apollo.MutationFunction<DislikePlantMutation, DislikePlantMutationVariables>;
+
+/**
+ * __useDislikePlantMutation__
+ *
+ * To run a mutation, you first call `useDislikePlantMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDislikePlantMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [dislikePlantMutation, { data, loading, error }] = useDislikePlantMutation({
+ *   variables: {
+ *      plantId: // value for 'plantId'
+ *   },
+ * });
+ */
+export function useDislikePlantMutation(baseOptions?: Apollo.MutationHookOptions<DislikePlantMutation, DislikePlantMutationVariables>) {
+        return Apollo.useMutation<DislikePlantMutation, DislikePlantMutationVariables>(DislikePlantDocument, baseOptions);
+      }
+export type DislikePlantMutationHookResult = ReturnType<typeof useDislikePlantMutation>;
+export type DislikePlantMutationResult = Apollo.MutationResult<DislikePlantMutation>;
+export type DislikePlantMutationOptions = Apollo.BaseMutationOptions<DislikePlantMutation, DislikePlantMutationVariables>;
 export const EditPlantDocument = gql`
     mutation EditPlant($id: Int!, $data: PlantFieldsInput!) {
   editPlant(id: $id, editData: $data) {
@@ -524,6 +588,36 @@ export function useEditPlantMutation(baseOptions?: Apollo.MutationHookOptions<Ed
 export type EditPlantMutationHookResult = ReturnType<typeof useEditPlantMutation>;
 export type EditPlantMutationResult = Apollo.MutationResult<EditPlantMutation>;
 export type EditPlantMutationOptions = Apollo.BaseMutationOptions<EditPlantMutation, EditPlantMutationVariables>;
+export const LikePlantDocument = gql`
+    mutation LikePlant($plantId: Int!) {
+  addLike(plantId: $plantId)
+}
+    `;
+export type LikePlantMutationFn = Apollo.MutationFunction<LikePlantMutation, LikePlantMutationVariables>;
+
+/**
+ * __useLikePlantMutation__
+ *
+ * To run a mutation, you first call `useLikePlantMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useLikePlantMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [likePlantMutation, { data, loading, error }] = useLikePlantMutation({
+ *   variables: {
+ *      plantId: // value for 'plantId'
+ *   },
+ * });
+ */
+export function useLikePlantMutation(baseOptions?: Apollo.MutationHookOptions<LikePlantMutation, LikePlantMutationVariables>) {
+        return Apollo.useMutation<LikePlantMutation, LikePlantMutationVariables>(LikePlantDocument, baseOptions);
+      }
+export type LikePlantMutationHookResult = ReturnType<typeof useLikePlantMutation>;
+export type LikePlantMutationResult = Apollo.MutationResult<LikePlantMutation>;
+export type LikePlantMutationOptions = Apollo.BaseMutationOptions<LikePlantMutation, LikePlantMutationVariables>;
 export const LoginDocument = gql`
     mutation Login($usernameOrEmail: String!, $password: String!) {
   login(usernameOrEmail: $usernameOrEmail, password: $password) {
@@ -645,6 +739,7 @@ export const MeDocument = gql`
     username
     accountType
     email
+    likedPlants
   }
 }
     `;

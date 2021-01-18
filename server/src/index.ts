@@ -12,8 +12,10 @@ import { COOKIE_NAME, __prod__ } from './constants';
 import { OptimalConditions } from './entities/OptimalConditions';
 import { Plant } from './entities/Plant';
 import { User } from './entities/User';
+import { Like } from './entities/Like';
 import { PlantResolver } from './resolvers/plantResolver';
 import { UserResolver } from './resolvers/userResolver';
+import { LikeResolver } from './resolvers/likeResolver';
 
 const main = async () => {
   await createConnection({
@@ -24,7 +26,7 @@ const main = async () => {
     logging: true,
     synchronize: true,
     migrations: [path.join(__dirname, './migrations/*')],
-    entities: [User, Plant, OptimalConditions],
+    entities: [User, Plant, OptimalConditions, Like],
   });
 
   const app = express();
@@ -59,7 +61,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver, PlantResolver],
+      resolvers: [UserResolver, PlantResolver, LikeResolver],
       validate: false,
     }),
     context: ({ req, res }) => ({

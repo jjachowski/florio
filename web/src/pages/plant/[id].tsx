@@ -12,6 +12,7 @@ import {
   Flex,
   Heading,
   HStack,
+  Icon,
   Image,
   Menu,
   MenuButton,
@@ -32,6 +33,8 @@ import {
   Season,
 } from '../../utils/seasonConditionsHelpers';
 import useGetIdFromRoute from '../../utils/useGetIntId';
+import { TiHeartOutline, TiHeart } from 'react-icons/ti';
+import { LikePlant } from '../../components/LikePlant';
 
 const Plant: React.FC = () => {
   const id = useGetIdFromRoute();
@@ -72,8 +75,11 @@ const Plant: React.FC = () => {
             <Flex p={10} direction='column' shadow='2xl' rounded={20}>
               <Flex direction='row'>
                 <Flex direction='column'>
-                  <Heading>{data?.plant?.primaryName}</Heading>
-                  <Box>
+                  <Flex as={Heading} align='center'>
+                    <LikePlant plantId={data?.plant?.id} />
+                    {data?.plant?.primaryName}
+                  </Flex>
+                  <Box ml='auto'>
                     {data?.plant && (
                       <PlantOtherNames names={data?.plant.otherNames} />
                     )}
@@ -103,12 +109,6 @@ const Plant: React.FC = () => {
                     </MenuList>
                   </Menu>
                 </Box>
-
-                {/* <HStack mb='auto' spacing={2} ml='auto' fontSize='3rem'>
-                  <SunIcon />
-                  <MoonIcon />
-                  <TimeIcon />
-                </HStack> */}
               </Flex>
 
               <ConditionSeasonsSwitch
@@ -123,19 +123,6 @@ const Plant: React.FC = () => {
                 conditions={data?.plant?.optimalConditions}
                 selectedSeason={selectedSeason}
               />
-              {/* <Flex>
-                <Button
-                  mt={4}
-                  ml='auto'
-                  colorScheme='green'
-                  onClick={() =>
-                    router.push(`/plant/${data?.plant?.id}/conditions`)
-                  }
-                >
-                  Dodaj/edytuj optymalne warunki
-                  <AddIcon ml={2} />
-                </Button>
-              </Flex> */}
             </Flex>
             <Flex p={10} mt={8} direction='column' shadow='2xl' rounded={20}>
               <Heading size='md'>Opis</Heading>

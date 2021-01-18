@@ -11,6 +11,7 @@ import {
 } from 'typeorm';
 import { OptimalConditions } from './OptimalConditions';
 import { User } from './User';
+import { Like } from './Like';
 
 @ObjectType()
 @Entity()
@@ -28,18 +29,19 @@ export class Plant extends BaseEntity {
   creator: User;
 
   @Field()
+  @Column({ default: 0 })
+  score!: number;
+
+  @OneToMany(() => Like, (vote) => vote.plant)
+  likes: Like[];
+
+  @Field()
   @Column({ unique: true })
   primaryName!: string;
 
   @Field(() => [String])
   @Column('text', { array: true, nullable: true, unique: true })
   otherNames!: string[];
-
-  // @Field(() => [PlantName])
-  // @OneToMany(() => PlantName, (plantName) => plantName.plant, {
-  //   eager: true,
-  // })
-  // names!: PlantName[];
 
   @Field(() => [OptimalConditions], { nullable: true })
   @OneToMany(() => OptimalConditions, (conditions) => conditions.plant, {

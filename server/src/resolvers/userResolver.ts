@@ -8,6 +8,7 @@ import {
   Query,
   FieldResolver,
   Root,
+  Int,
 } from 'type-graphql';
 import { AccountType, User } from '../entities/User';
 import argon2 from 'argon2';
@@ -28,6 +29,15 @@ class UserResponse {
 
 @Resolver(User)
 export class UserResolver {
+  @FieldResolver(() => [Int])
+  likedPlants(@Root() root: User) {
+    const likedPlantsIds = root.likes?.map((l) => l.plantId);
+    if (!likedPlantsIds) {
+      return [];
+    }
+    return likedPlantsIds;
+  }
+
   @FieldResolver(() => String)
   email(@Root() user: User, @Ctx() { req }: MyContext) {
     if (user.id !== req.session.userId) {

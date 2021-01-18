@@ -2,6 +2,7 @@ import { Box, Flex, Heading, Image, Link } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { PlantPreviewFragment } from '../generated/graphql';
+import { LikePlant } from './LikePlant';
 import { PlantOtherNames } from './PlantOtherNames';
 
 interface PlantCardProps {
@@ -19,14 +20,18 @@ export const PlantCard: React.FC<PlantCardProps> = ({ plant }) => {
         src={plant.imageUrl}
         alt='Kalatea'
       />
-      <Flex p={10} pb={2} direction='column' w='100%'>
-        <Link
-          onClick={() => {
-            router.push(`/plant/${plant.id}`);
-          }}
-        >
-          <Heading>{plant.primaryName}</Heading>
-        </Link>
+      <Flex p={10} pb={2} direction='column' w='100%' justify='center'>
+        <Flex as={Heading} align='center'>
+          <LikePlant plantId={plant.id} />
+          <Link
+            onClick={() => {
+              router.push(`/plant/${plant.id}`);
+            }}
+          >
+            {plant.primaryName}{' '}
+          </Link>
+        </Flex>
+
         <PlantOtherNames names={plant.otherNames} />
         <Box mb={4}>
           {plant.descriptionSnippet}

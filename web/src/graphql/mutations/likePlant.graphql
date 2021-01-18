@@ -1,0 +1,3 @@
+mutation LikePlant($plantId: Int!) {
+  addLike(plantId: $plantId)
+}
