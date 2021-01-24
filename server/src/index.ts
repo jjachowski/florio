@@ -16,8 +16,11 @@ import { Like } from './entities/Like';
 import { PlantResolver } from './resolvers/plantResolver';
 import { UserResolver } from './resolvers/userResolver';
 import { LikeResolver } from './resolvers/likeResolver';
+import cloudinary from 'cloudinary';
 
 const main = async () => {
+  require('dotenv').config();
+
   await createConnection({
     type: 'postgres',
     database: 'florio',
@@ -27,6 +30,18 @@ const main = async () => {
     synchronize: true,
     migrations: [path.join(__dirname, './migrations/*')],
     entities: [User, Plant, OptimalConditions, Like],
+  });
+
+  const {
+    CLOUDINARY_CLOUD_NAME,
+    CLOUDINARY_API_KEY,
+    CLOUDINARY_API_SECRET,
+  } = process.env;
+
+  cloudinary.v2.config({
+    cloud_name: CLOUDINARY_CLOUD_NAME,
+    api_key: CLOUDINARY_API_KEY,
+    api_secret: CLOUDINARY_API_SECRET,
   });
 
   const app = express();

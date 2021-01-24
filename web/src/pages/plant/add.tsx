@@ -2,6 +2,11 @@ import { Box, Button, Heading, useToast, VStack } from '@chakra-ui/react';
 import { Form, Formik, FormikErrors } from 'formik';
 import { useRouter } from 'next/router';
 import React from 'react';
+import {
+  AddPlantForm,
+  AddPlantFormInput,
+  AddPlantFormValue,
+} from '../../components/AddPlantForm';
 import { FormField } from '../../components/FormField';
 import { Layout } from '../../components/Layout';
 import { Navbar } from '../../components/Navbar';
@@ -19,39 +24,44 @@ const AddPlant: React.FC = ({}) => {
   });
   const toast = useToast();
   const router = useRouter();
-  const initialValues: PlantFormInput = {
+  const initialValues: AddPlantFormInput = {
     primaryName: '',
     otherNames: '',
     description: '',
-    imageUrl: '',
   };
 
   const onFormSubmit = async (
-    plant: PlantFormValue,
-    setErrors: (errors: FormikErrors<PlantFormInput>) => void
+    plant: AddPlantFormValue,
+    setErrors: (errors: FormikErrors<AddPlantFormInput>) => void
   ) => {
-    const response = await addPlant({
-      variables: {
-        data: plant,
-      },
-    });
+    console.log(plant);
 
-    if (response.data?.addPlant.errors) {
-      setErrors(toErrorMap(response.data.addPlant.errors));
-    } else {
-      toast({
-        title: 'Udało się! Dziękujemy 🥰',
-        status: 'success',
-      });
-      router.push('/');
-    }
+    // const response = await addPlant({
+    //   variables: {
+    //     data: plant,
+    //   },
+    // });
+
+    // if (response.data?.addPlant.errors) {
+    //   setErrors(toErrorMap(response.data.addPlant.errors));
+    // } else {
+    //   toast({
+    //     title: 'Udało się! Dziękujemy 🥰',
+    //     status: 'success',
+    //   });
+    //   router.push('/');
+    // }
   };
   return (
     <>
       <Navbar />
       <Layout mt={4} variant='regular'>
         <Heading>Dodaj nową roślinę</Heading>
-        <PlantForm initialValues={initialValues} onFormSubmit={onFormSubmit} />
+        <AddPlantForm
+          initialValues={initialValues}
+          onFormSubmit={onFormSubmit}
+        />
+        {/* <PlantForm initialValues={initialValues} onFormSubmit={onFormSubmit} /> */}
       </Layout>
     </>
   );

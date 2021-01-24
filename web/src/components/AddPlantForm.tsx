@@ -1,49 +1,62 @@
 import { Box, Button, VStack } from '@chakra-ui/react';
 import { Form, Formik, FormikErrors } from 'formik';
-import React from 'react';
+import React, { useState } from 'react';
 import { FileField } from './FileField';
 import { FormField } from './FormField';
 
-export type EditPlantFormInput = {
+export type AddPlantFormInput = {
   primaryName: string;
   otherNames: string;
   description: string;
 };
 
-export type EditPlantFormValue = {
+export type AddPlantFormValue = {
   primaryName: string;
   otherNames: string[];
   description: string;
+  images: FileList;
 };
 
-interface EditPlantFormProps {
-  initialValues?: EditPlantFormInput;
+interface AddPlantFormProps {
+  initialValues?: AddPlantFormInput;
   onFormSubmit: (
-    plant: EditPlantFormValue,
-    setErrors: (errors: FormikErrors<EditPlantFormInput>) => void
+    plant: AddPlantFormValue,
+    setErrors: (errors: FormikErrors<AddPlantFormInput>) => void
   ) => void;
 }
 
-export const EditPlantForm: React.FC<EditPlantFormProps> = ({
+export const AddPlantForm: React.FC<AddPlantFormProps> = ({
   initialValues = {
     primaryName: '',
     otherNames: '',
     description: '',
-    images: [],
+    images: null,
   },
   onFormSubmit,
 }) => {
+  const [filePreviews, setFilePreviews] = useState<
+    { name: string; size: number }[]
+  >([]);
+  const hiddenFileInput = React.useRef<HTMLInputElement>(null);
   return (
     <Formik
       initialValues={initialValues}
+      onReset={(val, { setFieldValue }) => {
+        setFieldValue('images', null);
+        setFilePreviews([]);
+        hiddenFileInput!.current!.value = '';
+      }}
       onSubmit={async (values, { setErrors }) => {
-        const { primaryName, description } = values;
-        const plant = {
-          primaryName,
-          description,
-          otherNames: values.otherNames.split(',').map((n) => n.trim()),
-        };
-        onFormSubmit(plant, setErrors);
+        console.log(values);
+
+        // const { primaryName, description, images } = values;
+        // const plant = {
+        //   primaryName,
+        //   description,
+        //   images,
+        //   otherNames: values.otherNames.split(',').map((n) => n.trim()),
+        // };
+        // onFormSubmit(plant, setErrors);
       }}
     >
       {(props) => (
@@ -66,6 +79,28 @@ export const EditPlantForm: React.FC<EditPlantFormProps> = ({
                 isRequired
                 placeholder='Odmiana Fascinator Tricolor jest...'
                 label='Opis'
+              />
+              <FileField
+                name='images'
+                isRequired
+                hiddenFileInput={hiddenFileInput}
+                filePreviews={filePreviews}
+                onChange={(event) => {
+                  console.log('change');
+
+                  const { files } = event.target;
+
+                  if (!files) {
+                    return;
+                  }
+                  setFilePreviews(
+                    Array.from(files).map((f) => {
+                      return { name: f.name, size: f.size };
+                    })
+                  );
+
+                  props.setFieldValue('images', event.target.files);
+                }}
               />
             </VStack>
 
