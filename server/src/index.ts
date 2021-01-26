@@ -1,23 +1,23 @@
 import { ApolloServer } from 'apollo-server-express';
+import cloudinary from 'cloudinary';
 import connectRedis from 'connect-redis';
 import cors from 'cors';
 import express from 'express';
 import session from 'express-session';
+import { graphqlUploadExpress } from 'graphql-upload';
 import Redis from 'ioredis';
 import path from 'path';
 import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
 import { createConnection } from 'typeorm';
 import { COOKIE_NAME, __prod__ } from './constants';
+import { Like } from './entities/Like';
 import { OptimalConditions } from './entities/OptimalConditions';
 import { Plant } from './entities/Plant';
 import { User } from './entities/User';
-import { Like } from './entities/Like';
+import { LikeResolver } from './resolvers/likeResolver';
 import { PlantResolver } from './resolvers/plantResolver';
 import { UserResolver } from './resolvers/userResolver';
-import { LikeResolver } from './resolvers/likeResolver';
-import cloudinary from 'cloudinary';
-
 const main = async () => {
   require('dotenv').config();
 
@@ -45,6 +45,9 @@ const main = async () => {
   });
 
   const app = express();
+
+  app.use(graphqlUploadExpress({ maxFiles: 3, maxFileSize: 100000 }));
+
   app.use(
     cors({
       origin: 'http://localhost:3000',
@@ -86,6 +89,7 @@ const main = async () => {
       //   userLoader: createUserLoader(),
       //   updootLoader: createUpdootLoader(),
     }),
+    uploads: false,
   });
 
   apolloServer.applyMiddleware({ app, cors: false });

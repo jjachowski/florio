@@ -11,6 +11,8 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
 };
 
 export type Query = {
@@ -19,6 +21,7 @@ export type Query = {
   plant?: Maybe<Plant>;
   plantNames: Array<PlantName>;
   me?: Maybe<User>;
+  hello: Scalars['String'];
 };
 
 
@@ -80,6 +83,7 @@ export type Mutation = {
   editPlant: PlantResponse;
   addOptimalConditions: OptimalConditionsResponse;
   addPlant: PlantResponse;
+  upload: Scalars['Boolean'];
   register: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
@@ -102,6 +106,11 @@ export type MutationAddOptimalConditionsArgs = {
 
 export type MutationAddPlantArgs = {
   data: PlantFieldsInput;
+};
+
+
+export type MutationUploadArgs = {
+  image: Scalars['Upload'];
 };
 
 
@@ -159,6 +168,7 @@ export type OptimalConditionsInput = {
   temperatureLow: Scalars['Float'];
   temperatureHigh: Scalars['Float'];
 };
+
 
 export type UserResponse = {
   __typename?: 'UserResponse';
@@ -329,6 +339,16 @@ export type RegisterMutation = (
       & Pick<User, 'id' | 'accountType' | 'email' | 'username'>
     )> }
   ) }
+);
+
+export type UploadFileTestMutationVariables = Exact<{
+  image: Scalars['Upload'];
+}>;
+
+
+export type UploadFileTestMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'upload'>
 );
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
@@ -732,6 +752,36 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const UploadFileTestDocument = gql`
+    mutation UploadFileTest($image: Upload!) {
+  upload(image: $image)
+}
+    `;
+export type UploadFileTestMutationFn = Apollo.MutationFunction<UploadFileTestMutation, UploadFileTestMutationVariables>;
+
+/**
+ * __useUploadFileTestMutation__
+ *
+ * To run a mutation, you first call `useUploadFileTestMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadFileTestMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadFileTestMutation, { data, loading, error }] = useUploadFileTestMutation({
+ *   variables: {
+ *      image: // value for 'image'
+ *   },
+ * });
+ */
+export function useUploadFileTestMutation(baseOptions?: Apollo.MutationHookOptions<UploadFileTestMutation, UploadFileTestMutationVariables>) {
+        return Apollo.useMutation<UploadFileTestMutation, UploadFileTestMutationVariables>(UploadFileTestDocument, baseOptions);
+      }
+export type UploadFileTestMutationHookResult = ReturnType<typeof useUploadFileTestMutation>;
+export type UploadFileTestMutationResult = Apollo.MutationResult<UploadFileTestMutation>;
+export type UploadFileTestMutationOptions = Apollo.BaseMutationOptions<UploadFileTestMutation, UploadFileTestMutationVariables>;
 export const MeDocument = gql`
     query Me {
   me {

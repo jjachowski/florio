@@ -1,14 +1,19 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { ChakraProvider } from '@chakra-ui/react';
+import { createUploadLink } from 'apollo-upload-client';
 import { AppProps } from 'next/app';
 import Head from 'next/head';
 import React from 'react';
 import theme from '../theme';
 
-const client = new ApolloClient({
+const link = createUploadLink({
   uri: 'http://localhost:4000/graphql',
-  cache: new InMemoryCache(),
   credentials: 'include',
+});
+
+const client = new ApolloClient({
+  cache: new InMemoryCache(),
+  link,
 });
 
 function MyApp({ Component, pageProps }: AppProps) {

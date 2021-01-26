@@ -1,6 +1,7 @@
 import { Box, Button, VStack } from '@chakra-ui/react';
 import { Form, Formik, FormikErrors } from 'formik';
 import React, { useState } from 'react';
+import { useUploadFileTestMutation } from '../generated/graphql';
 import { FileField } from './FileField';
 import { FormField } from './FormField';
 
@@ -34,6 +35,7 @@ export const AddPlantForm: React.FC<AddPlantFormProps> = ({
   },
   onFormSubmit,
 }) => {
+  const [upload] = useUploadFileTestMutation();
   const [filePreviews, setFilePreviews] = useState<
     { name: string; size: number }[]
   >([]);
@@ -86,20 +88,25 @@ export const AddPlantForm: React.FC<AddPlantFormProps> = ({
                 hiddenFileInput={hiddenFileInput}
                 filePreviews={filePreviews}
                 onChange={(event) => {
-                  console.log('change');
+                  console.log(event);
+                  console.log(event.target.files[0]);
 
-                  const { files } = event.target;
+                  upload({ variables: { image: event.target.files[0] } });
 
-                  if (!files) {
-                    return;
-                  }
-                  setFilePreviews(
-                    Array.from(files).map((f) => {
-                      return { name: f.name, size: f.size };
-                    })
-                  );
+                  // console.log('change');
 
-                  props.setFieldValue('images', event.target.files);
+                  // const { files } = event.target;
+
+                  // if (!files) {
+                  //   return;
+                  // }
+                  // setFilePreviews(
+                  //   Array.from(files).map((f) => {
+                  //     return { name: f.name, size: f.size };
+                  //   })
+                  // );
+
+                  // props.setFieldValue('images', event.target.files);
                 }}
               />
             </VStack>
