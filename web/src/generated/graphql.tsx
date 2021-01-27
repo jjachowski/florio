@@ -17,11 +17,11 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
+  hello: Scalars['String'];
   plants: Array<Plant>;
   plant?: Maybe<Plant>;
   plantNames: Array<PlantName>;
   me?: Maybe<User>;
-  hello: Scalars['String'];
 };
 
 
@@ -80,6 +80,8 @@ export type PlantName = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addLike: Scalars['Boolean'];
+  removeLike: Scalars['Boolean'];
   editPlant: PlantResponse;
   addOptimalConditions: OptimalConditionsResponse;
   addPlant: PlantResponse;
@@ -87,8 +89,16 @@ export type Mutation = {
   register: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
-  addLike: Scalars['Boolean'];
-  removeLike: Scalars['Boolean'];
+};
+
+
+export type MutationAddLikeArgs = {
+  plantId: Scalars['Int'];
+};
+
+
+export type MutationRemoveLikeArgs = {
+  plantId: Scalars['Int'];
 };
 
 
@@ -110,7 +120,7 @@ export type MutationAddPlantArgs = {
 
 
 export type MutationUploadArgs = {
-  image: Scalars['Upload'];
+  images: Array<Scalars['Upload']>;
 };
 
 
@@ -122,16 +132,6 @@ export type MutationRegisterArgs = {
 export type MutationLoginArgs = {
   password: Scalars['String'];
   usernameOrEmail: Scalars['String'];
-};
-
-
-export type MutationAddLikeArgs = {
-  plantId: Scalars['Int'];
-};
-
-
-export type MutationRemoveLikeArgs = {
-  plantId: Scalars['Int'];
 };
 
 export type PlantResponse = {
@@ -342,7 +342,7 @@ export type RegisterMutation = (
 );
 
 export type UploadFileTestMutationVariables = Exact<{
-  image: Scalars['Upload'];
+  images: Array<Scalars['Upload']>;
 }>;
 
 
@@ -753,8 +753,8 @@ export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
 export const UploadFileTestDocument = gql`
-    mutation UploadFileTest($image: Upload!) {
-  upload(image: $image)
+    mutation UploadFileTest($images: [Upload!]!) {
+  upload(images: $images)
 }
     `;
 export type UploadFileTestMutationFn = Apollo.MutationFunction<UploadFileTestMutation, UploadFileTestMutationVariables>;
@@ -772,7 +772,7 @@ export type UploadFileTestMutationFn = Apollo.MutationFunction<UploadFileTestMut
  * @example
  * const [uploadFileTestMutation, { data, loading, error }] = useUploadFileTestMutation({
  *   variables: {
- *      image: // value for 'image'
+ *      images: // value for 'images'
  *   },
  * });
  */

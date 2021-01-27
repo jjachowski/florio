@@ -44,6 +44,14 @@ export class PlantResponse {
 }
 
 @ObjectType()
+export class UploadImagesResponse {
+  @Field()
+  imageName: string;
+  @Field()
+  isSuccess: boolean;
+}
+
+@ObjectType()
 export class OptimalConditionsResponse {
   @Field(() => [FieldError], { nullable: true })
   errors?: FieldError[];

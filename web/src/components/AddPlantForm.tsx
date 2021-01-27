@@ -87,11 +87,14 @@ export const AddPlantForm: React.FC<AddPlantFormProps> = ({
                 isRequired
                 hiddenFileInput={hiddenFileInput}
                 filePreviews={filePreviews}
-                onChange={(event) => {
+                onChange={async (event) => {
                   console.log(event);
-                  console.log(event.target.files[0]);
+                  console.log(event.target.files);
 
-                  upload({ variables: { image: event.target.files[0] } });
+                  const result = await upload({
+                    variables: { images: event.target.files },
+                  });
+                  console.log(result);
 
                   // console.log('change');
 

@@ -20,6 +20,7 @@ import {
   PlantFieldsInput,
   PlantName,
   PlantResponse,
+  UploadImagesResponse,
 } from './PlantExtras';
 
 @Resolver(Plant)
@@ -142,38 +143,81 @@ export class PlantResolver {
 
   @Mutation(() => Boolean)
   async upload(
-    @Arg('image', () => GraphQLUpload!)
-    file: FileUpload
+    @Arg('images', () => [GraphQLUpload]!)
+    images: FileUpload[]
   ) {
-    // console.log('upload file: ', file.createReadStream);
-    // return true;
+    console.log('images: ', images);
 
-    const { createReadStream, filename } = await file;
-    // const writableStream = createWriteStream(
-    //   `${__dirname}/files/images/${filename}`,
-    //   { autoClose: true }
+    // const uploadCloudinary = cloudinary.v2.uploader.upload_stream(
+    //   {
+    //     folder: 'test',
+    //     use_filename: true,
+    //   },
+    //   (error, result) => console.log('uploadCloudinary: ', error, result)
     // );
-    // return new Promise((res, rej) => {
-    //   createReadStream()
-    //     .pipe(writableStream)
-    //     .on('finish', () => res(true))
-    //     .on('error', () => rej(false));
+    const test2 = await Promise.allSettled(images);
+    console.log('settled: ', test2);
+    // return true;
+    const test: boolean[] = [];
+    test2.forEach(async (image) => {
+      const {
+        filename,
+        createReadStream,
+      } = (image as PromiseFulfilledResult<FileUpload>).value;
+      createReadStream().pipe(
+        cloudinary.v2.uploader.upload_stream(
+          {
+            folder: 'test',
+            use_filename: true,
+          },
+          (error, result) => console.log('uploadCloudinary: ', error, result)
+        )
+      );
+
+      // test.push(
+      //   await new Promise<boolean>((resolve, reject) =>
+      //     createReadStream()
+      //       .pipe(uploadCloudinary)
+      //       .on('finish', (finish) => {
+      //         console.log('here finish: ', finish);
+      //         resolve(true);
+      //       })
+      //       .on('error', (error) => {
+      //         console.log('here error: ', error);
+      //         reject(false);
+      //       })
+      //   )
+      // );
+    });
+
+    console.log('promise array: ', test);
+
+    // const uploadCloudinary = cloudinary.v2.uploader.upload_stream(
+    //   {
+    //     folder: 'test',
+    //   },
+    //   (error, result) => console.log(error, result)
+    // );
+
+    // const results: UploadImagesResponse[] = [];
+    // images.forEach((file) => {
+
+    //   new Promise((resolve, reject) =>
+    //     file.createReadStream()
+    //       .pipe(uploadCloudinary)
+    //       .on('finish', () => resolve(true))
+    //       .on('error', () => reject(false))
+    //   );
     // });
 
-    const uploadCloudinary = cloudinary.v2.uploader.upload_stream(
-      {
-        folder: 'test',
-      },
-      (error, result) => console.log(error, result)
-    );
-    console.log(file);
-    return new Promise((resolve, reject) =>
-      file
-        .createReadStream()
-        .pipe(uploadCloudinary)
-        .on('finish', () => resolve(true))
-        .on('error', () => reject(false))
-    );
+    //   const test = new Promise((resolve, reject) =>
+    //   images[0]
+    //     .createReadStream()
+    //     .pipe(uploadCloudinary)
+    //     .on('finish', () => resolve(true))
+    //     .on('error', () => reject(false))
+    // );
+    return true;
     // console.log('await: ', await file);
     // return true;
   }
