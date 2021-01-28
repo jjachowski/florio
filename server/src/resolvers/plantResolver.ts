@@ -153,17 +153,18 @@ export class PlantResolver {
           createReadStream().pipe(
             cloudinary.v2.uploader.upload_stream(
               {
-                folder: 'test',
+                folder: 'plantImages',
                 use_filename: true,
               },
               (error, result) => {
                 if (result?.secure_url) {
+                  // console.log('cloudinary result: ', result);
+
                   // plant.images.push(result.secure_url);
-                  resolve(result.secure_url);
+                  resolve(result.public_id);
                 }
                 if (error) {
                   reject(error.message);
-                  // errors.push({field: 'images', message: error.message})
                 }
               }
             )
@@ -195,7 +196,7 @@ export class PlantResolver {
           message: 'Roślina o tej nazwie już istnieje',
         });
     }
-    return { plant, errors };
+    return { plant, errors: errors.length > 0 ? errors : undefined };
   }
 
   @Mutation(() => Boolean)

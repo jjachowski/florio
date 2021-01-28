@@ -30,6 +30,8 @@ const AddPlant: React.FC = ({}) => {
       },
     });
 
+    console.log('add response: ', response);
+
     if (response.data?.addPlant.errors) {
       setErrors(toErrorMap(response.data.addPlant.errors));
     } else {

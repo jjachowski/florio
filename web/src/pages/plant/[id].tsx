@@ -67,7 +67,10 @@ const Plant: React.FC = () => {
             objectFit='cover'
             height='40rem'
             maxW='30rem'
-            src={data?.plant?.images[0]}
+            src={
+              'https://res.cloudinary.com/disxisevt/image/upload/' +
+              data?.plant?.images[0]
+            }
             alt='Kalatea'
             mr={20}
           />

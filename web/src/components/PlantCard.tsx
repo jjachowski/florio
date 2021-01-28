@@ -19,7 +19,8 @@ export const PlantCard: React.FC<PlantCardProps> = ({ plant }) => {
         width='15rem'
         src={
           plant.images
-            ? plant.images[0]
+            ? 'https://res.cloudinary.com/disxisevt/image/upload/' +
+              plant.images[0]
             : 'https://res.cloudinary.com/disxisevt/image/upload/c_fit,h_500,w_500/v1611869843/test/placeholder.png'
         }
         alt='Kalatea'
