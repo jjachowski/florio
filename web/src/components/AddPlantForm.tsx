@@ -19,22 +19,13 @@ export type AddPlantFormValue = {
 };
 
 interface AddPlantFormProps {
-  initialValues?: AddPlantFormInput;
   onFormSubmit: (
     plant: AddPlantFormValue,
     setErrors: (errors: FormikErrors<AddPlantFormInput>) => void
   ) => void;
 }
 
-export const AddPlantForm: React.FC<AddPlantFormProps> = ({
-  initialValues = {
-    primaryName: '',
-    otherNames: '',
-    description: '',
-    images: null,
-  },
-  onFormSubmit,
-}) => {
+export const AddPlantForm: React.FC<AddPlantFormProps> = ({ onFormSubmit }) => {
   const [upload] = useUploadFileTestMutation();
   const [filePreviews, setFilePreviews] = useState<
     { name: string; size: number }[]
@@ -42,7 +33,12 @@ export const AddPlantForm: React.FC<AddPlantFormProps> = ({
   const hiddenFileInput = React.useRef<HTMLInputElement>(null);
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={{
+        primaryName: '',
+        otherNames: '',
+        description: '',
+        images: {} as FileList,
+      }}
       onReset={(val, { setFieldValue }) => {
         setFieldValue('images', null);
         setFilePreviews([]);
@@ -51,14 +47,14 @@ export const AddPlantForm: React.FC<AddPlantFormProps> = ({
       onSubmit={async (values, { setErrors }) => {
         console.log(values);
 
-        // const { primaryName, description, images } = values;
-        // const plant = {
-        //   primaryName,
-        //   description,
-        //   images,
-        //   otherNames: values.otherNames.split(',').map((n) => n.trim()),
-        // };
-        // onFormSubmit(plant, setErrors);
+        const { primaryName, description, images } = values;
+        const plant = {
+          primaryName,
+          description,
+          images,
+          otherNames: values.otherNames.split(',').map((n) => n.trim()),
+        };
+        onFormSubmit(plant, setErrors);
       }}
     >
       {(props) => (
@@ -88,28 +84,18 @@ export const AddPlantForm: React.FC<AddPlantFormProps> = ({
                 hiddenFileInput={hiddenFileInput}
                 filePreviews={filePreviews}
                 onChange={async (event) => {
-                  console.log(event);
-                  console.log(event.target.files);
+                  const { files } = event.target;
 
-                  const result = await upload({
-                    variables: { images: event.target.files },
-                  });
-                  console.log(result);
+                  if (!files) {
+                    return;
+                  }
+                  setFilePreviews(
+                    Array.from(files).map((f) => {
+                      return { name: f.name, size: f.size };
+                    })
+                  );
 
-                  // console.log('change');
-
-                  // const { files } = event.target;
-
-                  // if (!files) {
-                  //   return;
-                  // }
-                  // setFilePreviews(
-                  //   Array.from(files).map((f) => {
-                  //     return { name: f.name, size: f.size };
-                  //   })
-                  // );
-
-                  // props.setFieldValue('images', event.target.files);
+                  props.setFieldValue('images', event.target.files);
                 }}
               />
             </VStack>

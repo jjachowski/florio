@@ -6,9 +6,9 @@ fragment FullPlant on Plant {
   }
   createdAt
   updatedAt
-  imageUrl
   primaryName
   otherNames
+  images
   description
   optimalConditions {
     ...OptimalConditions

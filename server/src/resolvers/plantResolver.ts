@@ -12,6 +12,7 @@ import {
 } from 'type-graphql';
 import { OptimalConditions } from '../entities/OptimalConditions';
 import { Plant } from '../entities/Plant';
+import { FieldError } from '../shared/graphqlTypes';
 import { MyContext } from '../types';
 import { validateOptimalConditions } from '../utils/validators';
 import {
@@ -125,20 +126,76 @@ export class PlantResolver {
   @Mutation(() => PlantResponse)
   async addPlant(
     @Arg('data') data: PlantFieldsInput,
+    // @Arg('images', () => [GraphQLUpload]!)
+    // images: FileUpload[],
     @Ctx() { req }: MyContext
   ): Promise<PlantResponse> {
-    const { description, imageUrl, primaryName, otherNames } = data;
+    const { description, primaryName, otherNames, images } = data;
+    const errors: FieldError[] = [];
 
     const plant = Plant.create({
       description,
-      imageUrl,
       creatorId: req.session.userId,
       primaryName,
       otherNames,
+      images: [],
     });
 
-    await plant.save();
-    return { plant };
+    const promises: Promise<any>[] = [];
+
+    const settledImages = await Promise.allSettled(images);
+    settledImages.forEach((image) => {
+      const {
+        createReadStream,
+      } = (image as PromiseFulfilledResult<FileUpload>).value;
+      promises.push(
+        new Promise((resolve, reject) => {
+          createReadStream().pipe(
+            cloudinary.v2.uploader.upload_stream(
+              {
+                folder: 'test',
+                use_filename: true,
+              },
+              (error, result) => {
+                if (result?.secure_url) {
+                  // plant.images.push(result.secure_url);
+                  resolve(result.secure_url);
+                }
+                if (error) {
+                  reject(error.message);
+                  // errors.push({field: 'images', message: error.message})
+                }
+              }
+            )
+          );
+        })
+      );
+    });
+    const result = await Promise.allSettled(promises);
+    result.forEach((r) => {
+      if (r.status === 'fulfilled') {
+        plant.images.push((r as PromiseFulfilledResult<any>).value);
+      } else {
+        errors.push({ field: 'images', message: r.reason });
+      }
+    });
+    console.log('settled promises: ', result);
+
+    try {
+      await plant.save();
+    } catch (error) {
+      if ((error.detail as string).includes('primaryName'))
+        errors.push({
+          field: 'primaryName',
+          message: 'Roślina o tej nazwie już istnieje',
+        });
+      if ((error.detail as string).includes('otherNames'))
+        errors.push({
+          field: 'otherNames',
+          message: 'Roślina o tej nazwie już istnieje',
+        });
+    }
+    return { plant, errors };
   }
 
   @Mutation(() => Boolean)
@@ -146,20 +203,8 @@ export class PlantResolver {
     @Arg('images', () => [GraphQLUpload]!)
     images: FileUpload[]
   ) {
-    console.log('images: ', images);
-
-    // const uploadCloudinary = cloudinary.v2.uploader.upload_stream(
-    //   {
-    //     folder: 'test',
-    //     use_filename: true,
-    //   },
-    //   (error, result) => console.log('uploadCloudinary: ', error, result)
-    // );
-    const test2 = await Promise.allSettled(images);
-    console.log('settled: ', test2);
-    // return true;
-    const test: boolean[] = [];
-    test2.forEach(async (image) => {
+    const settledImages = await Promise.allSettled(images);
+    settledImages.forEach(async (image) => {
       const {
         filename,
         createReadStream,
@@ -173,52 +218,7 @@ export class PlantResolver {
           (error, result) => console.log('uploadCloudinary: ', error, result)
         )
       );
-
-      // test.push(
-      //   await new Promise<boolean>((resolve, reject) =>
-      //     createReadStream()
-      //       .pipe(uploadCloudinary)
-      //       .on('finish', (finish) => {
-      //         console.log('here finish: ', finish);
-      //         resolve(true);
-      //       })
-      //       .on('error', (error) => {
-      //         console.log('here error: ', error);
-      //         reject(false);
-      //       })
-      //   )
-      // );
     });
-
-    console.log('promise array: ', test);
-
-    // const uploadCloudinary = cloudinary.v2.uploader.upload_stream(
-    //   {
-    //     folder: 'test',
-    //   },
-    //   (error, result) => console.log(error, result)
-    // );
-
-    // const results: UploadImagesResponse[] = [];
-    // images.forEach((file) => {
-
-    //   new Promise((resolve, reject) =>
-    //     file.createReadStream()
-    //       .pipe(uploadCloudinary)
-    //       .on('finish', () => resolve(true))
-    //       .on('error', () => reject(false))
-    //   );
-    // });
-
-    //   const test = new Promise((resolve, reject) =>
-    //   images[0]
-    //     .createReadStream()
-    //     .pipe(uploadCloudinary)
-    //     .on('finish', () => resolve(true))
-    //     .on('error', () => reject(false))
-    // );
     return true;
-    // console.log('await: ', await file);
-    // return true;
   }
 }

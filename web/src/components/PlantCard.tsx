@@ -17,7 +17,11 @@ export const PlantCard: React.FC<PlantCardProps> = ({ plant }) => {
         roundedLeft={12}
         objectFit='fill'
         width='15rem'
-        src={plant.imageUrl}
+        src={
+          plant.images
+            ? plant.images[0]
+            : 'https://res.cloudinary.com/disxisevt/image/upload/c_fit,h_500,w_500/v1611869843/test/placeholder.png'
+        }
         alt='Kalatea'
       />
       <Flex p={10} pb={2} direction='column' w='100%' justify='center'>

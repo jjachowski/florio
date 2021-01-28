@@ -43,11 +43,10 @@ export const FileField: React.FC<FileFieldProps> = ({
             type='file'
             multiple
             ref={hiddenFileInput}
-            // onReset={() => console.log('reset')}
             onChange={onChange}
             display='none'
           />
-          <Box overflow='scroll'>
+          <Box overflow='scroll' mt={2}>
             {filePreviews
               .map((f) => `${f.name} (${(f.size / 1024).toFixed(2)}KB)`)
               .join(', ')}

@@ -9,7 +9,6 @@ mutation EditPlant($id: Int!, $data: PlantFieldsInput!) {
       primaryName
       otherNames
       description
-      imageUrl
     }
   }
 }

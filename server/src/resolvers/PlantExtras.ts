@@ -3,6 +3,7 @@ import { Intensity, Season } from '../entities/conditionsEnums';
 import { OptimalConditions } from '../entities/OptimalConditions';
 import { Plant } from '../entities/Plant';
 import { FieldError } from '../shared/graphqlTypes';
+import { FileUpload, GraphQLUpload } from 'graphql-upload';
 
 @InputType()
 export class PlantFieldsInput {
@@ -12,8 +13,8 @@ export class PlantFieldsInput {
   otherNames: string[];
   @Field()
   description: string;
-  @Field()
-  imageUrl: string;
+  @Field(() => [GraphQLUpload]!)
+  images: FileUpload[];
 }
 
 @InputType()

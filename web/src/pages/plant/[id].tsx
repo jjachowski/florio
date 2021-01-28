@@ -67,7 +67,7 @@ const Plant: React.FC = () => {
             objectFit='cover'
             height='40rem'
             maxW='30rem'
-            src={data?.plant?.imageUrl}
+            src={data?.plant?.images[0]}
             alt='Kalatea'
             mr={20}
           />

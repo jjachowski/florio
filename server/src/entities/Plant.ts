@@ -32,6 +32,10 @@ export class Plant extends BaseEntity {
   @Column({ default: 0 })
   score!: number;
 
+  @Field(() => [String], { nullable: true })
+  @Column('text', { array: true, nullable: true, unique: true })
+  images: string[];
+
   @OneToMany(() => Like, (vote) => vote.plant)
   likes: Like[];
 
@@ -49,10 +53,6 @@ export class Plant extends BaseEntity {
     nullable: true,
   })
   optimalConditions: OptimalConditions[];
-
-  @Field()
-  @Column({ nullable: true })
-  imageUrl!: string;
 
   @Field()
   @Column()

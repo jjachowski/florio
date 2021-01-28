@@ -46,7 +46,7 @@ const main = async () => {
 
   const app = express();
 
-  app.use(graphqlUploadExpress({ maxFiles: 3, maxFileSize: 100000000 }));
+  app.use(graphqlUploadExpress({ maxFiles: 3, maxFileSize: 1000000000 }));
 
   app.use(
     cors({

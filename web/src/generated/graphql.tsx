@@ -35,10 +35,10 @@ export type Plant = {
   creatorId: Scalars['Float'];
   creator: User;
   score: Scalars['Float'];
+  images?: Maybe<Array<Scalars['String']>>;
   primaryName: Scalars['String'];
   otherNames: Array<Scalars['String']>;
   optimalConditions?: Maybe<Array<OptimalConditions>>;
-  imageUrl: Scalars['String'];
   description: Scalars['String'];
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
@@ -150,8 +150,9 @@ export type PlantFieldsInput = {
   primaryName: Scalars['String'];
   otherNames: Array<Scalars['String']>;
   description: Scalars['String'];
-  imageUrl: Scalars['String'];
+  images: Array<Scalars['Upload']>;
 };
+
 
 export type OptimalConditionsResponse = {
   __typename?: 'OptimalConditionsResponse';
@@ -169,7 +170,6 @@ export type OptimalConditionsInput = {
   temperatureHigh: Scalars['Float'];
 };
 
-
 export type UserResponse = {
   __typename?: 'UserResponse';
   errors?: Maybe<Array<FieldError>>;
@@ -184,7 +184,7 @@ export type RegisterCredentials = {
 
 export type FullPlantFragment = (
   { __typename?: 'Plant' }
-  & Pick<Plant, 'id' | 'createdAt' | 'updatedAt' | 'imageUrl' | 'primaryName' | 'otherNames' | 'description'>
+  & Pick<Plant, 'id' | 'createdAt' | 'updatedAt' | 'primaryName' | 'otherNames' | 'images' | 'description'>
   & { creator: (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'username'>
@@ -201,7 +201,7 @@ export type OptimalConditionsFragment = (
 
 export type PlantPreviewFragment = (
   { __typename?: 'Plant' }
-  & Pick<Plant, 'id' | 'imageUrl' | 'createdAt' | 'updatedAt' | 'primaryName' | 'otherNames' | 'descriptionSnippet'>
+  & Pick<Plant, 'id' | 'createdAt' | 'updatedAt' | 'primaryName' | 'otherNames' | 'images' | 'descriptionSnippet'>
   & { creator: (
     { __typename?: 'User' }
     & Pick<User, 'username'>
@@ -243,7 +243,7 @@ export type AddPlantMutation = (
       & Pick<FieldError, 'field' | 'message'>
     )>>, plant?: Maybe<(
       { __typename?: 'Plant' }
-      & Pick<Plant, 'primaryName' | 'otherNames' | 'description'>
+      & Pick<Plant, 'primaryName' | 'otherNames' | 'description' | 'images'>
       & { optimalConditions?: Maybe<Array<(
         { __typename?: 'OptimalConditions' }
         & OptimalConditionsFragment
@@ -277,7 +277,7 @@ export type EditPlantMutation = (
       & Pick<FieldError, 'field' | 'message'>
     )>>, plant?: Maybe<(
       { __typename?: 'Plant' }
-      & Pick<Plant, 'id' | 'primaryName' | 'otherNames' | 'description' | 'imageUrl'>
+      & Pick<Plant, 'id' | 'primaryName' | 'otherNames' | 'description'>
     )> }
   ) }
 );
@@ -428,9 +428,9 @@ export const FullPlantFragmentDoc = gql`
   }
   createdAt
   updatedAt
-  imageUrl
   primaryName
   otherNames
+  images
   description
   optimalConditions {
     ...OptimalConditions
@@ -440,11 +440,11 @@ export const FullPlantFragmentDoc = gql`
 export const PlantPreviewFragmentDoc = gql`
     fragment PlantPreview on Plant {
   id
-  imageUrl
   createdAt
   updatedAt
   primaryName
   otherNames
+  images
   creator {
     username
   }
@@ -503,6 +503,7 @@ export const AddPlantDocument = gql`
       primaryName
       otherNames
       description
+      images
       optimalConditions {
         ...OptimalConditions
       }
@@ -577,7 +578,6 @@ export const EditPlantDocument = gql`
       primaryName
       otherNames
       description
-      imageUrl
     }
   }
 }
