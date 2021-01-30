@@ -35,6 +35,7 @@ import {
 import useGetIdFromRoute from '../../utils/useGetIntId';
 import { TiHeartOutline, TiHeart } from 'react-icons/ti';
 import { LikePlant } from '../../components/LikePlant';
+import { PlantGallery } from '../../components/PlantGallery';
 
 const Plant: React.FC = () => {
   const id = useGetIdFromRoute();
@@ -61,7 +62,11 @@ const Plant: React.FC = () => {
       <Navbar />
       <Layout variant='full-screen' p={20}>
         <Flex direction='row'>
-          <Image
+          <Box w='50%' px={10}>
+            <PlantGallery images={data?.plant?.images} />
+          </Box>
+
+          {/* <Image
             shadow='2xl'
             rounded={20}
             objectFit='cover'
@@ -73,8 +78,8 @@ const Plant: React.FC = () => {
             }
             alt='Kalatea'
             mr={20}
-          />
-          <Flex w='100%' direction='column'>
+          /> */}
+          <Flex direction='column' w='50%' mr='auto'>
             <Flex p={10} direction='column' shadow='2xl' rounded={20}>
               <Flex direction='row'>
                 <Flex direction='column'>
@@ -129,7 +134,7 @@ const Plant: React.FC = () => {
             </Flex>
             <Flex p={10} mt={8} direction='column' shadow='2xl' rounded={20}>
               <Heading size='md'>Opis</Heading>
-              <Box>{data?.plant?.description}</Box>
+              <Box unselectable='on'>{data?.plant?.description}</Box>
             </Flex>
           </Flex>
         </Flex>

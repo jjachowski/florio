@@ -13,7 +13,7 @@ export const Navbar: React.FC = ({}) => {
       boxShadow='sm'
       position='sticky'
       top={0}
-      zIndex={1}
+      zIndex={999}
       p={2}
     >
       <Flex w='90%' m='auto'>

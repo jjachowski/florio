@@ -207,7 +207,6 @@ export class PlantResolver {
     const settledImages = await Promise.allSettled(images);
     settledImages.forEach(async (image) => {
       const {
-        filename,
         createReadStream,
       } = (image as PromiseFulfilledResult<FileUpload>).value;
       createReadStream().pipe(
