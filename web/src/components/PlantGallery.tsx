@@ -1,7 +1,6 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
-import { Box, Flex, IconButton, Image, ScaleFade } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
-import { placeholder } from '../../public';
+import { Box, IconButton, Image, ScaleFade } from '@chakra-ui/react';
+import React, { useState } from 'react';
 
 interface PlantGalleryProps {
   images: string[] | null | undefined;
@@ -11,21 +10,8 @@ export const PlantGallery: React.FC<PlantGalleryProps> = ({ images }) => {
   if (!images) {
     images = [];
   }
-  //   const [currentImage, setCurrentImage] = useState<string>(
-  //     images && images.length > 0
-  //       ? 'https://res.cloudinary.com/disxisevt/image/upload/' + images[0]
-  //       : 'https://res.cloudinary.com/disxisevt/image/upload/v1611869849/sample.jpg'
-  //   );
 
   const [currentImageIndex, setCurrentImageIndex] = useState<number>(0);
-
-  //   useEffect(() => {
-  //     setCurrentImage(
-  //       images && images.length > 0
-  //         ? 'https://res.cloudinary.com/disxisevt/image/upload/' + images[0]
-  //         : 'https://res.cloudinary.com/disxisevt/image/upload/v1611869849/sample.jpg'
-  //     );
-  //   }, [images]);
 
   const nextImage = () => {
     if (images && images.length > 1) {
@@ -45,16 +31,6 @@ export const PlantGallery: React.FC<PlantGalleryProps> = ({ images }) => {
 
   return (
     <Box position='relative' height='30rem' width='30rem'>
-      {/* <IconButton
-        position='absolute'
-        top='50%'
-        left={2}
-        aria-label='Search database'
-        isRound
-        zIndex={10}
-        onClick={prevImage}
-        icon={<ChevronLeftIcon />}
-      /> */}
       <IconButton
         position='absolute'
         h='100%'
