@@ -31,6 +31,7 @@ export const AddPlantForm: React.FC<AddPlantFormProps> = ({ onFormSubmit }) => {
     { name: string; size: number }[]
   >([]);
   const hiddenFileInput = React.useRef<HTMLInputElement>(null);
+
   return (
     <Formik
       initialValues={{
@@ -39,14 +40,11 @@ export const AddPlantForm: React.FC<AddPlantFormProps> = ({ onFormSubmit }) => {
         description: '',
         images: {} as FileList,
       }}
-      onReset={(val, { setFieldValue }) => {
-        setFieldValue('images', null);
+      onReset={(_, { setFieldValue }) => {
+        setFieldValue('images', []);
         setFilePreviews([]);
-        hiddenFileInput!.current!.value = '';
       }}
       onSubmit={async (values, { setErrors }) => {
-        console.log(values);
-
         const { primaryName, description, images } = values;
         const plant = {
           primaryName,
@@ -83,9 +81,7 @@ export const AddPlantForm: React.FC<AddPlantFormProps> = ({ onFormSubmit }) => {
                 isRequired
                 hiddenFileInput={hiddenFileInput}
                 filePreviews={filePreviews}
-                onChange={async (event) => {
-                  const { files } = event.target;
-
+                onAccepted={(files) => {
                   if (!files) {
                     return;
                   }
@@ -95,7 +91,7 @@ export const AddPlantForm: React.FC<AddPlantFormProps> = ({ onFormSubmit }) => {
                     })
                   );
 
-                  props.setFieldValue('images', event.target.files);
+                  props.setFieldValue('images', files);
                 }}
               />
             </VStack>
