@@ -13,6 +13,14 @@ export class PlantFieldsInput {
   otherNames: string[];
   @Field()
   description: string;
+  @Field()
+  isCatFriendly: boolean;
+  @Field({ nullable: true })
+  isCatFriendlySource?: string;
+  @Field()
+  isDogFriendly: boolean;
+  @Field({ nullable: true })
+  isDogFriendlySource?: string;
   @Field(() => [GraphQLUpload]!)
   images: FileUpload[];
 }

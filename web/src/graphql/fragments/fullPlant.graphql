@@ -9,6 +9,10 @@ fragment FullPlant on Plant {
   primaryName
   otherNames
   images
+  isCatFriendly
+  isCatFriendlySource
+  isDogFriendly
+  isDogFriendlySource
   description
   optimalConditions {
     ...OptimalConditions

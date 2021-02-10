@@ -10,7 +10,7 @@ export const PlantOtherNames: React.FC<PlantOtherNamesProps> = ({ names }) => {
     <Box>
       {names.length > 0 && (
         <Box mb={6} color='gray.500'>
-          inaczej: {names.join(', ')}
+          inaczej: {names.join(', ')} {names.length}
         </Box>
       )}
     </Box>

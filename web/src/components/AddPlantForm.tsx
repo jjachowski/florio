@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { useUploadFileTestMutation } from '../generated/graphql';
 import { FileField } from './FileField';
 import { FormField } from './FormField';
+import { PetFriendlyField } from './PetFriendlyField';
+import { PetFriendlySourceField } from './PetFriendlySourceField';
 
 export type AddPlantFormInput = {
   primaryName: string;
@@ -15,6 +17,10 @@ export type AddPlantFormValue = {
   primaryName: string;
   otherNames: string[];
   description: string;
+  isCatFriendly: boolean;
+  isCatFriendlySource: string;
+  isDogFriendly: boolean;
+  isDogFriendlySource: string;
   images: FileList;
 };
 
@@ -38,6 +44,12 @@ export const AddPlantForm: React.FC<AddPlantFormProps> = ({ onFormSubmit }) => {
         primaryName: '',
         otherNames: '',
         description: '',
+        isCatFriendly: false,
+        isCatFriendlySource: '',
+
+        isDogFriendly: false,
+        isDogFriendlySource: '',
+
         images: {} as FileList,
       }}
       onReset={(_, { setFieldValue }) => {
@@ -45,11 +57,8 @@ export const AddPlantForm: React.FC<AddPlantFormProps> = ({ onFormSubmit }) => {
         setFilePreviews([]);
       }}
       onSubmit={async (values, { setErrors }) => {
-        const { primaryName, description, images } = values;
         const plant = {
-          primaryName,
-          description,
-          images,
+          ...values,
           otherNames: values.otherNames.split(',').map((n) => n.trim()),
         };
         onFormSubmit(plant, setErrors);
@@ -75,6 +84,20 @@ export const AddPlantForm: React.FC<AddPlantFormProps> = ({ onFormSubmit }) => {
                 isRequired
                 placeholder='Odmiana Fascinator Tricolor jest...'
                 label='Opis'
+              />
+              <PetFriendlyField variation='cat' name='isCatFriendly' />
+              <PetFriendlySourceField
+                isDisabled={!props.values.isCatFriendly}
+                variation='cat'
+                name='isCatFriendlySource'
+                placeholder='np. adres strony internetowej lub fragment książki...'
+              />
+              <PetFriendlyField variation='dog' name='isDogFriendly' />
+              <PetFriendlySourceField
+                isDisabled={!props.values.isDogFriendly}
+                variation='dog'
+                name='isDogFriendlySource'
+                placeholder='np. adres strony internetowej lub fragment książki...'
               />
               <FileField
                 name='images'

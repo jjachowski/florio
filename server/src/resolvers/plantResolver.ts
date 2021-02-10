@@ -21,7 +21,6 @@ import {
   PlantFieldsInput,
   PlantName,
   PlantResponse,
-  UploadImagesResponse,
 } from './PlantExtras';
 
 @Resolver(Plant)

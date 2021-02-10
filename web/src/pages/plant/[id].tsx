@@ -13,6 +13,7 @@ import {
   Heading,
   HStack,
   Icon,
+  IconButton,
   Image,
   Menu,
   MenuButton,
@@ -60,26 +61,26 @@ const Plant: React.FC = () => {
   return (
     <>
       <Navbar />
-      <Layout variant='full-screen' p={20}>
+      <Layout variant='full-screen' p={10}>
         <Flex direction='row'>
-          <Box w='50%' px={10}>
+          <Flex direction='column' minW='40%' maxW='40rem' mr={10}>
             <PlantGallery images={data?.plant?.images} />
-          </Box>
-
-          {/* <Image
-            shadow='2xl'
-            rounded={20}
-            objectFit='cover'
-            height='40rem'
-            maxW='30rem'
-            src={
-              'https://res.cloudinary.com/disxisevt/image/upload/' +
-              data?.plant?.images[0]
-            }
-            alt='Kalatea'
-            mr={20}
-          /> */}
-          <Flex direction='column' w='50%' mr='auto'>
+            <Box boxShadow='2xl' rounded={20} p={10} mt={10}>
+              <ConditionSeasonsSwitch
+                my={4}
+                currentlySelected={selectedSeason}
+                onSeasonSelected={setSelectedSeason}
+                seasonsToDisplay={conditionsToStringArray(
+                  data?.plant?.optimalConditions
+                )}
+              />
+              <ConditionBars
+                conditions={data?.plant?.optimalConditions}
+                selectedSeason={selectedSeason}
+              />
+            </Box>
+          </Flex>
+          <Flex direction='column'>
             <Flex p={10} direction='column' shadow='2xl' rounded={20}>
               <Flex direction='row'>
                 <Flex direction='column'>
@@ -95,9 +96,11 @@ const Plant: React.FC = () => {
                 </Flex>
                 <Box ml='auto'>
                   <Menu>
-                    <MenuButton as={Button} rightIcon={<EditIcon />}>
-                      Edytuj
-                    </MenuButton>
+                    <MenuButton
+                      as={IconButton}
+                      rounded='full'
+                      icon={<EditIcon />}
+                    />
 
                     <MenuList>
                       <MenuItem

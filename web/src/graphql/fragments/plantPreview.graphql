@@ -5,6 +5,8 @@ fragment PlantPreview on Plant {
   primaryName
   otherNames
   images
+  isCatFriendly
+  isDogFriendly
   creator {
     username
   }

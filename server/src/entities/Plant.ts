@@ -58,6 +58,22 @@ export class Plant extends BaseEntity {
   @Column()
   description!: string;
 
+  @Field()
+  @Column({ default: false })
+  isCatFriendly: boolean;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  isCatFriendlySource?: string;
+
+  @Field()
+  @Column({ default: false })
+  isDogFriendly: boolean;
+
+  @Field({ nullable: true })
+  @Column({ nullable: true })
+  isDogFriendlySource?: string;
+
   @Field(() => String)
   @CreateDateColumn()
   createdAt: Date;

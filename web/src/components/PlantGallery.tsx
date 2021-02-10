@@ -30,7 +30,7 @@ export const PlantGallery: React.FC<PlantGalleryProps> = ({ images }) => {
   };
 
   return (
-    <Box position='relative' height='30rem' width='30rem'>
+    <Box position='relative'>
       <IconButton
         position='absolute'
         h='100%'
@@ -62,14 +62,18 @@ export const PlantGallery: React.FC<PlantGalleryProps> = ({ images }) => {
       />
 
       {images?.map((image, index) => (
-        <ScaleFade initialScale={1} in={index === currentImageIndex}>
+        <ScaleFade
+          key={index}
+          initialScale={1}
+          in={index === currentImageIndex}
+        >
           {index === currentImageIndex && (
             <Image
               shadow='2xl'
               rounded={20}
               opacity={1}
-              htmlHeight='100%'
-              htmlWidth='100%'
+              objectFit='contain'
+              w='100%'
               src={'https://res.cloudinary.com/disxisevt/image/upload/' + image}
               alt='image'
             />

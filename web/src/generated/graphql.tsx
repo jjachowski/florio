@@ -40,6 +40,10 @@ export type Plant = {
   otherNames: Array<Scalars['String']>;
   optimalConditions?: Maybe<Array<OptimalConditions>>;
   description: Scalars['String'];
+  isCatFriendly: Scalars['Boolean'];
+  isCatFriendlySource?: Maybe<Scalars['String']>;
+  isDogFriendly: Scalars['Boolean'];
+  isDogFriendlySource?: Maybe<Scalars['String']>;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
   descriptionSnippet: Scalars['String'];
@@ -150,6 +154,10 @@ export type PlantFieldsInput = {
   primaryName: Scalars['String'];
   otherNames: Array<Scalars['String']>;
   description: Scalars['String'];
+  isCatFriendly: Scalars['Boolean'];
+  isCatFriendlySource?: Maybe<Scalars['String']>;
+  isDogFriendly: Scalars['Boolean'];
+  isDogFriendlySource?: Maybe<Scalars['String']>;
   images: Array<Scalars['Upload']>;
 };
 
@@ -184,7 +192,7 @@ export type RegisterCredentials = {
 
 export type FullPlantFragment = (
   { __typename?: 'Plant' }
-  & Pick<Plant, 'id' | 'createdAt' | 'updatedAt' | 'primaryName' | 'otherNames' | 'images' | 'description'>
+  & Pick<Plant, 'id' | 'createdAt' | 'updatedAt' | 'primaryName' | 'otherNames' | 'images' | 'isCatFriendly' | 'isCatFriendlySource' | 'isDogFriendly' | 'isDogFriendlySource' | 'description'>
   & { creator: (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'username'>
@@ -201,7 +209,7 @@ export type OptimalConditionsFragment = (
 
 export type PlantPreviewFragment = (
   { __typename?: 'Plant' }
-  & Pick<Plant, 'id' | 'createdAt' | 'updatedAt' | 'primaryName' | 'otherNames' | 'images' | 'descriptionSnippet'>
+  & Pick<Plant, 'id' | 'createdAt' | 'updatedAt' | 'primaryName' | 'otherNames' | 'images' | 'isCatFriendly' | 'isDogFriendly' | 'descriptionSnippet'>
   & { creator: (
     { __typename?: 'User' }
     & Pick<User, 'username'>
@@ -431,6 +439,10 @@ export const FullPlantFragmentDoc = gql`
   primaryName
   otherNames
   images
+  isCatFriendly
+  isCatFriendlySource
+  isDogFriendly
+  isDogFriendlySource
   description
   optimalConditions {
     ...OptimalConditions
@@ -445,6 +457,8 @@ export const PlantPreviewFragmentDoc = gql`
   primaryName
   otherNames
   images
+  isCatFriendly
+  isDogFriendly
   creator {
     username
   }
