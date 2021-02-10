@@ -64,7 +64,7 @@ export const PlantGallery: React.FC<PlantGalleryProps> = ({ images }) => {
       {images?.map((image, index) => (
         <ScaleFade
           key={index}
-          initialScale={1}
+          initialScale={0.9}
           in={index === currentImageIndex}
         >
           {index === currentImageIndex && (

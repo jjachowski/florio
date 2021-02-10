@@ -2,6 +2,7 @@ import { Box, Flex, Heading, Image, Link } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { PlantPreviewFragment } from '../generated/graphql';
+import { Card } from './Card';
 import { LikePlant } from './LikePlant';
 import { PlantOtherNames } from './PlantOtherNames';
 
@@ -12,7 +13,7 @@ interface PlantCardProps {
 export const PlantCard: React.FC<PlantCardProps> = ({ plant }) => {
   const router = useRouter();
   return (
-    <Flex direction='row' boxShadow='xl' w='100%' rounded={12} key={plant.id}>
+    <Card isFlex direction='row' w='100%' p={0} key={plant.id}>
       <Image
         roundedLeft={12}
         objectFit='fill'
@@ -54,6 +55,6 @@ export const PlantCard: React.FC<PlantCardProps> = ({ plant }) => {
           <Box textColor='gray.500'>dodano przez: {plant.creator.username}</Box>
         </Box>
       </Flex>
-    </Flex>
+    </Card>
   );
 };

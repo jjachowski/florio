@@ -91,16 +91,4 @@ export const LikePlant: React.FC<LikePlantProps> = ({ plantId }) => {
       mr={3}
     />
   );
-  // <Box>
-  //   <Icon as={TiHeartOutline} fontSize='2rem' mr={3} />
-  //   <Icon
-  //     as={TiHeart}
-  //     textColor='red.400'
-  //     fontSize='2rem'
-  //     boxShadow='xl'
-  //     rounded='full'
-  //     bg='gray.200'
-  //     mr={3}
-  //   />
-  // </Box>
 };

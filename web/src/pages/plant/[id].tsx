@@ -37,6 +37,7 @@ import useGetIdFromRoute from '../../utils/useGetIntId';
 import { TiHeartOutline, TiHeart } from 'react-icons/ti';
 import { LikePlant } from '../../components/LikePlant';
 import { PlantGallery } from '../../components/PlantGallery';
+import { Card } from '../../components/Card';
 
 const Plant: React.FC = () => {
   const id = useGetIdFromRoute();
@@ -65,7 +66,8 @@ const Plant: React.FC = () => {
         <Flex direction='row'>
           <Flex direction='column' minW='40%' maxW='40rem' mr={10}>
             <PlantGallery images={data?.plant?.images} />
-            <Box boxShadow='2xl' rounded={20} p={10} mt={10}>
+            <Card>test</Card>
+            <Card mt={10}>
               <ConditionSeasonsSwitch
                 my={4}
                 currentlySelected={selectedSeason}
@@ -78,10 +80,10 @@ const Plant: React.FC = () => {
                 conditions={data?.plant?.optimalConditions}
                 selectedSeason={selectedSeason}
               />
-            </Box>
+            </Card>
           </Flex>
           <Flex direction='column'>
-            <Flex p={10} direction='column' shadow='2xl' rounded={20}>
+            <Card isFlex direction='column'>
               <Flex direction='row'>
                 <Flex direction='column'>
                   <Flex as={Heading} align='center'>
@@ -134,11 +136,11 @@ const Plant: React.FC = () => {
                 conditions={data?.plant?.optimalConditions}
                 selectedSeason={selectedSeason}
               />
-            </Flex>
-            <Flex p={10} mt={8} direction='column' shadow='2xl' rounded={20}>
+            </Card>
+            <Card isFlex mt={8} direction='column'>
               <Heading size='md'>Opis</Heading>
               <Box unselectable='on'>{data?.plant?.description}</Box>
-            </Flex>
+            </Card>
           </Flex>
         </Flex>
       </Layout>
