@@ -67,7 +67,6 @@ const Plant: React.FC = () => {
         <Flex direction='row'>
           <Flex direction='column' minW='40%' maxW='40rem' mr={10}>
             <PlantGallery images={data?.plant?.images} />
-            {data?.plant && <Emblems plant={data?.plant} />}
             <Card mt={10}>
               <ConditionSeasonsSwitch
                 my={4}
@@ -87,16 +86,18 @@ const Plant: React.FC = () => {
             <Card isFlex direction='column'>
               <Flex direction='row'>
                 <Flex direction='column'>
-                  <Flex as={Heading} align='center'>
+                  <Flex as={Heading} size='lg' align='center'>
                     <LikePlant plantId={data?.plant?.id} />
                     {data?.plant?.primaryName}
                   </Flex>
+
                   <Box ml='auto'>
                     {data?.plant && (
                       <PlantOtherNames names={data?.plant.otherNames} />
                     )}
                   </Box>
                 </Flex>
+
                 <Box ml='auto'>
                   <Menu>
                     <MenuButton
@@ -125,7 +126,7 @@ const Plant: React.FC = () => {
                 </Box>
               </Flex>
 
-              <ConditionSeasonsSwitch
+              {/* <ConditionSeasonsSwitch
                 my={4}
                 currentlySelected={selectedSeason}
                 onSeasonSelected={setSelectedSeason}
@@ -136,10 +137,16 @@ const Plant: React.FC = () => {
               <ConditionBars
                 conditions={data?.plant?.optimalConditions}
                 selectedSeason={selectedSeason}
-              />
+              /> */}
             </Card>
             <Card isFlex mt={8} direction='column'>
-              <Heading size='md'>Opis</Heading>
+              <Flex direction='row' align='center'>
+                <Heading size='lg'>Opis</Heading>
+                <Box ml='auto'>
+                  {data?.plant && <Emblems plant={data?.plant} />}
+                </Box>
+              </Flex>
+
               <Box unselectable='on'>{data?.plant?.description}</Box>
             </Card>
           </Flex>
