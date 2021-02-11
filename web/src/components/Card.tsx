@@ -12,7 +12,7 @@ export const Card: React.FC<CardProps> = ({
 }) => {
   if (isFlex) {
     return (
-      <Flex shadow='2xl' rounded={20} p={10} {...otherProps}>
+      <Flex shadow='md' rounded={20} p={10} {...otherProps}>
         {children}
       </Flex>
     );

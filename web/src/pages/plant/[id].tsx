@@ -38,6 +38,7 @@ import { TiHeartOutline, TiHeart } from 'react-icons/ti';
 import { LikePlant } from '../../components/LikePlant';
 import { PlantGallery } from '../../components/PlantGallery';
 import { Card } from '../../components/Card';
+import { Emblems } from '../../components/Emblems';
 
 const Plant: React.FC = () => {
   const id = useGetIdFromRoute();
@@ -66,7 +67,7 @@ const Plant: React.FC = () => {
         <Flex direction='row'>
           <Flex direction='column' minW='40%' maxW='40rem' mr={10}>
             <PlantGallery images={data?.plant?.images} />
-            <Card>test</Card>
+            {data?.plant && <Emblems plant={data?.plant} />}
             <Card mt={10}>
               <ConditionSeasonsSwitch
                 my={4}

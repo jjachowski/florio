@@ -69,7 +69,7 @@ export const PlantGallery: React.FC<PlantGalleryProps> = ({ images }) => {
         >
           {index === currentImageIndex && (
             <Image
-              shadow='2xl'
+              shadow='md'
               rounded={20}
               opacity={1}
               objectFit='contain'
