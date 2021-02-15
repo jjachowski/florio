@@ -14,6 +14,7 @@ import { COOKIE_NAME, __prod__ } from './constants';
 import { Like } from './entities/Like';
 import { OptimalConditions } from './entities/OptimalConditions';
 import { Plant } from './entities/Plant';
+import { PlantReport } from './entities/PlantReport';
 import { User } from './entities/User';
 import { LikeResolver } from './resolvers/likeResolver';
 import { PlantResolver } from './resolvers/plantResolver';
@@ -29,7 +30,7 @@ const main = async () => {
     logging: true,
     synchronize: true,
     migrations: [path.join(__dirname, './migrations/*')],
-    entities: [User, Plant, OptimalConditions, Like],
+    entities: [User, Plant, OptimalConditions, Like, PlantReport],
   });
 
   const {

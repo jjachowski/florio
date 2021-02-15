@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { Plant } from './Plant';
 import { Like } from './Like';
+import { PlantReport } from './PlantReport';
 
 export enum AccountType {
   user,
@@ -40,6 +41,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Plant, (plant) => plant.creator)
   addedPlants: Plant[];
+
+  @OneToMany(() => PlantReport, (plant) => plant.creator)
+  plantReports: PlantReport[];
 
   @OneToMany(() => Like, (vote) => vote.creator, { eager: true })
   likes: Like[];

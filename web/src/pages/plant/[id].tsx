@@ -5,6 +5,7 @@ import {
   MoonIcon,
   SunIcon,
   TimeIcon,
+  WarningTwoIcon,
 } from '@chakra-ui/icons';
 import {
   Box,
@@ -121,23 +122,17 @@ const Plant: React.FC = () => {
                       >
                         Dodaj/edytuj optymalne warunki
                       </MenuItem>
+                      <MenuItem
+                        onClick={() =>
+                          router.push(`/plant/${data?.plant?.id}/conditions`)
+                        }
+                      >
+                        <WarningTwoIcon mr={2} /> Zgłoś
+                      </MenuItem>
                     </MenuList>
                   </Menu>
                 </Box>
               </Flex>
-
-              {/* <ConditionSeasonsSwitch
-                my={4}
-                currentlySelected={selectedSeason}
-                onSeasonSelected={setSelectedSeason}
-                seasonsToDisplay={conditionsToStringArray(
-                  data?.plant?.optimalConditions
-                )}
-              />
-              <ConditionBars
-                conditions={data?.plant?.optimalConditions}
-                selectedSeason={selectedSeason}
-              /> */}
             </Card>
             <Card isFlex mt={8} direction='column'>
               <Flex direction='row' align='center'>

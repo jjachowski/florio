@@ -34,12 +34,6 @@ export const Emblems: React.FC<EmblemsProps> = ({ plant }) => {
           </span>
         </Tooltip>
       )}
-
-      <Tooltip label='Bezpieczna dla Ciebie'>
-        <Box>
-          <Icon as={BsPersonFill} />
-        </Box>
-      </Tooltip>
     </Flex>
   );
 };

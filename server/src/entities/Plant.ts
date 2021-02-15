@@ -12,6 +12,7 @@ import {
 import { OptimalConditions } from './OptimalConditions';
 import { User } from './User';
 import { Like } from './Like';
+import { PlantReport } from './PlantReport';
 
 @ObjectType()
 @Entity()
@@ -38,6 +39,13 @@ export class Plant extends BaseEntity {
 
   @OneToMany(() => Like, (vote) => vote.plant)
   likes: Like[];
+
+  @OneToMany(() => PlantReport, (plantReport) => plantReport.plant)
+  reports: PlantReport[];
+
+  @Field()
+  @Column({ default: false })
+  isReported!: boolean;
 
   @Field()
   @Column({ unique: true })
