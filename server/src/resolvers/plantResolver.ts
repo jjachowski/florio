@@ -9,9 +9,12 @@ import {
   Query,
   Resolver,
   Root,
+  UseMiddleware,
 } from 'type-graphql';
 import { OptimalConditions } from '../entities/OptimalConditions';
 import { Plant } from '../entities/Plant';
+import { PlantReport } from '../entities/PlantReport';
+import { isAuth } from '../middleware/isAuth';
 import { FieldError } from '../shared/graphqlTypes';
 import { MyContext } from '../types';
 import { validateOptimalConditions } from '../utils/validators';
@@ -36,7 +39,7 @@ export class PlantResolver {
 
   @Query(() => [Plant])
   async plants(): Promise<Plant[]> {
-    const plants = await Plant.find();
+    const plants = await Plant.find({ where: { isReported: false } });
 
     return plants;
   }
@@ -196,6 +199,30 @@ export class PlantResolver {
         });
     }
     return { plant, errors: errors.length > 0 ? errors : undefined };
+  }
+
+  @Mutation(() => Boolean)
+  @UseMiddleware(isAuth)
+  async reportPlant(
+    @Arg('plantId') plantId: number,
+    @Arg('reason') reason: string,
+    @Ctx() { req }: MyContext
+  ) {
+    const plant = await Plant.findOne(plantId);
+    if (!plant) {
+      return false;
+    }
+
+    const report = PlantReport.create({
+      creatorId: req.session.userId,
+      plantId: plant.id,
+      reason: reason,
+    });
+    plant.isReported = true;
+
+    await report.save();
+    await plant.save();
+    return true;
   }
 
   @Mutation(() => Boolean)
