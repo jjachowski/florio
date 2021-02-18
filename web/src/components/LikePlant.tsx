@@ -75,7 +75,6 @@ export const LikePlant: React.FC<LikePlantProps> = ({ plantId }) => {
         await likePlant({
           variables: { plantId },
           update: (cache) => {
-            console.log('here');
             cache.modify({
               id: cache.identify(data?.me!),
               fields: {

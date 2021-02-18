@@ -1,21 +1,9 @@
-import {
-  AddIcon,
-  ChevronDownIcon,
-  EditIcon,
-  MoonIcon,
-  SunIcon,
-  TimeIcon,
-  WarningTwoIcon,
-} from '@chakra-ui/icons';
+import { EditIcon, WarningTwoIcon } from '@chakra-ui/icons';
 import {
   Box,
-  Button,
   Flex,
   Heading,
-  HStack,
-  Icon,
   IconButton,
-  Image,
   Menu,
   MenuButton,
   MenuItem,
@@ -23,27 +11,25 @@ import {
 } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
+import { Card } from '../../components/Card';
 import { ConditionBars } from '../../components/ConditionBars';
 import { ConditionSeasonsSwitch } from '../../components/ConditionSeasonsSwitch';
+import { Emblems } from '../../components/Emblems';
 import { Layout } from '../../components/Layout';
+import { LikePlant } from '../../components/LikePlant';
 import { Navbar } from '../../components/Navbar';
+import { PlantGallery } from '../../components/PlantGallery';
 import { PlantOtherNames } from '../../components/PlantOtherNames';
-import { useMeQuery, usePlantQuery } from '../../generated/graphql';
+import { usePlantQuery } from '../../generated/graphql';
 import {
   conditionsToStringArray,
   intToSeason,
   Season,
 } from '../../utils/seasonConditionsHelpers';
-import useGetIdFromRoute from '../../utils/useGetIntId';
-import { TiHeartOutline, TiHeart } from 'react-icons/ti';
-import { LikePlant } from '../../components/LikePlant';
-import { PlantGallery } from '../../components/PlantGallery';
-import { Card } from '../../components/Card';
-import { Emblems } from '../../components/Emblems';
+import useGetIdFromRoute from '../../utils/useGetIdFromRoute';
 
 const Plant: React.FC = () => {
   const id = useGetIdFromRoute();
-  const { data: meData } = useMeQuery();
   const { data } = usePlantQuery({ variables: { id } });
   const [selectedSeason, setSelectedSeason] = useState<Season>(null);
 
@@ -124,7 +110,7 @@ const Plant: React.FC = () => {
                       </MenuItem>
                       <MenuItem
                         onClick={() =>
-                          router.push(`/plant/${data?.plant?.id}/conditions`)
+                          router.push(`/plant/${data?.plant?.id}/report`)
                         }
                       >
                         <WarningTwoIcon mr={2} /> Zgłoś

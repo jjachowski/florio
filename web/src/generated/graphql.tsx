@@ -36,6 +36,7 @@ export type Plant = {
   creator: User;
   score: Scalars['Float'];
   images?: Maybe<Array<Scalars['String']>>;
+  isReported: Scalars['Boolean'];
   primaryName: Scalars['String'];
   otherNames: Array<Scalars['String']>;
   optimalConditions?: Maybe<Array<OptimalConditions>>;
@@ -89,6 +90,7 @@ export type Mutation = {
   editPlant: PlantResponse;
   addOptimalConditions: OptimalConditionsResponse;
   addPlant: PlantResponse;
+  reportPlant: Scalars['Boolean'];
   upload: Scalars['Boolean'];
   register: UserResponse;
   login: UserResponse;
@@ -120,6 +122,12 @@ export type MutationAddOptimalConditionsArgs = {
 
 export type MutationAddPlantArgs = {
   data: PlantFieldsInput;
+};
+
+
+export type MutationReportPlantArgs = {
+  reason: Scalars['String'];
+  plantId: Scalars['Int'];
 };
 
 
@@ -347,6 +355,17 @@ export type RegisterMutation = (
       & Pick<User, 'id' | 'accountType' | 'email' | 'username'>
     )> }
   ) }
+);
+
+export type ReportPlantMutationVariables = Exact<{
+  plantId: Scalars['Int'];
+  reason: Scalars['String'];
+}>;
+
+
+export type ReportPlantMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'reportPlant'>
 );
 
 export type UploadFileTestMutationVariables = Exact<{
@@ -766,6 +785,37 @@ export function useRegisterMutation(baseOptions?: Apollo.MutationHookOptions<Reg
 export type RegisterMutationHookResult = ReturnType<typeof useRegisterMutation>;
 export type RegisterMutationResult = Apollo.MutationResult<RegisterMutation>;
 export type RegisterMutationOptions = Apollo.BaseMutationOptions<RegisterMutation, RegisterMutationVariables>;
+export const ReportPlantDocument = gql`
+    mutation ReportPlant($plantId: Int!, $reason: String!) {
+  reportPlant(plantId: $plantId, reason: $reason)
+}
+    `;
+export type ReportPlantMutationFn = Apollo.MutationFunction<ReportPlantMutation, ReportPlantMutationVariables>;
+
+/**
+ * __useReportPlantMutation__
+ *
+ * To run a mutation, you first call `useReportPlantMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useReportPlantMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [reportPlantMutation, { data, loading, error }] = useReportPlantMutation({
+ *   variables: {
+ *      plantId: // value for 'plantId'
+ *      reason: // value for 'reason'
+ *   },
+ * });
+ */
+export function useReportPlantMutation(baseOptions?: Apollo.MutationHookOptions<ReportPlantMutation, ReportPlantMutationVariables>) {
+        return Apollo.useMutation<ReportPlantMutation, ReportPlantMutationVariables>(ReportPlantDocument, baseOptions);
+      }
+export type ReportPlantMutationHookResult = ReturnType<typeof useReportPlantMutation>;
+export type ReportPlantMutationResult = Apollo.MutationResult<ReportPlantMutation>;
+export type ReportPlantMutationOptions = Apollo.BaseMutationOptions<ReportPlantMutation, ReportPlantMutationVariables>;
 export const UploadFileTestDocument = gql`
     mutation UploadFileTest($images: [Upload!]!) {
   upload(images: $images)

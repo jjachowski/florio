@@ -14,7 +14,7 @@ import {
   usePlantQuery,
 } from '../../../generated/graphql';
 import { toErrorMap } from '../../../utils/toFormikErrorMap';
-import useGetIdFromRoute from '../../../utils/useGetIntId';
+import useGetIdFromRoute from '../../../utils/useGetIdFromRoute';
 
 const Edit: React.FC = () => {
   const plantId = useGetIdFromRoute();

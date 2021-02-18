@@ -1,0 +1,3 @@
+mutation ReportPlant($plantId: Int!, $reason: String!) {
+  reportPlant(plantId: $plantId, reason: $reason)
+}

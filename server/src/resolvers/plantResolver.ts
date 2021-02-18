@@ -204,8 +204,8 @@ export class PlantResolver {
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   async reportPlant(
-    @Arg('plantId') plantId: number,
-    @Arg('reason') reason: string,
+    @Arg('plantId', () => Int!) plantId: number,
+    @Arg('reason', () => String!) reason: string,
     @Ctx() { req }: MyContext
   ) {
     const plant = await Plant.findOne(plantId);
@@ -222,6 +222,7 @@ export class PlantResolver {
 
     await report.save();
     await plant.save();
+
     return true;
   }
 

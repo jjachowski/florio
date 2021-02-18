@@ -15,7 +15,7 @@ import {
   seasonSelectOptions,
 } from '../../../utils/seasonConditionsHelpers';
 import { toErrorMap } from '../../../utils/toFormikErrorMap';
-import useGetIdFromRoute from '../../../utils/useGetIntId';
+import useGetIdFromRoute from '../../../utils/useGetIdFromRoute';
 
 interface ConditionsProps {}
 
