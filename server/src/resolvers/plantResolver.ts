@@ -201,6 +201,13 @@ export class PlantResolver {
     return { plant, errors: errors.length > 0 ? errors : undefined };
   }
 
+  @Query(() => [Plant])
+  @UseMiddleware(isAuth)
+  async reportedPlants(): Promise<Plant[]> {
+    const reportedPlants = await Plant.find({ where: { isReported: true } });
+    return reportedPlants;
+  }
+
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   async reportPlant(

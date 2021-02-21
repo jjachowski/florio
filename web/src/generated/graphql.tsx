@@ -21,6 +21,7 @@ export type Query = {
   plants: Array<Plant>;
   plant?: Maybe<Plant>;
   plantNames: Array<PlantName>;
+  reportedPlants: Array<Plant>;
   me?: Maybe<User>;
 };
 
@@ -432,6 +433,17 @@ export type PlantsPreviewQuery = (
   & { plants: Array<(
     { __typename?: 'Plant' }
     & PlantPreviewFragment
+  )> }
+);
+
+export type ReportedPlantsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ReportedPlantsQuery = (
+  { __typename?: 'Query' }
+  & { reportedPlants: Array<(
+    { __typename?: 'Plant' }
+    & Pick<Plant, 'id' | 'creatorId' | 'isReported' | 'primaryName' | 'otherNames' | 'descriptionSnippet'>
   )> }
 );
 
@@ -1012,3 +1024,40 @@ export function usePlantsPreviewLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type PlantsPreviewQueryHookResult = ReturnType<typeof usePlantsPreviewQuery>;
 export type PlantsPreviewLazyQueryHookResult = ReturnType<typeof usePlantsPreviewLazyQuery>;
 export type PlantsPreviewQueryResult = Apollo.QueryResult<PlantsPreviewQuery, PlantsPreviewQueryVariables>;
+export const ReportedPlantsDocument = gql`
+    query ReportedPlants {
+  reportedPlants {
+    id
+    creatorId
+    isReported
+    primaryName
+    otherNames
+    descriptionSnippet
+  }
+}
+    `;
+
+/**
+ * __useReportedPlantsQuery__
+ *
+ * To run a query within a React component, call `useReportedPlantsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useReportedPlantsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useReportedPlantsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useReportedPlantsQuery(baseOptions?: Apollo.QueryHookOptions<ReportedPlantsQuery, ReportedPlantsQueryVariables>) {
+        return Apollo.useQuery<ReportedPlantsQuery, ReportedPlantsQueryVariables>(ReportedPlantsDocument, baseOptions);
+      }
+export function useReportedPlantsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ReportedPlantsQuery, ReportedPlantsQueryVariables>) {
+          return Apollo.useLazyQuery<ReportedPlantsQuery, ReportedPlantsQueryVariables>(ReportedPlantsDocument, baseOptions);
+        }
+export type ReportedPlantsQueryHookResult = ReturnType<typeof useReportedPlantsQuery>;
+export type ReportedPlantsLazyQueryHookResult = ReturnType<typeof useReportedPlantsLazyQuery>;
+export type ReportedPlantsQueryResult = Apollo.QueryResult<ReportedPlantsQuery, ReportedPlantsQueryVariables>;

@@ -1,0 +1,10 @@
+query ReportedPlants {
+  reportedPlants {
+    id
+    creatorId
+    isReported
+    primaryName
+    otherNames
+    descriptionSnippet
+  }
+}

@@ -8,7 +8,7 @@ interface LayoutProps extends HTMLChakraProps<'div'> {
 }
 
 export const Layout: React.FC<LayoutProps> = ({
-  variant,
+  variant = 'regular',
   children,
   ...otherProps
 }) => {
