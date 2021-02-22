@@ -21,7 +21,7 @@ export type Query = {
   plants: Array<Plant>;
   plant?: Maybe<Plant>;
   plantNames: Array<PlantName>;
-  reportedPlants: Array<Plant>;
+  reportedPlants: Array<ReportedPlant>;
   me?: Maybe<User>;
 };
 
@@ -82,6 +82,13 @@ export type PlantName = {
   __typename?: 'PlantName';
   plantId: Scalars['Int'];
   name: Scalars['String'];
+};
+
+export type ReportedPlant = {
+  __typename?: 'ReportedPlant';
+  plant: Plant;
+  reason: Scalars['String'];
+  reportedBy: User;
 };
 
 export type Mutation = {
@@ -442,8 +449,19 @@ export type ReportedPlantsQueryVariables = Exact<{ [key: string]: never; }>;
 export type ReportedPlantsQuery = (
   { __typename?: 'Query' }
   & { reportedPlants: Array<(
-    { __typename?: 'Plant' }
-    & Pick<Plant, 'id' | 'creatorId' | 'isReported' | 'primaryName' | 'otherNames' | 'descriptionSnippet'>
+    { __typename?: 'ReportedPlant' }
+    & Pick<ReportedPlant, 'reason'>
+    & { plant: (
+      { __typename?: 'Plant' }
+      & Pick<Plant, 'id' | 'primaryName' | 'otherNames' | 'images'>
+      & { creator: (
+        { __typename?: 'User' }
+        & Pick<User, 'username'>
+      ) }
+    ), reportedBy: (
+      { __typename?: 'User' }
+      & Pick<User, 'username'>
+    ) }
   )> }
 );
 
@@ -1027,12 +1045,19 @@ export type PlantsPreviewQueryResult = Apollo.QueryResult<PlantsPreviewQuery, Pl
 export const ReportedPlantsDocument = gql`
     query ReportedPlants {
   reportedPlants {
-    id
-    creatorId
-    isReported
-    primaryName
-    otherNames
-    descriptionSnippet
+    plant {
+      id
+      primaryName
+      otherNames
+      images
+      creator {
+        username
+      }
+    }
+    reason
+    reportedBy {
+      username
+    }
   }
 }
     `;

@@ -13,10 +13,9 @@ const Reported: React.FC<ReportedProps> = ({}) => {
       <Navbar />
       <Layout>
         reported plants:
-        {data?.reportedPlants.map((plant) => (
+        {data?.reportedPlants.map((report) => (
           <Box>
-            {plant.primaryName}
-            {/* dodać inny typ w api - reported plant razem z report reason */}
+            {report.plant.primaryName} | {report.reason}
           </Box>
         ))}
       </Layout>

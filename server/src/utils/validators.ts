@@ -1,5 +1,5 @@
 import { RegisterCredentials } from '../inputTypes/registerCredentials';
-import { OptimalConditionsInput } from '../resolvers/PlantExtras';
+import { OptimalConditionsInput } from '../resolvers/types/OptimalConditionsInput';
 import { FieldError } from '../shared/graphqlTypes';
 
 export const validateOptimalConditions = (

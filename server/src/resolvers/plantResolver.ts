@@ -11,6 +11,7 @@ import {
   Root,
   UseMiddleware,
 } from 'type-graphql';
+import { getConnection } from 'typeorm';
 import { OptimalConditions } from '../entities/OptimalConditions';
 import { Plant } from '../entities/Plant';
 import { PlantReport } from '../entities/PlantReport';
@@ -18,13 +19,12 @@ import { isAuth } from '../middleware/isAuth';
 import { FieldError } from '../shared/graphqlTypes';
 import { MyContext } from '../types';
 import { validateOptimalConditions } from '../utils/validators';
-import {
-  OptimalConditionsInput,
-  OptimalConditionsResponse,
-  PlantFieldsInput,
-  PlantName,
-  PlantResponse,
-} from './PlantExtras';
+import { OptimalConditionsInput } from './types/OptimalConditionsInput';
+import { OptimalConditionsResponse } from './types/OptimalConditionsResponse';
+import { PlantFieldsInput } from './types/PlantFieldsInput';
+import { PlantName } from './types/PlantName';
+import { PlantResponse } from './types/PlantResponse';
+import { ReportedPlant as ReportedPlantResponse } from './types/ReportedPlant';
 
 @Resolver(Plant)
 export class PlantResolver {
@@ -201,10 +201,19 @@ export class PlantResolver {
     return { plant, errors: errors.length > 0 ? errors : undefined };
   }
 
-  @Query(() => [Plant])
+  @Query(() => [ReportedPlantResponse])
   @UseMiddleware(isAuth)
-  async reportedPlants(): Promise<Plant[]> {
-    const reportedPlants = await Plant.find({ where: { isReported: true } });
+  async reportedPlants(): Promise<ReportedPlantResponse[]> {
+    const reports = await PlantReport.find({ relations: ['plant', 'creator'] });
+
+    const reportedPlants = reports.map((r) => {
+      return {
+        plant: r.plant,
+        reason: r.reason,
+        reportedBy: r.creator,
+      } as ReportedPlantResponse;
+    });
+
     return reportedPlants;
   }
 

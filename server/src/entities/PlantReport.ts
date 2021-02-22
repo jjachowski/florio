@@ -29,7 +29,7 @@ export class PlantReport extends BaseEntity {
   plantId: number;
 
   @Field(() => Plant)
-  @ManyToOne(() => Plant, (plant) => plant.reports)
+  @ManyToOne(() => Plant, (plant) => plant.reports, { eager: true })
   plant: Plant;
 
   @Field()

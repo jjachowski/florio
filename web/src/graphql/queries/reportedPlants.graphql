@@ -1,10 +1,17 @@
 query ReportedPlants {
   reportedPlants {
-    id
-    creatorId
-    isReported
-    primaryName
-    otherNames
-    descriptionSnippet
+    plant {
+      id
+      primaryName
+      otherNames
+      images
+      creator {
+        username
+      }
+    }
+    reason
+    reportedBy {
+      username
+    }
   }
 }
