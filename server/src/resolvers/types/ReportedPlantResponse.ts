@@ -3,7 +3,7 @@ import { Plant } from '../../entities/Plant';
 import { User } from '../../entities/User';
 
 @ObjectType()
-export class ReportedPlant {
+export class ReportedPlantResponse {
   @Field(() => Plant)
   plant!: Plant;
   @Field()

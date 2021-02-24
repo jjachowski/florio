@@ -33,9 +33,9 @@ export class Plant extends BaseEntity {
   @Column({ default: 0 })
   score!: number;
 
-  @Field(() => [String], { nullable: true })
-  @Column('text', { array: true, nullable: true, unique: true })
-  images: string[];
+  @Field(() => [String])
+  @Column('text', { array: true, nullable: false, unique: true, default: {} })
+  images!: string[];
 
   @OneToMany(() => Like, (vote) => vote.plant)
   likes: Like[];

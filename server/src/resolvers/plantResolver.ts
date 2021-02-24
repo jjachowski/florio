@@ -9,13 +9,9 @@ import {
   Query,
   Resolver,
   Root,
-  UseMiddleware,
 } from 'type-graphql';
-import { getConnection } from 'typeorm';
 import { OptimalConditions } from '../entities/OptimalConditions';
 import { Plant } from '../entities/Plant';
-import { PlantReport } from '../entities/PlantReport';
-import { isAuth } from '../middleware/isAuth';
 import { FieldError } from '../shared/graphqlTypes';
 import { MyContext } from '../types';
 import { validateOptimalConditions } from '../utils/validators';
@@ -24,7 +20,6 @@ import { OptimalConditionsResponse } from './types/OptimalConditionsResponse';
 import { PlantFieldsInput } from './types/PlantFieldsInput';
 import { PlantName } from './types/PlantName';
 import { PlantResponse } from './types/PlantResponse';
-import { ReportedPlant as ReportedPlantResponse } from './types/ReportedPlant';
 
 @Resolver(Plant)
 export class PlantResolver {
@@ -128,8 +123,6 @@ export class PlantResolver {
   @Mutation(() => PlantResponse)
   async addPlant(
     @Arg('data') data: PlantFieldsInput,
-    // @Arg('images', () => [GraphQLUpload]!)
-    // images: FileUpload[],
     @Ctx() { req }: MyContext
   ): Promise<PlantResponse> {
     const { description, primaryName, otherNames, images } = data;
@@ -160,9 +153,6 @@ export class PlantResolver {
               },
               (error, result) => {
                 if (result?.secure_url) {
-                  // console.log('cloudinary result: ', result);
-
-                  // plant.images.push(result.secure_url);
                   resolve(result.public_id);
                 }
                 if (error) {
@@ -199,47 +189,6 @@ export class PlantResolver {
         });
     }
     return { plant, errors: errors.length > 0 ? errors : undefined };
-  }
-
-  @Query(() => [ReportedPlantResponse])
-  @UseMiddleware(isAuth)
-  async reportedPlants(): Promise<ReportedPlantResponse[]> {
-    const reports = await PlantReport.find({ relations: ['plant', 'creator'] });
-
-    const reportedPlants = reports.map((r) => {
-      return {
-        plant: r.plant,
-        reason: r.reason,
-        reportedBy: r.creator,
-      } as ReportedPlantResponse;
-    });
-
-    return reportedPlants;
-  }
-
-  @Mutation(() => Boolean)
-  @UseMiddleware(isAuth)
-  async reportPlant(
-    @Arg('plantId', () => Int!) plantId: number,
-    @Arg('reason', () => String!) reason: string,
-    @Ctx() { req }: MyContext
-  ) {
-    const plant = await Plant.findOne(plantId);
-    if (!plant) {
-      return false;
-    }
-
-    const report = PlantReport.create({
-      creatorId: req.session.userId,
-      plantId: plant.id,
-      reason: reason,
-    });
-    plant.isReported = true;
-
-    await report.save();
-    await plant.save();
-
-    return true;
   }
 
   @Mutation(() => Boolean)

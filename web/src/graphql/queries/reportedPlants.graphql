@@ -5,6 +5,7 @@ query ReportedPlants {
       primaryName
       otherNames
       images
+      descriptionSnippet
       creator {
         username
       }

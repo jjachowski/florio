@@ -36,7 +36,7 @@ export type Plant = {
   creatorId: Scalars['Float'];
   creator: User;
   score: Scalars['Float'];
-  images?: Maybe<Array<Scalars['String']>>;
+  images: Array<Scalars['String']>;
   isReported: Scalars['Boolean'];
   primaryName: Scalars['String'];
   otherNames: Array<Scalars['String']>;
@@ -453,7 +453,7 @@ export type ReportedPlantsQuery = (
     & Pick<ReportedPlant, 'reason'>
     & { plant: (
       { __typename?: 'Plant' }
-      & Pick<Plant, 'id' | 'primaryName' | 'otherNames' | 'images'>
+      & Pick<Plant, 'id' | 'primaryName' | 'otherNames' | 'images' | 'descriptionSnippet'>
       & { creator: (
         { __typename?: 'User' }
         & Pick<User, 'username'>
@@ -1050,6 +1050,7 @@ export const ReportedPlantsDocument = gql`
       primaryName
       otherNames
       images
+      descriptionSnippet
       creator {
         username
       }
