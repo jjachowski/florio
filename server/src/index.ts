@@ -15,9 +15,11 @@ import { Like } from './entities/Like';
 import { OptimalConditions } from './entities/OptimalConditions';
 import { Plant } from './entities/Plant';
 import { PlantReport } from './entities/PlantReport';
+import { ReportVote } from './entities/ReportVote';
 import { User } from './entities/User';
 import { LikeResolver } from './resolvers/likeResolver';
 import { PlantResolver } from './resolvers/plantResolver';
+import { ReportResolver } from './resolvers/reportResolver';
 import { UserResolver } from './resolvers/userResolver';
 const main = async () => {
   require('dotenv').config();
@@ -30,7 +32,7 @@ const main = async () => {
     logging: true,
     synchronize: true,
     migrations: [path.join(__dirname, './migrations/*')],
-    entities: [User, Plant, OptimalConditions, Like, PlantReport],
+    entities: [User, Plant, OptimalConditions, Like, PlantReport, ReportVote],
   });
 
   const {
@@ -80,7 +82,7 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver, PlantResolver, LikeResolver],
+      resolvers: [UserResolver, PlantResolver, LikeResolver, ReportResolver],
       validate: false,
     }),
     context: ({ req, res }) => ({

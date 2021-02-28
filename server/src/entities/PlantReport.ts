@@ -1,12 +1,14 @@
-import { Field, ObjectType } from 'type-graphql';
+import { Field, Int, ObjectType } from 'type-graphql';
 import {
   Entity,
   BaseEntity,
   Column,
   ManyToOne,
   PrimaryGeneratedColumn,
+  OneToMany,
 } from 'typeorm';
 import { Plant } from './Plant';
+import { ReportVote } from './ReportVote';
 import { User } from './User';
 
 @ObjectType()
@@ -32,7 +34,14 @@ export class PlantReport extends BaseEntity {
   @ManyToOne(() => Plant, (plant) => plant.reports, { eager: true })
   plant: Plant;
 
+  @OneToMany(() => ReportVote, (vote) => vote.report)
+  votes: ReportVote[];
+
   @Field()
   @Column()
   reason!: string;
+
+  @Field(() => Int)
+  @Column('int', { nullable: false, default: 0 })
+  score!: number;
 }

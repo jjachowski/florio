@@ -9,12 +9,47 @@ import {
 } from 'type-graphql';
 import { Plant } from '../entities/Plant';
 import { PlantReport } from '../entities/PlantReport';
+import { ReportVote } from '../entities/ReportVote';
 import { isAuth } from '../middleware/isAuth';
 import { MyContext } from '../types';
 import { ReportedPlantResponse } from './types/ReportedPlantResponse';
 
 @Resolver()
 export class ReportResolver {
+  @Mutation(() => Boolean)
+  async vote(
+    @Arg('reportId', () => Int!) reportId: number,
+    @Arg('voteValue', () => Int!) voteValue: number,
+    @Ctx() { req }: MyContext
+  ): Promise<boolean> {
+    const reportToVote = await PlantReport.findOne(reportId);
+
+    if (!reportToVote) {
+      return false;
+    }
+
+    const existingRate = await ReportVote.findOne({
+      where: {
+        creatorId: req.session.userId,
+        reportId,
+      },
+    });
+
+    if (existingRate) {
+      return true;
+    }
+
+    const rate = ReportVote.create({
+      creatorId: req.session.userId,
+      reportId: reportToVote.id,
+      plantId: reportToVote.plantId,
+    });
+    await rate.save();
+    reportToVote.score = reportToVote.score + voteValue;
+    reportToVote.save();
+    return true;
+  }
+
   @Mutation(() => Boolean)
   @UseMiddleware(isAuth)
   async reportPlant(
@@ -48,8 +83,7 @@ export class ReportResolver {
     const reportedPlants = reports.map((r) => {
       return {
         plant: r.plant,
-        reason: r.reason,
-        reportedBy: r.creator,
+        report: r,
       } as ReportedPlantResponse;
     });
 

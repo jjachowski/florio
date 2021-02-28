@@ -17,11 +17,10 @@ export type Scalars = {
 
 export type Query = {
   __typename?: 'Query';
-  hello: Scalars['String'];
   plants: Array<Plant>;
   plant?: Maybe<Plant>;
   plantNames: Array<PlantName>;
-  reportedPlants: Array<ReportedPlant>;
+  reportedPlants: Array<ReportedPlantResponse>;
   me?: Maybe<User>;
 };
 
@@ -84,11 +83,21 @@ export type PlantName = {
   name: Scalars['String'];
 };
 
-export type ReportedPlant = {
-  __typename?: 'ReportedPlant';
+export type ReportedPlantResponse = {
+  __typename?: 'ReportedPlantResponse';
+  plant: Plant;
+  report: PlantReport;
+};
+
+export type PlantReport = {
+  __typename?: 'PlantReport';
+  id: Scalars['Float'];
+  creatorId: Scalars['Float'];
+  creator: User;
+  plantId: Scalars['Float'];
   plant: Plant;
   reason: Scalars['String'];
-  reportedBy: User;
+  score: Scalars['Int'];
 };
 
 export type Mutation = {
@@ -98,8 +107,9 @@ export type Mutation = {
   editPlant: PlantResponse;
   addOptimalConditions: OptimalConditionsResponse;
   addPlant: PlantResponse;
-  reportPlant: Scalars['Boolean'];
   upload: Scalars['Boolean'];
+  vote: Scalars['Boolean'];
+  reportPlant: Scalars['Boolean'];
   register: UserResponse;
   login: UserResponse;
   logout: Scalars['Boolean'];
@@ -133,14 +143,20 @@ export type MutationAddPlantArgs = {
 };
 
 
-export type MutationReportPlantArgs = {
-  reason: Scalars['String'];
-  plantId: Scalars['Int'];
+export type MutationUploadArgs = {
+  images: Array<Scalars['Upload']>;
 };
 
 
-export type MutationUploadArgs = {
-  images: Array<Scalars['Upload']>;
+export type MutationVoteArgs = {
+  voteValue: Scalars['Int'];
+  reportId: Scalars['Int'];
+};
+
+
+export type MutationReportPlantArgs = {
+  reason: Scalars['String'];
+  plantId: Scalars['Int'];
 };
 
 
@@ -229,6 +245,21 @@ export type PlantPreviewFragment = (
   & { creator: (
     { __typename?: 'User' }
     & Pick<User, 'username'>
+  ) }
+);
+
+export type PlantReportFragment = (
+  { __typename?: 'ReportedPlantResponse' }
+  & { plant: (
+    { __typename?: 'Plant' }
+    & Pick<Plant, 'id' | 'primaryName' | 'otherNames' | 'descriptionSnippet' | 'images'>
+    & { creator: (
+      { __typename?: 'User' }
+      & Pick<User, 'username'>
+    ) }
+  ), report: (
+    { __typename?: 'PlantReport' }
+    & Pick<PlantReport, 'id' | 'score' | 'reason'>
   ) }
 );
 
@@ -386,6 +417,17 @@ export type UploadFileTestMutation = (
   & Pick<Mutation, 'upload'>
 );
 
+export type VoteReportMutationVariables = Exact<{
+  reportId: Scalars['Int'];
+  voteValue: Scalars['Int'];
+}>;
+
+
+export type VoteReportMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'vote'>
+);
+
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -449,19 +491,8 @@ export type ReportedPlantsQueryVariables = Exact<{ [key: string]: never; }>;
 export type ReportedPlantsQuery = (
   { __typename?: 'Query' }
   & { reportedPlants: Array<(
-    { __typename?: 'ReportedPlant' }
-    & Pick<ReportedPlant, 'reason'>
-    & { plant: (
-      { __typename?: 'Plant' }
-      & Pick<Plant, 'id' | 'primaryName' | 'otherNames' | 'images' | 'descriptionSnippet'>
-      & { creator: (
-        { __typename?: 'User' }
-        & Pick<User, 'username'>
-      ) }
-    ), reportedBy: (
-      { __typename?: 'User' }
-      & Pick<User, 'username'>
-    ) }
+    { __typename?: 'ReportedPlantResponse' }
+    & PlantReportFragment
   )> }
 );
 
@@ -512,6 +543,25 @@ export const PlantPreviewFragmentDoc = gql`
     username
   }
   descriptionSnippet
+}
+    `;
+export const PlantReportFragmentDoc = gql`
+    fragment PlantReport on ReportedPlantResponse {
+  plant {
+    id
+    primaryName
+    otherNames
+    descriptionSnippet
+    images
+    creator {
+      username
+    }
+  }
+  report {
+    id
+    score
+    reason
+  }
 }
     `;
 export const AddOptimalConditionsDocument = gql`
@@ -876,6 +926,37 @@ export function useUploadFileTestMutation(baseOptions?: Apollo.MutationHookOptio
 export type UploadFileTestMutationHookResult = ReturnType<typeof useUploadFileTestMutation>;
 export type UploadFileTestMutationResult = Apollo.MutationResult<UploadFileTestMutation>;
 export type UploadFileTestMutationOptions = Apollo.BaseMutationOptions<UploadFileTestMutation, UploadFileTestMutationVariables>;
+export const VoteReportDocument = gql`
+    mutation VoteReport($reportId: Int!, $voteValue: Int!) {
+  vote(reportId: $reportId, voteValue: $voteValue)
+}
+    `;
+export type VoteReportMutationFn = Apollo.MutationFunction<VoteReportMutation, VoteReportMutationVariables>;
+
+/**
+ * __useVoteReportMutation__
+ *
+ * To run a mutation, you first call `useVoteReportMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useVoteReportMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [voteReportMutation, { data, loading, error }] = useVoteReportMutation({
+ *   variables: {
+ *      reportId: // value for 'reportId'
+ *      voteValue: // value for 'voteValue'
+ *   },
+ * });
+ */
+export function useVoteReportMutation(baseOptions?: Apollo.MutationHookOptions<VoteReportMutation, VoteReportMutationVariables>) {
+        return Apollo.useMutation<VoteReportMutation, VoteReportMutationVariables>(VoteReportDocument, baseOptions);
+      }
+export type VoteReportMutationHookResult = ReturnType<typeof useVoteReportMutation>;
+export type VoteReportMutationResult = Apollo.MutationResult<VoteReportMutation>;
+export type VoteReportMutationOptions = Apollo.BaseMutationOptions<VoteReportMutation, VoteReportMutationVariables>;
 export const MeDocument = gql`
     query Me {
   me {
@@ -1045,23 +1126,10 @@ export type PlantsPreviewQueryResult = Apollo.QueryResult<PlantsPreviewQuery, Pl
 export const ReportedPlantsDocument = gql`
     query ReportedPlants {
   reportedPlants {
-    plant {
-      id
-      primaryName
-      otherNames
-      images
-      descriptionSnippet
-      creator {
-        username
-      }
-    }
-    reason
-    reportedBy {
-      username
-    }
+    ...PlantReport
   }
 }
-    `;
+    ${PlantReportFragmentDoc}`;
 
 /**
  * __useReportedPlantsQuery__

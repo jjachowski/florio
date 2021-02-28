@@ -1,0 +1,17 @@
+fragment PlantReport on ReportedPlantResponse {
+  plant {
+    id
+    primaryName
+    otherNames
+    descriptionSnippet
+    images
+    creator {
+      username
+    }
+  }
+  report {
+    id
+    score
+    reason
+  }
+}

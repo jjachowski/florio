@@ -11,6 +11,7 @@ import {
 import { Plant } from './Plant';
 import { Like } from './Like';
 import { PlantReport } from './PlantReport';
+import { ReportVote } from './ReportVote';
 
 export enum AccountType {
   user,
@@ -47,6 +48,9 @@ export class User extends BaseEntity {
 
   @OneToMany(() => Like, (vote) => vote.creator, { eager: true })
   likes: Like[];
+
+  @OneToMany(() => ReportVote, (vote) => vote.creator, { eager: true })
+  reportVotes: ReportVote[];
 
   @Field(() => String)
   @CreateDateColumn()
