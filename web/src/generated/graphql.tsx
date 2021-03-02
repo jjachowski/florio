@@ -59,6 +59,8 @@ export type User = {
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
   likedPlants: Array<Scalars['Int']>;
+  upvotedReportsIds: Array<Scalars['Int']>;
+  downvotedReportsIds: Array<Scalars['Int']>;
 };
 
 export type OptimalConditions = {
@@ -435,7 +437,7 @@ export type MeQuery = (
   { __typename?: 'Query' }
   & { me?: Maybe<(
     { __typename?: 'User' }
-    & Pick<User, 'id' | 'username' | 'accountType' | 'email' | 'likedPlants'>
+    & Pick<User, 'id' | 'username' | 'accountType' | 'email' | 'likedPlants' | 'upvotedReportsIds' | 'downvotedReportsIds'>
   )> }
 );
 
@@ -965,6 +967,8 @@ export const MeDocument = gql`
     accountType
     email
     likedPlants
+    upvotedReportsIds
+    downvotedReportsIds
   }
 }
     `;

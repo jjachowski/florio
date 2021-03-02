@@ -20,6 +20,10 @@ export class ReportVote extends BaseEntity {
 
   @Field()
   @Column()
+  value: number;
+
+  @Field()
+  @Column()
   creatorId: number;
 
   @Field(() => User)

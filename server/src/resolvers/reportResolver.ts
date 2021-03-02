@@ -22,30 +22,46 @@ export class ReportResolver {
     @Arg('voteValue', () => Int!) voteValue: number,
     @Ctx() { req }: MyContext
   ): Promise<boolean> {
+    const realVoteValue = voteValue >= 1 ? 1 : -1;
     const reportToVote = await PlantReport.findOne(reportId);
 
     if (!reportToVote) {
       return false;
     }
 
-    const existingRate = await ReportVote.findOne({
+    const existingVote = await ReportVote.findOne({
       where: {
         creatorId: req.session.userId,
         reportId,
       },
     });
 
-    if (existingRate) {
+    if (existingVote && existingVote.value === realVoteValue) {
+      console.log('first');
+
       return true;
+    } else if (existingVote && existingVote.value !== realVoteValue) {
+      console.log('second');
+
+      existingVote.value = realVoteValue;
+      console.log('before: ', reportToVote.score);
+      console.log('after: ', reportToVote.score + 2 * realVoteValue);
+
+      reportToVote.score = reportToVote.score + 2 * realVoteValue;
+      existingVote.save();
+    } else {
+      console.log('else');
+
+      const rate = ReportVote.create({
+        creatorId: req.session.userId,
+        reportId: reportToVote.id,
+        plantId: reportToVote.plantId,
+        value: realVoteValue,
+      });
+      reportToVote.score = reportToVote.score + realVoteValue;
+      await rate.save();
     }
 
-    const rate = ReportVote.create({
-      creatorId: req.session.userId,
-      reportId: reportToVote.id,
-      plantId: reportToVote.plantId,
-    });
-    await rate.save();
-    reportToVote.score = reportToVote.score + voteValue;
     reportToVote.save();
     return true;
   }

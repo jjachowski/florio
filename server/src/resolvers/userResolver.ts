@@ -38,6 +38,22 @@ export class UserResolver {
     return likedPlantsIds;
   }
 
+  @FieldResolver(() => [Int!]!)
+  upvotedReportsIds(@Root() root: User): number[] {
+    const votedReportsIds = root.reportVotes
+      .filter((r) => r.value === 1)
+      .map((r) => r.reportId);
+    return votedReportsIds;
+  }
+
+  @FieldResolver(() => [Int!]!)
+  downvotedReportsIds(@Root() root: User): number[] {
+    const votedReportsIds = root.reportVotes
+      .filter((r) => r.value === -1)
+      .map((r) => r.reportId);
+    return votedReportsIds;
+  }
+
   @FieldResolver(() => String)
   email(@Root() user: User, @Ctx() { req }: MyContext) {
     if (user.id !== req.session.userId) {

@@ -5,5 +5,7 @@ query Me {
     accountType
     email
     likedPlants
+    upvotedReportsIds
+    downvotedReportsIds
   }
 }
