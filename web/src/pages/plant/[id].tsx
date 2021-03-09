@@ -71,7 +71,7 @@ const Plant: React.FC = () => {
           </Flex>
           <Flex direction='column'>
             <Card isFlex direction='column'>
-              <Flex direction='row'>
+            <Flex direction='row'>
                 <Flex direction='column'>
                   <Flex as={Heading} size='lg' align='center'>
                     <LikePlant plantId={data?.plant?.id} />
@@ -119,10 +119,7 @@ const Plant: React.FC = () => {
                   </Menu>
                 </Box>
               </Flex>
-            </Card>
-            <Card isFlex mt={8} direction='column'>
               <Flex direction='row' align='center'>
-                <Heading size='lg'>Opis</Heading>
                 <Box ml='auto'>
                   {data?.plant && <Emblems plant={data?.plant} />}
                 </Box>
