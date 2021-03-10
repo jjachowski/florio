@@ -1,17 +1,13 @@
 import { Heading, useToast } from '@chakra-ui/react';
 import { FormikErrors } from 'formik';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React from 'react';
+import { EditPlantForm } from '../../../components/EditPlantForm';
 import { Layout } from '../../../components/Layout';
 import { Navbar } from '../../../components/Navbar';
 import {
-  PlantFormInput,
-  PlantFormValue,
-  PlantForm,
-} from '../../../components/PlantForm';
-import {
   useEditPlantMutation,
-  usePlantQuery,
+  usePlantQuery
 } from '../../../generated/graphql';
 import { toErrorMap } from '../../../utils/toFormikErrorMap';
 import useGetIdFromRoute from '../../../utils/useGetIdFromRoute';
@@ -57,24 +53,13 @@ const Edit: React.FC = () => {
   };
 
   if (data && data.plant) {
-    const { description, imageUrl, primaryName, otherNames } = data.plant;
-
-    const initialValues = {
-      description,
-      imageUrl,
-      otherNames: otherNames.join(', '),
-      primaryName,
-    };
-
     return (
       <>
         <Navbar />
         <Layout mt={4} variant='regular'>
           <Heading>Edytuj roślinę</Heading>
           {!loading && (
-            <PlantForm
-              initialValues={initialValues}
-              onFormSubmit={onFormSubmit}
+            <EditPlantForm plantToEdit={data.plant}
             />
           )}
         </Layout>

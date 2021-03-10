@@ -54,20 +54,6 @@ const Plant: React.FC = () => {
         <Flex direction='row'>
           <Flex direction='column' minW='40%' maxW='40rem' mr={10}>
             <PlantGallery images={data?.plant?.images} />
-            <Card mt={10}>
-              <ConditionSeasonsSwitch
-                my={4}
-                currentlySelected={selectedSeason}
-                onSeasonSelected={setSelectedSeason}
-                seasonsToDisplay={conditionsToStringArray(
-                  data?.plant?.optimalConditions
-                )}
-              />
-              <ConditionBars
-                conditions={data?.plant?.optimalConditions}
-                selectedSeason={selectedSeason}
-              />
-            </Card>
           </Flex>
           <Flex direction='column'>
             <Card isFlex direction='column'>
@@ -126,6 +112,20 @@ const Plant: React.FC = () => {
               </Flex>
 
               <Box unselectable='on'>{data?.plant?.description}</Box>
+            </Card>
+            <Card mt={4} pt={0}>
+              <ConditionSeasonsSwitch
+                my={4}
+                currentlySelected={selectedSeason}
+                onSeasonSelected={setSelectedSeason}
+                seasonsToDisplay={conditionsToStringArray(
+                  data?.plant?.optimalConditions
+                )}
+              />
+              <ConditionBars
+                conditions={data?.plant?.optimalConditions}
+                selectedSeason={selectedSeason}
+              />
             </Card>
           </Flex>
         </Flex>

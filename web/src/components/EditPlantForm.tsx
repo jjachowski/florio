@@ -1,49 +1,33 @@
 import { Box, Button, VStack } from '@chakra-ui/react';
 import { Form, Formik, FormikErrors } from 'formik';
 import React from 'react';
-import { FileField } from './FileField';
+import { FullPlantFragment } from '../generated/graphql';
 import { FormField } from './FormField';
 
-export type EditPlantFormInput = {
-  primaryName: string;
-  otherNames: string;
-  description: string;
-};
-
-export type EditPlantFormValue = {
-  primaryName: string;
-  otherNames: string[];
-  description: string;
-};
-
 interface EditPlantFormProps {
-  initialValues?: EditPlantFormInput;
-  onFormSubmit: (
-    plant: EditPlantFormValue,
-    setErrors: (errors: FormikErrors<EditPlantFormInput>) => void
-  ) => void;
+  plantToEdit: FullPlantFragment
 }
 
 export const EditPlantForm: React.FC<EditPlantFormProps> = ({
-  initialValues = {
-    primaryName: '',
-    otherNames: '',
-    description: '',
-    images: [],
-  },
-  onFormSubmit,
+  plantToEdit
 }) => {
+  const {} = plantToEdit;
   return (
     <Formik
-      initialValues={initialValues}
+      initialValues={{
+        primaryName: '',
+        otherNames: '',
+        description: '',
+        
+      }}
       onSubmit={async (values, { setErrors }) => {
-        const { primaryName, description } = values;
-        const plant = {
-          primaryName,
-          description,
-          otherNames: values.otherNames.split(',').map((n) => n.trim()),
-        };
-        onFormSubmit(plant, setErrors);
+        // const { primaryName, description } = values;
+        // const plant = {
+        //   primaryName,
+        //   description,
+        //   otherNames: values.otherNames.split(',').map((n) => n.trim()),
+        // };
+        // onFormSubmit(plant, setErrors);
       }}
     >
       {(props) => (

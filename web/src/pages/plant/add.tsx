@@ -13,7 +13,7 @@ import { useAddPlantMutation } from '../../generated/graphql';
 import { toErrorMap } from '../../utils/toFormikErrorMap';
 
 const AddPlant: React.FC = ({}) => {
-  const [addPlant, { loading }] = useAddPlantMutation({
+  const [addPlant] = useAddPlantMutation({
     notifyOnNetworkStatusChange: true,
   });
   const toast = useToast();
