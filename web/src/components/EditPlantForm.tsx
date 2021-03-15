@@ -1,15 +1,12 @@
-import { Box, Button, Flex, HStack, VStack } from '@chakra-ui/react';
-import { Form, Formik, FormikErrors } from 'formik';
+import { Box, Button, HStack, VStack } from '@chakra-ui/react';
+import { Image as CloudinaryImage, Transformation } from 'cloudinary-react';
+import { Form, Formik } from 'formik';
 import React, { useState } from 'react';
-import { FullPlantFragment } from '../generated/graphql';
+import { FullPlantFragment, useEditPlantMutation } from '../generated/graphql';
 import { FileField } from './FileField';
 import { FormField } from './FormField';
-import {
-  Image as CloudinaryImage,
-  Video,
-  Transformation,
-  CloudinaryContext,
-} from 'cloudinary-react';
+import { PetFriendlyField } from './PetFriendlyField';
+import { PetFriendlySourceField } from './PetFriendlySourceField';
 
 interface EditPlantFormProps {
   plantToEdit: FullPlantFragment;
@@ -18,20 +15,45 @@ interface EditPlantFormProps {
 export const EditPlantForm: React.FC<EditPlantFormProps> = ({
   plantToEdit,
 }) => {
-  const {} = plantToEdit;
+  const [editPlant] = useEditPlantMutation();
   const hiddenFileInput = React.useRef<HTMLInputElement>(null);
   const [filePreviews, setFilePreviews] = useState<
     { name: string; size: number }[]
   >([]);
+  const [selectedToDelete, setSelectedToDelete] = useState<string[]>([]);
+
+  const toggeSelectedToDelete = (imageName: string) => {
+    if (selectedToDelete.includes(imageName)) {
+      setSelectedToDelete(selectedToDelete.filter((s) => s !== imageName));
+    } else {
+      setSelectedToDelete([...selectedToDelete, imageName]);
+    }
+  };
 
   return (
     <Formik
       initialValues={{
-        primaryName: '',
-        otherNames: '',
-        description: '',
+        primaryName: plantToEdit.primaryName,
+        otherNames: plantToEdit.otherNames,
+        description: plantToEdit.description,
+        isCatFriendly: plantToEdit.isCatFriendly,
+        isCatFriendlySource: plantToEdit.isCatFriendlySource ?? '',
+        isDogFriendly: plantToEdit.isDogFriendly,
+        isDogFriendlySource: plantToEdit.isDogFriendlySource ?? '',
+        images: {} as FileList,
       }}
       onSubmit={async (values, { setErrors }) => {
+        console.log('values: ', values);
+        console.log('selected to delete: ', selectedToDelete);
+        const result = await editPlant({
+          variables: {
+            id: plantToEdit.id,
+            input: values as any,
+            imagesToDelete: selectedToDelete,
+          },
+        });
+        console.log(result);
+
         // const { primaryName, description } = values;
         // const plant = {
         //   primaryName,
@@ -40,6 +62,7 @@ export const EditPlantForm: React.FC<EditPlantFormProps> = ({
         // };
         // onFormSubmit(plant, setErrors);
       }}
+      onReset={() => setSelectedToDelete([])}
     >
       {(props) => (
         <Box>
@@ -62,14 +85,36 @@ export const EditPlantForm: React.FC<EditPlantFormProps> = ({
                 placeholder='Odmiana Fascinator Tricolor jest...'
                 label='Opis'
               />
+              <PetFriendlyField variation='cat' name='isCatFriendly' />
+              <PetFriendlySourceField
+                isDisabled={!props.values.isCatFriendly}
+                variation='cat'
+                name='isCatFriendlySource'
+                placeholder='np. adres strony internetowej lub fragment książki...'
+              />
+              <PetFriendlyField variation='dog' name='isDogFriendly' />
+              <PetFriendlySourceField
+                isDisabled={!props.values.isDogFriendly}
+                variation='dog'
+                name='isDogFriendlySource'
+                placeholder='np. adres strony internetowej lub fragment książki...'
+              />
+              <Box w='100%' mr='auto' color='gray.500'>
+                {`Wybierz zdjęcia do usunięcia (zaznaczono: ${selectedToDelete.length})`}
+              </Box>
               <HStack spacing={4} width='100%'>
                 {plantToEdit.images.map((image) => (
                   <Box
                     key={image}
-                    borderWidth='medium'
-                    borderColor='gray.200'
-                    borderStyle='dotted'
-                    _hover={{ borderColor: 'red.400' }}
+                    border='2px'
+                    borderColor={
+                      selectedToDelete.includes(image) ? 'red.600' : 'gray.200'
+                    }
+                    borderStyle={
+                      selectedToDelete.includes(image) ? 'solid' : 'dashed'
+                    }
+                    _hover={{ borderColor: 'red.500', borderStyle: 'dashed' }}
+                    onClick={() => toggeSelectedToDelete(image)}
                     rounded={10}
                     overflow='hidden'
                   >

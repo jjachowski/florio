@@ -14,6 +14,7 @@ import { OptimalConditions } from '../entities/OptimalConditions';
 import { Plant } from '../entities/Plant';
 import { FieldError } from '../shared/graphqlTypes';
 import { MyContext } from '../types';
+import { destroyImages, uploadImages } from '../utils/cloudinary';
 import { validateOptimalConditions } from '../utils/validators';
 import { OptimalConditionsInput } from './types/OptimalConditionsInput';
 import { OptimalConditionsResponse } from './types/OptimalConditionsResponse';
@@ -67,7 +68,8 @@ export class PlantResolver {
   @Mutation(() => PlantResponse)
   async editPlant(
     @Arg('id', () => Int) id: number,
-    @Arg('editData') editData: PlantFieldsInput
+    @Arg('editData') editData: PlantFieldsInput,
+    @Arg('imagesToDelete', () => [String]) imagesToDelete: string[]
   ): Promise<PlantResponse> {
     const plantToEdit = await Plant.findOne(id);
     if (!plantToEdit) {
@@ -75,11 +77,48 @@ export class PlantResolver {
         errors: [{ field: 'id', message: 'Nie znaleziono takiej rośliny' }],
       };
     }
-    Object.assign(plantToEdit, editData);
 
-    await plantToEdit.save();
+    const images = editData.images;
 
-    return { plant: plantToEdit };
+    const promises: Promise<any>[] = [];
+
+    const settledImages = await Promise.allSettled(images);
+    settledImages.forEach((image) => {
+      const {
+        createReadStream,
+      } = (image as PromiseFulfilledResult<FileUpload>).value;
+      promises.push(
+        new Promise((resolve, reject) => {
+          createReadStream().pipe(
+            cloudinary.v2.uploader.upload_stream(
+              {
+                folder: 'plantImages',
+                use_filename: true,
+              },
+              (error, result) => {
+                if (result?.secure_url) {
+                  resolve(result.public_id);
+                }
+                if (error) {
+                  reject(error.message);
+                }
+              }
+            )
+          );
+        })
+      );
+    });
+    const errors: FieldError[] = [];
+    const result = await Promise.allSettled(promises);
+    result.forEach((r) => {
+      if (r.status === 'fulfilled') {
+        plantToEdit.images.push((r as PromiseFulfilledResult<any>).value);
+      } else {
+        errors.push({ field: 'images', message: r.reason });
+      }
+    });
+
+    return { plant: plantToEdit, errors };
   }
 
   @Mutation(() => OptimalConditionsResponse)
@@ -172,7 +211,6 @@ export class PlantResolver {
         errors.push({ field: 'images', message: r.reason });
       }
     });
-    console.log('settled promises: ', result);
 
     try {
       await plant.save();

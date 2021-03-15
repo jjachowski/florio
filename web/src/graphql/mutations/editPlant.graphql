@@ -1,14 +1,24 @@
-mutation EditPlant($id: Int!, $data: PlantFieldsInput!) {
-  editPlant(id: $id, editData: $data) {
+mutation EditPlant(
+  $id: Int!
+  $input: PlantFieldsInput!
+  $imagesToDelete: [String!]!
+) {
+  editPlant(id: $id, editData: $input, imagesToDelete: $imagesToDelete) {
     errors {
       field
       message
     }
     plant {
       id
+      creatorId
       primaryName
       otherNames
+      images
       description
+      isCatFriendly
+      isDogFriendly
+      isCatFriendlySource
+      isDogFriendlySource
     }
   }
 }

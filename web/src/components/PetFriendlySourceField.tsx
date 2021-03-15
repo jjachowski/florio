@@ -1,4 +1,5 @@
 import {
+  Box,
   FormControl,
   FormErrorMessage,
   FormLabel,
@@ -23,18 +24,20 @@ export const PetFriendlySourceField: React.FC<PetFriendlySourceFieldProps> = ({
   const [, { error }] = useField(props);
 
   return (
-    <Field name={props.name}>
-      {({ field }: any) => (
-        <FormControl isInvalid={!!error} isDisabled={isDisabled}>
-          <FormLabel htmlFor={field.name}>
-            {`Podaj źródło potwierdzające, że roślina jest bezpieczna dla ${
-              variation === 'cat' ? ' kota' : 'psa'
-            }`}
-          </FormLabel>
-          <Textarea {...field} {...props} id={field.name} />
-          {error ? <FormErrorMessage>{error}</FormErrorMessage> : null}
-        </FormControl>
-      )}
-    </Field>
+    <Box hidden={isDisabled} w='100%'>
+      <Field name={props.name}>
+        {({ field }: any) => (
+          <FormControl isInvalid={!!error} isDisabled={isDisabled}>
+            <FormLabel htmlFor={field.name}>
+              {`Podaj źródło potwierdzające, że roślina jest bezpieczna dla ${
+                variation === 'cat' ? ' kota' : 'psa'
+              }`}
+            </FormLabel>
+            <Textarea {...field} {...props} id={field.name} />
+            {error ? <FormErrorMessage>{error}</FormErrorMessage> : null}
+          </FormControl>
+        )}
+      </Field>
+    </Box>
   );
 };

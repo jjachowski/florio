@@ -129,6 +129,7 @@ export type MutationRemoveLikeArgs = {
 
 
 export type MutationEditPlantArgs = {
+  imagesToDelete: Array<Scalars['String']>;
   editData: PlantFieldsInput;
   id: Scalars['Int'];
 };
@@ -321,7 +322,8 @@ export type DislikePlantMutation = (
 
 export type EditPlantMutationVariables = Exact<{
   id: Scalars['Int'];
-  data: PlantFieldsInput;
+  input: PlantFieldsInput;
+  imagesToDelete: Array<Scalars['String']>;
 }>;
 
 
@@ -334,7 +336,7 @@ export type EditPlantMutation = (
       & Pick<FieldError, 'field' | 'message'>
     )>>, plant?: Maybe<(
       { __typename?: 'Plant' }
-      & Pick<Plant, 'id' | 'primaryName' | 'otherNames' | 'description'>
+      & Pick<Plant, 'id' | 'creatorId' | 'primaryName' | 'otherNames' | 'images' | 'description' | 'isCatFriendly' | 'isDogFriendly' | 'isCatFriendlySource' | 'isDogFriendlySource'>
     )> }
   ) }
 );
@@ -682,17 +684,23 @@ export type DislikePlantMutationHookResult = ReturnType<typeof useDislikePlantMu
 export type DislikePlantMutationResult = Apollo.MutationResult<DislikePlantMutation>;
 export type DislikePlantMutationOptions = Apollo.BaseMutationOptions<DislikePlantMutation, DislikePlantMutationVariables>;
 export const EditPlantDocument = gql`
-    mutation EditPlant($id: Int!, $data: PlantFieldsInput!) {
-  editPlant(id: $id, editData: $data) {
+    mutation EditPlant($id: Int!, $input: PlantFieldsInput!, $imagesToDelete: [String!]!) {
+  editPlant(id: $id, editData: $input, imagesToDelete: $imagesToDelete) {
     errors {
       field
       message
     }
     plant {
       id
+      creatorId
       primaryName
       otherNames
+      images
       description
+      isCatFriendly
+      isDogFriendly
+      isCatFriendlySource
+      isDogFriendlySource
     }
   }
 }
@@ -713,7 +721,8 @@ export type EditPlantMutationFn = Apollo.MutationFunction<EditPlantMutation, Edi
  * const [editPlantMutation, { data, loading, error }] = useEditPlantMutation({
  *   variables: {
  *      id: // value for 'id'
- *      data: // value for 'data'
+ *      input: // value for 'input'
+ *      imagesToDelete: // value for 'imagesToDelete'
  *   },
  * });
  */

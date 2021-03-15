@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, Link } from '@chakra-ui/react';
+import { Box, Flex, Heading, Link, useStyleConfig } from '@chakra-ui/react';
 import NextLink from 'next/link';
 import React from 'react';
 import { NavbarActions } from './NavbarActions';
@@ -6,9 +6,11 @@ import { Searchbox } from './Searchbox';
 import { Text } from '@chakra-ui/react';
 
 export const Navbar: React.FC = ({}) => {
+  const styles = useStyleConfig('Navbar');
   return (
     <Box
-      bg='green.600'
+      sx={styles}
+      // bg='green.600'
       h={14}
       boxShadow='sm'
       position='sticky'
