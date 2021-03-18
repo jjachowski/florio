@@ -17,6 +17,6 @@ export class PlantFieldsInput {
   isDogFriendly: boolean;
   @Field({ nullable: true })
   isDogFriendlySource?: string;
-  @Field(() => [GraphQLUpload]!)
+  @Field(() => [GraphQLUpload], { nullable: true })
   images: FileUpload[];
 }

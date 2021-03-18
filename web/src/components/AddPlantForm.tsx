@@ -50,7 +50,7 @@ export const AddPlantForm: React.FC<AddPlantFormProps> = ({ onFormSubmit }) => {
         isDogFriendly: false,
         isDogFriendlySource: '',
 
-        images: {} as FileList,
+        images: [] as any,
       }}
       onReset={(_, { setFieldValue }) => {
         setFieldValue('images', []);

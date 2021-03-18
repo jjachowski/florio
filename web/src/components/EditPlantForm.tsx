@@ -1,4 +1,4 @@
-import { Box, Button, HStack, VStack } from '@chakra-ui/react';
+import { Box, Button, HStack, Input, VStack } from '@chakra-ui/react';
 import { Image as CloudinaryImage, Transformation } from 'cloudinary-react';
 import { Form, Formik } from 'formik';
 import React, { useState } from 'react';
@@ -40,11 +40,16 @@ export const EditPlantForm: React.FC<EditPlantFormProps> = ({
         isCatFriendlySource: plantToEdit.isCatFriendlySource ?? '',
         isDogFriendly: plantToEdit.isDogFriendly,
         isDogFriendlySource: plantToEdit.isDogFriendlySource ?? '',
-        images: {} as FileList,
+        images: [],
       }}
       onSubmit={async (values, { setErrors }) => {
         console.log('values: ', values);
         console.log('selected to delete: ', selectedToDelete);
+
+        // if (Object.entries(values.images).length === 0) {
+        //   values.images = [];
+        // }
+
         const result = await editPlant({
           variables: {
             id: plantToEdit.id,
@@ -53,14 +58,6 @@ export const EditPlantForm: React.FC<EditPlantFormProps> = ({
           },
         });
         console.log(result);
-
-        // const { primaryName, description } = values;
-        // const plant = {
-        //   primaryName,
-        //   description,
-        //   otherNames: values.otherNames.split(',').map((n) => n.trim()),
-        // };
-        // onFormSubmit(plant, setErrors);
       }}
       onReset={() => setSelectedToDelete([])}
     >
@@ -129,7 +126,6 @@ export const EditPlantForm: React.FC<EditPlantFormProps> = ({
                   </Box>
                 ))}
               </HStack>
-
               <FileField
                 name='images'
                 isRequired

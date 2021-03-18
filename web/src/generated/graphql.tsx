@@ -193,7 +193,7 @@ export type PlantFieldsInput = {
   isCatFriendlySource?: Maybe<Scalars['String']>;
   isDogFriendly: Scalars['Boolean'];
   isDogFriendlySource?: Maybe<Scalars['String']>;
-  images: Array<Scalars['Upload']>;
+  images?: Maybe<Array<Scalars['Upload']>>;
 };
 
 

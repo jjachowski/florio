@@ -1,14 +1,9 @@
-import { Heading, useToast } from '@chakra-ui/react';
-import { FormikErrors } from 'formik';
-import { useRouter } from 'next/router';
+import { Heading } from '@chakra-ui/react';
 import React from 'react';
 import { EditPlantForm } from '../../../components/EditPlantForm';
 import { Layout } from '../../../components/Layout';
 import { Navbar } from '../../../components/Navbar';
-import {
-  useEditPlantMutation,
-  usePlantQuery,
-} from '../../../generated/graphql';
+import { usePlantQuery } from '../../../generated/graphql';
 import useGetIdFromRoute from '../../../utils/useGetIdFromRoute';
 
 const Edit: React.FC = () => {
@@ -17,10 +12,6 @@ const Edit: React.FC = () => {
     variables: { id: plantId },
     notifyOnNetworkStatusChange: true,
   });
-
-  if (!data || loading) {
-    return <>loading...</>;
-  }
 
   return (
     <>

@@ -1,5 +1,3 @@
-import cloudinary from 'cloudinary';
-import { FileUpload, GraphQLUpload } from 'graphql-upload';
 import {
   Arg,
   Ctx,
@@ -12,7 +10,6 @@ import {
 } from 'type-graphql';
 import { OptimalConditions } from '../entities/OptimalConditions';
 import { Plant } from '../entities/Plant';
-import { FieldError } from '../shared/graphqlTypes';
 import { MyContext } from '../types';
 import { destroyImages, uploadImages } from '../utils/cloudinary';
 import { validateOptimalConditions } from '../utils/validators';
@@ -78,47 +75,20 @@ export class PlantResolver {
       };
     }
 
-    const images = editData.images;
+    const uploadResult = await uploadImages(editData.images);
 
-    const promises: Promise<any>[] = [];
+    const newImages: string[] = [
+      ...uploadResult.images,
+      ...plantToEdit.images.filter((i) => !imagesToDelete.includes(i)),
+    ];
 
-    const settledImages = await Promise.allSettled(images);
-    settledImages.forEach((image) => {
-      const {
-        createReadStream,
-      } = (image as PromiseFulfilledResult<FileUpload>).value;
-      promises.push(
-        new Promise((resolve, reject) => {
-          createReadStream().pipe(
-            cloudinary.v2.uploader.upload_stream(
-              {
-                folder: 'plantImages',
-                use_filename: true,
-              },
-              (error, result) => {
-                if (result?.secure_url) {
-                  resolve(result.public_id);
-                }
-                if (error) {
-                  reject(error.message);
-                }
-              }
-            )
-          );
-        })
-      );
-    });
-    const errors: FieldError[] = [];
-    const result = await Promise.allSettled(promises);
-    result.forEach((r) => {
-      if (r.status === 'fulfilled') {
-        plantToEdit.images.push((r as PromiseFulfilledResult<any>).value);
-      } else {
-        errors.push({ field: 'images', message: r.reason });
-      }
-    });
+    Object.assign(plantToEdit, editData);
+    plantToEdit.images = newImages;
+    plantToEdit.save();
 
-    return { plant: plantToEdit, errors };
+    await destroyImages(imagesToDelete);
+
+    return { plant: plantToEdit, errors: uploadResult.errors };
   }
 
   @Mutation(() => OptimalConditionsResponse)
@@ -165,7 +135,6 @@ export class PlantResolver {
     @Ctx() { req }: MyContext
   ): Promise<PlantResponse> {
     const { description, primaryName, otherNames, images } = data;
-    const errors: FieldError[] = [];
 
     const plant = Plant.create({
       description,
@@ -175,42 +144,11 @@ export class PlantResolver {
       images: [],
     });
 
-    const promises: Promise<any>[] = [];
+    // const promises: Promise<any>[] = [];
 
-    const settledImages = await Promise.allSettled(images);
-    settledImages.forEach((image) => {
-      const {
-        createReadStream,
-      } = (image as PromiseFulfilledResult<FileUpload>).value;
-      promises.push(
-        new Promise((resolve, reject) => {
-          createReadStream().pipe(
-            cloudinary.v2.uploader.upload_stream(
-              {
-                folder: 'plantImages',
-                use_filename: true,
-              },
-              (error, result) => {
-                if (result?.secure_url) {
-                  resolve(result.public_id);
-                }
-                if (error) {
-                  reject(error.message);
-                }
-              }
-            )
-          );
-        })
-      );
-    });
-    const result = await Promise.allSettled(promises);
-    result.forEach((r) => {
-      if (r.status === 'fulfilled') {
-        plant.images.push((r as PromiseFulfilledResult<any>).value);
-      } else {
-        errors.push({ field: 'images', message: r.reason });
-      }
-    });
+    const resultdd = await uploadImages(images);
+    plant.images = resultdd.images;
+    const errors = resultdd.errors;
 
     try {
       await plant.save();
@@ -227,28 +165,5 @@ export class PlantResolver {
         });
     }
     return { plant, errors: errors.length > 0 ? errors : undefined };
-  }
-
-  @Mutation(() => Boolean)
-  async upload(
-    @Arg('images', () => [GraphQLUpload]!)
-    images: FileUpload[]
-  ) {
-    const settledImages = await Promise.allSettled(images);
-    settledImages.forEach(async (image) => {
-      const {
-        createReadStream,
-      } = (image as PromiseFulfilledResult<FileUpload>).value;
-      createReadStream().pipe(
-        cloudinary.v2.uploader.upload_stream(
-          {
-            folder: 'test',
-            use_filename: true,
-          },
-          (error, result) => console.log('uploadCloudinary: ', error, result)
-        )
-      );
-    });
-    return true;
   }
 }

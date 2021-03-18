@@ -1,5 +1,5 @@
-import { FileUpload, GraphQLUpload } from 'graphql-upload';
 import cloudinary from 'cloudinary';
+import { FileUpload } from 'graphql-upload';
 import { FieldError } from 'src/shared/graphqlTypes';
 
 export const destroyImages = async (imagesIds: string[]): Promise<void> => {
@@ -10,11 +10,12 @@ export const destroyImages = async (imagesIds: string[]): Promise<void> => {
 };
 
 export const uploadImages = async (
-  images: PromiseSettledResult<FileUpload>[]
+  images: FileUpload[]
 ): Promise<{ images: string[]; errors: FieldError[] }> => {
+  const settledImages = await Promise.allSettled(images);
   const promises: Promise<any>[] = [];
 
-  images.forEach((image) => {
+  settledImages.forEach((image) => {
     const {
       createReadStream,
     } = (image as PromiseFulfilledResult<FileUpload>).value;

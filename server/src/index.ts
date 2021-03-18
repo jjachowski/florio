@@ -21,6 +21,7 @@ import { LikeResolver } from './resolvers/likeResolver';
 import { PlantResolver } from './resolvers/plantResolver';
 import { ReportResolver } from './resolvers/reportResolver';
 import { UserResolver } from './resolvers/userResolver';
+
 const main = async () => {
   require('dotenv').config();
 
@@ -34,6 +35,11 @@ const main = async () => {
     migrations: [path.join(__dirname, './migrations/*')],
     entities: [User, Plant, OptimalConditions, Like, PlantReport, ReportVote],
   });
+
+  // const s3 = new S3({
+  //   accessKeyId: 'AKIAX5MNCAA4455GVVM4',
+  //   secretAccessKey: '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',
+  // });
 
   const {
     CLOUDINARY_CLOUD_NAME,
@@ -89,6 +95,7 @@ const main = async () => {
       req,
       res,
       redis,
+      // s3,
       //   userLoader: createUserLoader(),
       //   updootLoader: createUpdootLoader(),
     }),
