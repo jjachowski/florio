@@ -16,19 +16,22 @@ interface PetFriendlyFieldProps {
   name: string;
   error?: string;
   isRequired?: boolean;
+  checked?: boolean;
 }
 
 export const PetFriendlyField: React.FC<PetFriendlyFieldProps> = ({
   variation,
+  checked,
   ...props
 }) => {
-  const [, { error }] = useField(props);
+  const [, { error, value }] = useField(props);
 
   return (
     <Field name={props.name}>
       {({ field }: any) => (
         <FormControl isInvalid={!!error}>
           <Checkbox
+            isChecked={checked}
             {...field}
             {...props}
             id={field.name}

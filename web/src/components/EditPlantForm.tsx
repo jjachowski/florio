@@ -16,6 +16,8 @@ export const EditPlantForm: React.FC<EditPlantFormProps> = ({
   plantToEdit,
 }) => {
   const [editPlant] = useEditPlantMutation();
+  console.log(plantToEdit);
+
   const hiddenFileInput = React.useRef<HTMLInputElement>(null);
   const [filePreviews, setFilePreviews] = useState<
     { name: string; size: number }[]
@@ -43,13 +45,6 @@ export const EditPlantForm: React.FC<EditPlantFormProps> = ({
         images: [],
       }}
       onSubmit={async (values, { setErrors }) => {
-        console.log('values: ', values);
-        console.log('selected to delete: ', selectedToDelete);
-
-        // if (Object.entries(values.images).length === 0) {
-        //   values.images = [];
-        // }
-
         const result = await editPlant({
           variables: {
             id: plantToEdit.id,
@@ -82,14 +77,22 @@ export const EditPlantForm: React.FC<EditPlantFormProps> = ({
                 placeholder='Odmiana Fascinator Tricolor jest...'
                 label='Opis'
               />
-              <PetFriendlyField variation='cat' name='isCatFriendly' />
+              <PetFriendlyField
+                checked={props.values.isCatFriendly}
+                variation='cat'
+                name='isCatFriendly'
+              />
               <PetFriendlySourceField
                 isDisabled={!props.values.isCatFriendly}
                 variation='cat'
                 name='isCatFriendlySource'
                 placeholder='np. adres strony internetowej lub fragment książki...'
               />
-              <PetFriendlyField variation='dog' name='isDogFriendly' />
+              <PetFriendlyField
+                checked={props.values.isDogFriendly}
+                variation='dog'
+                name='isDogFriendly'
+              />
               <PetFriendlySourceField
                 isDisabled={!props.values.isDogFriendly}
                 variation='dog'
