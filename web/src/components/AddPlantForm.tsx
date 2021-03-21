@@ -1,7 +1,6 @@
 import { Box, Button, VStack } from '@chakra-ui/react';
 import { Form, Formik, FormikErrors } from 'formik';
 import React, { useState } from 'react';
-import { useUploadFileTestMutation } from '../generated/graphql';
 import { FileField } from './FileField';
 import { FormField } from './FormField';
 import { PetFriendlyField } from './PetFriendlyField';
@@ -32,7 +31,6 @@ interface AddPlantFormProps {
 }
 
 export const AddPlantForm: React.FC<AddPlantFormProps> = ({ onFormSubmit }) => {
-  const [upload] = useUploadFileTestMutation();
   const [filePreviews, setFilePreviews] = useState<
     { name: string; size: number }[]
   >([]);

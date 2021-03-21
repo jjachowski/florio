@@ -1,12 +1,7 @@
-import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import { Box, IconButton, Image, ScaleFade } from "@chakra-ui/react";
-import React, { useState } from "react";
-import {
-  Image as CloudinaryImage,
-  Video,
-  Transformation,
-  CloudinaryContext,
-} from "cloudinary-react";
+import { ChevronLeftIcon, ChevronRightIcon } from '@chakra-ui/icons';
+import { Box, IconButton, ScaleFade } from '@chakra-ui/react';
+import { Image as CloudinaryImage, Transformation } from 'cloudinary-react';
+import React, { useState } from 'react';
 
 interface PlantGalleryProps {
   images: string[] | null | undefined;
@@ -36,30 +31,30 @@ export const PlantGallery: React.FC<PlantGalleryProps> = ({ images }) => {
   };
 
   return (
-    <Box position="relative">
+    <Box position='relative' maxW='40rem'>
       <IconButton
-        position="absolute"
-        h="100%"
-        w="10%"
+        position='absolute'
+        h='100%'
+        w='10%'
         roundedLeft={20}
         roundedRight={0}
-        background="rgba(0, 0, 0, 0.1)"
-        _hover={{ background: "rgba(0, 0, 0, 0.3)" }}
-        aria-label="Previous image"
+        background='rgba(0, 0, 0, 0.1)'
+        _hover={{ background: 'rgba(0, 0, 0, 0.3)' }}
+        aria-label='Previous image'
         fontSize={40}
         onClick={prevImage}
         zIndex={10}
         icon={<ChevronLeftIcon />}
       />
       <IconButton
-        position="absolute"
-        h="100%"
-        w="10%"
+        position='absolute'
+        h='100%'
+        w='10%'
         roundedLeft={0}
         roundedRight={20}
-        background="rgba(0, 0, 0, 0.1)"
-        _hover={{ background: "rgba(0, 0, 0, 0.3)" }}
-        aria-label="Previous image"
+        background='rgba(0, 0, 0, 0.1)'
+        _hover={{ background: 'rgba(0, 0, 0, 0.3)' }}
+        aria-label='Previous image'
         fontSize={40}
         onClick={nextImage}
         right={0}
@@ -74,26 +69,16 @@ export const PlantGallery: React.FC<PlantGalleryProps> = ({ images }) => {
           in={index === currentImageIndex}
         >
           {index === currentImageIndex && (
-            <Box shadow="md" rounded={20} overflow="hidden">
-              <CloudinaryImage cloudName="disxisevt" publicId={image}>
+            <Box shadow='md' rounded={20} overflow='hidden'>
+              <CloudinaryImage cloudName='disxisevt' publicId={image}>
                 <Transformation
-                  height="1600"
-                  quality="40"
-                  width="1200"
-                  crop="fill"
+                  height='1600'
+                  quality='40'
+                  width='1200'
+                  crop='fill'
                 />
               </CloudinaryImage>
             </Box>
-
-            // <Image
-            //   shadow='md'
-            //   rounded={20}
-            //   opacity={1}
-            //   objectFit='contain'
-            //   w='100%'
-            //   src={'https://res.cloudinary.com/disxisevt/image/upload/' + image}
-            //   alt='image'
-            // />
           )}
         </ScaleFade>
       ))}

@@ -52,7 +52,7 @@ export class OptimalConditions extends BaseEntity {
 
   @Field(() => Plant)
   @ManyToOne(() => Plant, (plant) => plant.optimalConditions, {
-    cascade: true,
+    onDelete: 'CASCADE',
   })
   plant: Plant;
 

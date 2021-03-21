@@ -1,3 +1,4 @@
+import { addResolveFunctionsToSchema } from 'graphql-tools';
 import {
   Arg,
   Ctx,
@@ -89,6 +90,13 @@ export class PlantResolver {
     await destroyImages(imagesToDelete);
 
     return { plant: plantToEdit, errors: uploadResult.errors };
+  }
+
+  @Mutation(() => Boolean)
+  async delete(@Arg('plantId', () => Int) plantId: number) {
+    const result = await Plant.delete({ id: plantId });
+    console.log(result);
+    return true;
   }
 
   @Mutation(() => OptimalConditionsResponse)

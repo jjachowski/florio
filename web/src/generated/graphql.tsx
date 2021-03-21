@@ -37,6 +37,7 @@ export type Plant = {
   score: Scalars['Float'];
   images: Array<Scalars['String']>;
   isReported: Scalars['Boolean'];
+  isDeleted: Scalars['Boolean'];
   primaryName: Scalars['String'];
   otherNames: Array<Scalars['String']>;
   optimalConditions?: Maybe<Array<OptimalConditions>>;
@@ -107,9 +108,9 @@ export type Mutation = {
   addLike: Scalars['Boolean'];
   removeLike: Scalars['Boolean'];
   editPlant: PlantResponse;
+  delete: Scalars['Boolean'];
   addOptimalConditions: OptimalConditionsResponse;
   addPlant: PlantResponse;
-  upload: Scalars['Boolean'];
   vote: Scalars['Boolean'];
   reportPlant: Scalars['Boolean'];
   register: UserResponse;
@@ -135,6 +136,11 @@ export type MutationEditPlantArgs = {
 };
 
 
+export type MutationDeleteArgs = {
+  plantId: Scalars['Int'];
+};
+
+
 export type MutationAddOptimalConditionsArgs = {
   data: OptimalConditionsInput;
   plantId: Scalars['Int'];
@@ -143,11 +149,6 @@ export type MutationAddOptimalConditionsArgs = {
 
 export type MutationAddPlantArgs = {
   data: PlantFieldsInput;
-};
-
-
-export type MutationUploadArgs = {
-  images: Array<Scalars['Upload']>;
 };
 
 
@@ -310,6 +311,16 @@ export type AddPlantMutation = (
   ) }
 );
 
+export type DeletePlantMutationVariables = Exact<{
+  plantId: Scalars['Int'];
+}>;
+
+
+export type DeletePlantMutation = (
+  { __typename?: 'Mutation' }
+  & Pick<Mutation, 'delete'>
+);
+
 export type DislikePlantMutationVariables = Exact<{
   plantId: Scalars['Int'];
 }>;
@@ -409,16 +420,6 @@ export type ReportPlantMutationVariables = Exact<{
 export type ReportPlantMutation = (
   { __typename?: 'Mutation' }
   & Pick<Mutation, 'reportPlant'>
-);
-
-export type UploadFileTestMutationVariables = Exact<{
-  images: Array<Scalars['Upload']>;
-}>;
-
-
-export type UploadFileTestMutation = (
-  { __typename?: 'Mutation' }
-  & Pick<Mutation, 'upload'>
 );
 
 export type VoteReportMutationVariables = Exact<{
@@ -653,6 +654,36 @@ export function useAddPlantMutation(baseOptions?: Apollo.MutationHookOptions<Add
 export type AddPlantMutationHookResult = ReturnType<typeof useAddPlantMutation>;
 export type AddPlantMutationResult = Apollo.MutationResult<AddPlantMutation>;
 export type AddPlantMutationOptions = Apollo.BaseMutationOptions<AddPlantMutation, AddPlantMutationVariables>;
+export const DeletePlantDocument = gql`
+    mutation DeletePlant($plantId: Int!) {
+  delete(plantId: $plantId)
+}
+    `;
+export type DeletePlantMutationFn = Apollo.MutationFunction<DeletePlantMutation, DeletePlantMutationVariables>;
+
+/**
+ * __useDeletePlantMutation__
+ *
+ * To run a mutation, you first call `useDeletePlantMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeletePlantMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deletePlantMutation, { data, loading, error }] = useDeletePlantMutation({
+ *   variables: {
+ *      plantId: // value for 'plantId'
+ *   },
+ * });
+ */
+export function useDeletePlantMutation(baseOptions?: Apollo.MutationHookOptions<DeletePlantMutation, DeletePlantMutationVariables>) {
+        return Apollo.useMutation<DeletePlantMutation, DeletePlantMutationVariables>(DeletePlantDocument, baseOptions);
+      }
+export type DeletePlantMutationHookResult = ReturnType<typeof useDeletePlantMutation>;
+export type DeletePlantMutationResult = Apollo.MutationResult<DeletePlantMutation>;
+export type DeletePlantMutationOptions = Apollo.BaseMutationOptions<DeletePlantMutation, DeletePlantMutationVariables>;
 export const DislikePlantDocument = gql`
     mutation DislikePlant($plantId: Int!) {
   removeLike(plantId: $plantId)
@@ -907,36 +938,6 @@ export function useReportPlantMutation(baseOptions?: Apollo.MutationHookOptions<
 export type ReportPlantMutationHookResult = ReturnType<typeof useReportPlantMutation>;
 export type ReportPlantMutationResult = Apollo.MutationResult<ReportPlantMutation>;
 export type ReportPlantMutationOptions = Apollo.BaseMutationOptions<ReportPlantMutation, ReportPlantMutationVariables>;
-export const UploadFileTestDocument = gql`
-    mutation UploadFileTest($images: [Upload!]!) {
-  upload(images: $images)
-}
-    `;
-export type UploadFileTestMutationFn = Apollo.MutationFunction<UploadFileTestMutation, UploadFileTestMutationVariables>;
-
-/**
- * __useUploadFileTestMutation__
- *
- * To run a mutation, you first call `useUploadFileTestMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUploadFileTestMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [uploadFileTestMutation, { data, loading, error }] = useUploadFileTestMutation({
- *   variables: {
- *      images: // value for 'images'
- *   },
- * });
- */
-export function useUploadFileTestMutation(baseOptions?: Apollo.MutationHookOptions<UploadFileTestMutation, UploadFileTestMutationVariables>) {
-        return Apollo.useMutation<UploadFileTestMutation, UploadFileTestMutationVariables>(UploadFileTestDocument, baseOptions);
-      }
-export type UploadFileTestMutationHookResult = ReturnType<typeof useUploadFileTestMutation>;
-export type UploadFileTestMutationResult = Apollo.MutationResult<UploadFileTestMutation>;
-export type UploadFileTestMutationOptions = Apollo.BaseMutationOptions<UploadFileTestMutation, UploadFileTestMutationVariables>;
 export const VoteReportDocument = gql`
     mutation VoteReport($reportId: Int!, $voteValue: Int!) {
   vote(reportId: $reportId, voteValue: $voteValue)

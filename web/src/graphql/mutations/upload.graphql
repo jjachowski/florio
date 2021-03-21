@@ -1,3 +1,0 @@
-mutation UploadFileTest($images: [Upload!]!) {
-  upload(images: $images)
-}

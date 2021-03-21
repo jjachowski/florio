@@ -1,0 +1,3 @@
+mutation DeletePlant($plantId: Int!) {
+  delete(plantId: $plantId)
+}

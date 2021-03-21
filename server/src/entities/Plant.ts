@@ -37,15 +37,21 @@ export class Plant extends BaseEntity {
   @Column('text', { array: true, nullable: false, unique: true, default: {} })
   images!: string[];
 
-  @OneToMany(() => Like, (vote) => vote.plant)
+  @OneToMany(() => Like, (vote) => vote.plant, { onDelete: 'CASCADE' })
   likes: Like[];
 
-  @OneToMany(() => PlantReport, (plantReport) => plantReport.plant)
+  @OneToMany(() => PlantReport, (plantReport) => plantReport.plant, {
+    onDelete: 'CASCADE',
+  })
   reports: PlantReport[];
 
   @Field()
   @Column({ default: false })
   isReported!: boolean;
+
+  @Field()
+  @Column({ default: false })
+  isDeleted!: boolean;
 
   @Field()
   @Column({ unique: true })
