@@ -1,4 +1,3 @@
-import { addResolveFunctionsToSchema } from 'graphql-tools';
 import {
   Arg,
   Ctx,
@@ -8,9 +7,11 @@ import {
   Query,
   Resolver,
   Root,
+  UseMiddleware,
 } from 'type-graphql';
 import { OptimalConditions } from '../entities/OptimalConditions';
 import { Plant } from '../entities/Plant';
+import { isAdmin } from '../middleware/isAuth';
 import { MyContext } from '../types';
 import { destroyImages, uploadImages } from '../utils/cloudinary';
 import { validateOptimalConditions } from '../utils/validators';
@@ -93,6 +94,7 @@ export class PlantResolver {
   }
 
   @Mutation(() => Boolean)
+  @UseMiddleware(isAdmin)
   async delete(@Arg('plantId', () => Int) plantId: number) {
     const result = await Plant.delete({ id: plantId });
     console.log(result);

@@ -7,6 +7,7 @@ import {
   AddPlantFormInput,
   AddPlantFormValue,
 } from '../../components/AddPlantForm';
+import { Card } from '../../components/Card';
 import { Layout } from '../../components/Layout';
 import { Navbar } from '../../components/Navbar';
 import { useAddPlantMutation } from '../../generated/graphql';
@@ -46,8 +47,10 @@ const AddPlant: React.FC = ({}) => {
     <>
       <Navbar />
       <Layout mt={4} variant='regular'>
-        <Heading>Dodaj nową roślinę</Heading>
-        <AddPlantForm onFormSubmit={onFormSubmit} />
+        <Card mt={10}>
+          <Heading>Dodaj nową roślinę</Heading>
+          <AddPlantForm onFormSubmit={onFormSubmit} />
+        </Card>
       </Layout>
     </>
   );

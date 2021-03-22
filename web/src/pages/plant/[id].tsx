@@ -52,20 +52,32 @@ const Plant: React.FC = () => {
   }, [data]);
 
   const onDeletePlant = async () => {
-    const result = await deletePlant({ variables: { plantId: id } });
-    console.log('delete result: ', result);
-    if (result.data?.delete) {
-      toast({
-        status: 'success',
-        title: 'Pomyślnie usunięto roślinę',
-        duration: 10000,
-      });
-      router.push('/');
-    } else {
-      toast({
-        status: 'error',
-        title: 'Coś poszło nie tak, spróbuj ponownie za chilę',
-      });
+    try {
+      const result = await deletePlant({ variables: { plantId: id } });
+      if (result.data?.delete) {
+        toast({
+          status: 'success',
+          title: 'Pomyślnie usunięto roślinę',
+          duration: 10000,
+        });
+        router.push('/');
+      } else {
+        toast({
+          status: 'error',
+          title: 'Coś poszło nie tak, spróbuj ponownie za chilę',
+        });
+      }
+    } catch (error) {
+      if (
+        error
+          .toString()
+          .includes('you dont have sufficient privilges to execute this action')
+      ) {
+        toast({
+          status: 'error',
+          title: 'Nie masz wymaganych uprawnień aby przeprowadzić tę akcję',
+        });
+      }
     }
   };
   return (
@@ -79,7 +91,7 @@ const Plant: React.FC = () => {
             </Box>
           </Flex>
           <Flex direction='column' w='60%'>
-            <Box mr='auto' maxW='60rem'>
+            <Box mr='auto' maxW='60rem' minW='40rem'>
               <Card isFlex direction='column' mr='auto'>
                 <Flex direction='row'>
                   <Flex direction='column'>
