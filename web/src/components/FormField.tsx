@@ -23,6 +23,9 @@ export const FormField: React.FC<FormFieldProps> = ({
   ...props
 }) => {
   const [, { error }] = useField(props);
+  if (error) {
+    console.log(error);
+  }
 
   return (
     <Field name={props.name}>

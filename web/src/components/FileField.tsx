@@ -7,14 +7,13 @@ import {
   Button,
   Flex,
 } from '@chakra-ui/react';
-import { Field } from 'formik';
+import { Field, useField } from 'formik';
 import React, { useState } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FileInput } from './FileInput';
 
 interface FileFieldProps {
   name: string;
-  error?: string;
   isRequired?: boolean;
   filePreviews: { name: string; size: number }[];
   onAccepted: (event: FileList) => void;
@@ -22,7 +21,6 @@ interface FileFieldProps {
 }
 
 export const FileField: React.FC<FileFieldProps> = ({
-  error,
   onAccepted,
   filePreviews,
   hiddenFileInput,
@@ -35,9 +33,8 @@ export const FileField: React.FC<FileFieldProps> = ({
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
     onDropAccepted: (val) => onAccepted((val as unknown) as FileList),
   });
-  // const handleClick = () => {
-  //   hiddenFileInput!.current!.click();
-  // };
+  const [, { error }] = useField(props);
+
   return (
     <Field name={props.name}>
       {() => (

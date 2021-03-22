@@ -12,6 +12,7 @@ import {
 import { OptimalConditions } from '../entities/OptimalConditions';
 import { Plant } from '../entities/Plant';
 import { isAdmin } from '../middleware/isAuth';
+import { FieldError } from '../shared/graphqlTypes';
 import { MyContext } from '../types';
 import { destroyImages, uploadImages } from '../utils/cloudinary';
 import { validateOptimalConditions } from '../utils/validators';
@@ -155,10 +156,18 @@ export class PlantResolver {
     });
 
     // const promises: Promise<any>[] = [];
+    const errors: FieldError[] = [];
+    if (images.length < 1) {
+      errors.push({
+        field: 'images',
+        message: 'Musisz dodać przynajmniej jedno zdjęcie rośliny',
+      });
+      return { errors };
+    }
 
-    const resultdd = await uploadImages(images);
-    plant.images = resultdd.images;
-    const errors = resultdd.errors;
+    const uploadResult = await uploadImages(images);
+    plant.images = uploadResult.images;
+    uploadResult.errors.forEach((e) => errors.push(e));
 
     try {
       await plant.save();

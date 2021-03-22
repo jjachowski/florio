@@ -44,10 +44,8 @@ export const AddPlantForm: React.FC<AddPlantFormProps> = ({ onFormSubmit }) => {
         description: '',
         isCatFriendly: false,
         isCatFriendlySource: '',
-
         isDogFriendly: false,
         isDogFriendlySource: '',
-
         images: [] as any,
       }}
       onReset={(_, { setFieldValue }) => {
@@ -122,6 +120,7 @@ export const AddPlantForm: React.FC<AddPlantFormProps> = ({ onFormSubmit }) => {
               colorScheme='green'
               isLoading={props.isSubmitting}
               type='submit'
+              isDisabled={!props.isValid}
               mr={4}
             >
               Zapisz
