@@ -1,4 +1,4 @@
-import { Box, Button, VStack } from '@chakra-ui/react';
+import { Box, Button, Link, VStack } from '@chakra-ui/react';
 import { Form, Formik, FormikErrors } from 'formik';
 import React, { useState } from 'react';
 import { FileField } from './FileField';
@@ -114,7 +114,6 @@ export const AddPlantForm: React.FC<AddPlantFormProps> = ({ onFormSubmit }) => {
                 }}
               />
             </VStack>
-
             <Button
               mt={4}
               colorScheme='green'

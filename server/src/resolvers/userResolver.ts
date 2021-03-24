@@ -173,7 +173,7 @@ export class UserResolver {
         username: credentials.username,
         password: hashedPassword,
         email: credentials.email,
-        accountType: AccountType.admin,
+        accountType: AccountType.user,
       }).save();
     } catch (err) {
       console.log(err);

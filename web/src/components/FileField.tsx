@@ -1,16 +1,7 @@
-import {
-  FormControl,
-  FormLabel,
-  Input,
-  FormErrorMessage,
-  Box,
-  Button,
-  Flex,
-} from '@chakra-ui/react';
+import { Box, Flex, FormControl, FormErrorMessage } from '@chakra-ui/react';
 import { Field, useField } from 'formik';
-import React, { useState } from 'react';
+import React from 'react';
 import { useDropzone } from 'react-dropzone';
-import { FileInput } from './FileInput';
 
 interface FileFieldProps {
   name: string;

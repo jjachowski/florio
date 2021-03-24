@@ -1,4 +1,4 @@
-import { Box, Button, useToast } from '@chakra-ui/react';
+import { Box, Button, Heading, useToast } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/dist/client/router';
 import React from 'react';
@@ -19,6 +19,7 @@ const Login: React.FC<LoginProps> = ({}) => {
       <Navbar />
       <Layout variant='regular'>
         <Card mt={10}>
+          <Heading mb={10}>Logowanie</Heading>
           <Formik
             initialValues={{ usernameOrEmail: '', password: '' }}
             onSubmit={async (values, { setErrors }) => {
@@ -47,12 +48,16 @@ const Login: React.FC<LoginProps> = ({}) => {
                   <FormField
                     name='usernameOrEmail'
                     isRequired
+                    maxLength={20}
+                    minLength={5}
                     placeholder='janusz kowalski'
                     label='Nazwa użytkownika lub email'
                   />
                   <FormField
                     name='password'
                     isRequired
+                    maxLength={50}
+                    minLength={5}
                     placeholder='SuperStr0ngP@ssword'
                     label='Hasło'
                     type='password'

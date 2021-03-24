@@ -4,6 +4,7 @@ import {
   Flex,
   Heading,
   IconButton,
+  Link,
   Menu,
   MenuButton,
   MenuItem,
@@ -22,7 +23,12 @@ import { LikePlant } from '../../components/LikePlant';
 import { Navbar } from '../../components/Navbar';
 import { PlantGallery } from '../../components/PlantGallery';
 import { PlantOtherNames } from '../../components/PlantOtherNames';
-import { useDeletePlantMutation, usePlantQuery } from '../../generated/graphql';
+import {
+  useDeletePlantMutation,
+  useMeQuery,
+  usePlantQuery,
+} from '../../generated/graphql';
+import { AccountType } from '../../utils/enums';
 import {
   conditionsToStringArray,
   intToSeason,
@@ -37,6 +43,7 @@ const Plant: React.FC = () => {
   const [deletePlant] = useDeletePlantMutation();
   const toast = useToast();
   const router = useRouter();
+  const { data: meData } = useMeQuery();
 
   useEffect(() => {
     if (!selectedSeason && data) {
@@ -108,22 +115,26 @@ const Plant: React.FC = () => {
                   </Flex>
 
                   <Flex direction='row' ml='auto'>
-                    <ConfirmButton
-                      title='Usunięcie rośliny'
-                      question='Czy na pewno chcesz usunąć roślinę?'
-                      confirmText='tak'
-                      colorScheme='red'
-                      placement='left'
-                      onYesClicked={onDeletePlant}
-                    >
-                      <IconButton
-                        aria-label='Usuń roślinę'
-                        mr={4}
-                        rounded='full'
+                    {(meData?.me?.accountType === AccountType.admin ||
+                      meData?.me?.id === data?.plant?.creator.id) && (
+                      <ConfirmButton
+                        title='Usunięcie rośliny'
+                        question='Czy na pewno chcesz usunąć roślinę?'
+                        confirmText='tak'
                         colorScheme='red'
-                        icon={<DeleteIcon />}
-                      />
-                    </ConfirmButton>
+                        placement='left'
+                        onYesClicked={onDeletePlant}
+                      >
+                        <IconButton
+                          aria-label='Usuń roślinę'
+                          mr={4}
+                          rounded='full'
+                          colorScheme='red'
+                          icon={<DeleteIcon />}
+                        />
+                      </ConfirmButton>
+                    )}
+
                     <Menu>
                       <MenuButton
                         as={IconButton}
@@ -132,19 +143,29 @@ const Plant: React.FC = () => {
                       />
 
                       <MenuList>
-                        <MenuItem
-                          onClick={() =>
-                            router.push(`/plant/${data?.plant?.id}/edit`)
-                          }
-                        >
-                          Edytuj dane o roślinie
-                        </MenuItem>
-                        <MenuItem
-                          onClick={() =>
-                            router.push(`/plant/${data?.plant?.id}/conditions`)
-                          }
-                        >
-                          Dodaj/edytuj optymalne warunki
+                        {(meData?.me?.accountType === AccountType.admin ||
+                          meData?.me?.id === data?.plant?.creator.id) && (
+                          <>
+                            <MenuItem
+                              onClick={() =>
+                                router.push(`/plant/${data?.plant?.id}/edit`)
+                              }
+                            >
+                              Edytuj dane o roślinie
+                            </MenuItem>
+                            <MenuItem
+                              onClick={() =>
+                                router.push(
+                                  `/plant/${data?.plant?.id}/conditions`
+                                )
+                              }
+                            >
+                              Dodaj/edytuj optymalne warunki
+                            </MenuItem>
+                          </>
+                        )}
+                        <MenuItem onClick={() => console.log('todo :)')}>
+                          Zaproponuj zmianę
                         </MenuItem>
                         <MenuItem
                           onClick={() =>

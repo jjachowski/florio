@@ -1,12 +1,11 @@
 import { AddIcon } from '@chakra-ui/icons';
-import { Button, Link, VStack } from '@chakra-ui/react';
+import { Button, VStack } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 import React from 'react';
 import { Layout } from '../components/Layout';
 import { Navbar } from '../components/Navbar';
 import { PlantCard } from '../components/PlantCard';
-import { usePlantsPreviewQuery, usePlantsQuery } from '../generated/graphql';
-import NavLink from 'next/link';
-import { useRouter } from 'next/router';
+import { usePlantsPreviewQuery } from '../generated/graphql';
 const Index = () => {
   const { data } = usePlantsPreviewQuery();
   const router = useRouter();
