@@ -11,10 +11,11 @@ import {
 } from 'type-graphql';
 import { OptimalConditions } from '../entities/OptimalConditions';
 import { Plant } from '../entities/Plant';
+import { TemporaryPlant } from '../entities/TemporaryPlant';
 import { isAdmin } from '../middleware/isAuth';
 import { FieldError } from '../shared/graphqlTypes';
 import { MyContext } from '../types';
-import { destroyImages, uploadImages } from '../utils/cloudinary';
+import { uploadImages } from '../utils/cloudinary';
 import { validateOptimalConditions } from '../utils/validators';
 import { OptimalConditionsInput } from './types/OptimalConditionsInput';
 import { OptimalConditionsResponse } from './types/OptimalConditionsResponse';
@@ -85,13 +86,19 @@ export class PlantResolver {
       ...plantToEdit.images.filter((i) => !imagesToDelete.includes(i)),
     ];
 
-    Object.assign(plantToEdit, editData);
-    plantToEdit.images = newImages;
+    const temporaryPlant = TemporaryPlant.create();
+
+    Object.assign(temporaryPlant, editData);
+    temporaryPlant.images = newImages;
+    // plantToEdit.images = newImages;
+    temporaryPlant.save();
+    plantToEdit.temporaryPlant = temporaryPlant;
     plantToEdit.save();
 
-    await destroyImages(imagesToDelete);
+    // TODO: destroy when changes approved
+    // await destroyImages(imagesToDelete);
 
-    return { plant: plantToEdit, errors: uploadResult.errors };
+    return { plant: temporaryPlant, errors: uploadResult.errors };
   }
 
   @Mutation(() => Boolean)
@@ -147,7 +154,7 @@ export class PlantResolver {
   ): Promise<PlantResponse> {
     const { description, primaryName, otherNames, images } = data;
 
-    const plant = Plant.create({
+    const plant = TemporaryPlant.create({
       description,
       creatorId: req.session.userId,
       primaryName,
@@ -183,6 +190,7 @@ export class PlantResolver {
           message: 'Roślina o tej nazwie już istnieje',
         });
     }
+
     return { plant, errors: errors.length > 0 ? errors : undefined };
   }
 }

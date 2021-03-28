@@ -16,10 +16,12 @@ import { OptimalConditions } from './entities/OptimalConditions';
 import { Plant } from './entities/Plant';
 import { PlantReport } from './entities/PlantReport';
 import { ReportVote } from './entities/ReportVote';
+import { TemporaryPlant } from './entities/TemporaryPlant';
 import { User } from './entities/User';
 import { LikeResolver } from './resolvers/likeResolver';
 import { PlantResolver } from './resolvers/plantResolver';
 import { ReportResolver } from './resolvers/reportResolver';
+import { TemporaryPlantResolver } from './resolvers/temporaryPlantResolver';
 import { UserResolver } from './resolvers/userResolver';
 
 const main = async () => {
@@ -33,13 +35,16 @@ const main = async () => {
     logging: true,
     synchronize: true,
     migrations: [path.join(__dirname, './migrations/*')],
-    entities: [User, Plant, OptimalConditions, Like, PlantReport, ReportVote],
+    entities: [
+      User,
+      Plant,
+      OptimalConditions,
+      Like,
+      PlantReport,
+      ReportVote,
+      TemporaryPlant,
+    ],
   });
-
-  // const s3 = new S3({
-  //   accessKeyId: 'AKIAX5MNCAA4455GVVM4',
-  //   secretAccessKey: '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',
-  // });
 
   const {
     CLOUDINARY_CLOUD_NAME,
@@ -88,7 +93,13 @@ const main = async () => {
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
-      resolvers: [UserResolver, PlantResolver, LikeResolver, ReportResolver],
+      resolvers: [
+        UserResolver,
+        PlantResolver,
+        TemporaryPlantResolver,
+        LikeResolver,
+        ReportResolver,
+      ],
       validate: false,
     }),
     context: ({ req, res }) => ({

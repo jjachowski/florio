@@ -1,5 +1,6 @@
 import { ObjectType, Field } from 'type-graphql';
 import { Plant } from '../../entities/Plant';
+import { TemporaryPlant } from '../../entities/TemporaryPlant';
 import { FieldError } from '../../shared/graphqlTypes';
 
 @ObjectType()
@@ -8,5 +9,5 @@ export class PlantResponse {
   errors?: FieldError[];
 
   @Field(() => Plant, { nullable: true })
-  plant?: Plant;
+  plant?: TemporaryPlant;
 }

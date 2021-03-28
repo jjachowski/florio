@@ -9,6 +9,7 @@ import {
 } from '../../components/AddPlantForm';
 import { Card } from '../../components/Card';
 import { Layout } from '../../components/Layout';
+import { NavagationButtons } from '../../components/NavagationButtons';
 import { Navbar } from '../../components/Navbar';
 import { useAddPlantMutation } from '../../generated/graphql';
 import { toErrorMap } from '../../utils/toFormikErrorMap';
@@ -46,8 +47,9 @@ const AddPlant: React.FC = ({}) => {
   return (
     <>
       <Navbar />
-      <Layout mt={4} variant='regular'>
-        <Card mt={10}>
+      <Layout mt={8} variant='regular'>
+        <NavagationButtons />
+        <Card mt={8}>
           <Heading>Dodaj nową roślinę</Heading>
           <AddPlantForm onFormSubmit={onFormSubmit} />
         </Card>

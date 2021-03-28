@@ -4,25 +4,28 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { OptimalConditions } from './OptimalConditions';
-import { User } from './User';
 import { Like } from './Like';
+import { OptimalConditions } from './OptimalConditions';
+import { Plant } from './Plant';
 import { PlantReport } from './PlantReport';
-import { TemporaryPlant } from './TemporaryPlant';
+import { User } from './User';
 
 @ObjectType()
 @Entity()
-export class Plant extends BaseEntity {
+export class TemporaryPlant extends BaseEntity {
   @Field()
   @PrimaryGeneratedColumn()
   id!: number;
+
+  @Field(() => Plant)
+  @OneToOne(() => Plant, { nullable: true })
+  originalPlant: Plant;
 
   @Field()
   @Column()
@@ -70,11 +73,6 @@ export class Plant extends BaseEntity {
     nullable: true,
   })
   optimalConditions: OptimalConditions[];
-
-  @Field(() => TemporaryPlant)
-  @OneToOne(() => TemporaryPlant, { nullable: true })
-  @JoinColumn()
-  temporaryPlant?: TemporaryPlant;
 
   @Field()
   @Column()
