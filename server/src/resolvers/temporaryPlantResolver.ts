@@ -1,4 +1,4 @@
-import { FieldResolver, Query, Resolver, Root } from 'type-graphql';
+import { Arg, FieldResolver, Int, Query, Resolver, Root } from 'type-graphql';
 import { TemporaryPlant } from '../entities/TemporaryPlant';
 
 @Resolver(TemporaryPlant)
@@ -16,5 +16,14 @@ export class TemporaryPlantResolver {
   async temporaryPlants(): Promise<TemporaryPlant[]> {
     const temporaryPlants = await TemporaryPlant.find();
     return temporaryPlants;
+  }
+
+  @Query(() => TemporaryPlant, { nullable: true })
+  async temporaryPlant(
+    @Arg('id', () => Int) id: number
+  ): Promise<TemporaryPlant | undefined> {
+    const plant = await TemporaryPlant.findOne(id);
+
+    return plant;
   }
 }

@@ -1,5 +1,8 @@
 import React from 'react';
-import { FullPlantFragment } from '../generated/graphql';
+import {
+  FullPlantFragment,
+  FullTemporaryPlantFragment,
+} from '../generated/graphql';
 import { Card } from './Card';
 import { FaDog, FaCat } from 'react-icons/fa';
 import {
@@ -14,7 +17,7 @@ import {
 import { BsPersonFill } from 'react-icons/bs';
 
 interface EmblemsProps {
-  plant: FullPlantFragment;
+  plant: FullPlantFragment | FullTemporaryPlantFragment;
 }
 
 export const Emblems: React.FC<EmblemsProps> = ({ plant }) => {

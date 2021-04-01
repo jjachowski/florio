@@ -1,0 +1,5 @@
+query TemporaryPlant($id: Int!) {
+  temporaryPlant(id: $id) {
+    ...FullTemporaryPlant
+  }
+}

@@ -1,4 +1,4 @@
-fragment PlantPreview on Plant {
+fragment TemporaryPlantPreview on TemporaryPlant {
   id
   primaryName
   otherNames

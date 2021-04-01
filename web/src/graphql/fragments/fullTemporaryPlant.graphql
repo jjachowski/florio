@@ -1,0 +1,20 @@
+fragment FullTemporaryPlant on TemporaryPlant {
+  id
+  creator {
+    id
+    username
+  }
+  createdAt
+  updatedAt
+  primaryName
+  otherNames
+  images
+  isCatFriendly
+  isCatFriendlySource
+  isDogFriendly
+  isDogFriendlySource
+  description
+  optimalConditions {
+    ...OptimalConditions
+  }
+}

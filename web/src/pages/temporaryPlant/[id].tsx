@@ -26,6 +26,7 @@ import {
   useDeletePlantMutation,
   useMeQuery,
   usePlantQuery,
+  useTemporaryPlantQuery,
 } from '../../generated/graphql';
 import { AccountType } from '../../utils/enums';
 import {
@@ -35,9 +36,9 @@ import {
 } from '../../utils/seasonConditionsHelpers';
 import useGetIdFromRoute from '../../utils/useGetIdFromRoute';
 
-const Plant: React.FC = () => {
+const TemporaryPlant: React.FC = () => {
   const id = useGetIdFromRoute();
-  const { data } = usePlantQuery({ variables: { id } });
+  const { data } = useTemporaryPlantQuery({ variables: { id } });
   const [selectedSeason, setSelectedSeason] = useState<Season>(null);
   const [deletePlant] = useDeletePlantMutation();
   const toast = useToast();
@@ -46,7 +47,7 @@ const Plant: React.FC = () => {
 
   useEffect(() => {
     if (!selectedSeason && data) {
-      const intSeasons = data?.plant?.optimalConditions
+      const intSeasons = data?.temporaryPlant?.optimalConditions
         ?.map((o) => o.season)
         .sort();
 
@@ -93,7 +94,7 @@ const Plant: React.FC = () => {
         <Flex direction='row'>
           <Flex direction='column' w='40%' mr={10}>
             <Box ml='auto'>
-              <PlantGallery images={data?.plant?.images} />
+              <PlantGallery images={data?.temporaryPlant?.images} />
             </Box>
           </Flex>
           <Flex direction='column' w='60%'>
@@ -102,20 +103,22 @@ const Plant: React.FC = () => {
                 <Flex direction='row'>
                   <Flex direction='column'>
                     <Flex as={Heading} size='lg' align='center'>
-                      <LikePlant plantId={data?.plant?.id} />
-                      {data?.plant?.primaryName}
+                      <LikePlant plantId={data?.temporaryPlant?.id} />
+                      {data?.temporaryPlant?.primaryName}
                     </Flex>
 
                     <Box ml='auto'>
-                      {data?.plant && (
-                        <PlantOtherNames names={data?.plant.otherNames} />
+                      {data?.temporaryPlant && (
+                        <PlantOtherNames
+                          names={data?.temporaryPlant.otherNames}
+                        />
                       )}
                     </Box>
                   </Flex>
 
                   <Flex direction='row' ml='auto'>
                     {(meData?.me?.accountType === AccountType.admin ||
-                      meData?.me?.id === data?.plant?.creator.id) && (
+                      meData?.me?.id === data?.temporaryPlant?.creator.id) && (
                       <ConfirmButton
                         title='Usunięcie rośliny'
                         question='Czy na pewno chcesz usunąć roślinę?'
@@ -143,11 +146,14 @@ const Plant: React.FC = () => {
 
                       <MenuList>
                         {(meData?.me?.accountType === AccountType.admin ||
-                          meData?.me?.id === data?.plant?.creator.id) && (
+                          meData?.me?.id ===
+                            data?.temporaryPlant?.creator.id) && (
                           <>
                             <MenuItem
                               onClick={() =>
-                                router.push(`/plant/${data?.plant?.id}/edit`)
+                                router.push(
+                                  `/plant/${data?.temporaryPlant?.id}/edit`
+                                )
                               }
                             >
                               Edytuj dane o roślinie
@@ -155,7 +161,7 @@ const Plant: React.FC = () => {
                             <MenuItem
                               onClick={() =>
                                 router.push(
-                                  `/plant/${data?.plant?.id}/conditions`
+                                  `/plant/${data?.temporaryPlant?.id}/conditions`
                                 )
                               }
                             >
@@ -168,7 +174,9 @@ const Plant: React.FC = () => {
                         </MenuItem>
                         <MenuItem
                           onClick={() =>
-                            router.push(`/plant/${data?.plant?.id}/report`)
+                            router.push(
+                              `/plant/${data?.temporaryPlant?.id}/report`
+                            )
                           }
                         >
                           <WarningTwoIcon mr={2} /> Zgłoś
@@ -179,25 +187,27 @@ const Plant: React.FC = () => {
                 </Flex>
                 <Flex direction='row' align='center'>
                   <Box ml='auto'>
-                    {data?.plant && <Emblems plant={data?.plant} />}
+                    {data?.temporaryPlant && (
+                      <Emblems plant={data?.temporaryPlant} />
+                    )}
                   </Box>
                 </Flex>
 
-                <Box unselectable='on'>{data?.plant?.description}</Box>
+                <Box unselectable='on'>{data?.temporaryPlant?.description}</Box>
               </Card>
-              {data?.plant?.optimalConditions &&
-                data?.plant?.optimalConditions.length > 0 && (
+              {data?.temporaryPlant?.optimalConditions &&
+                data?.temporaryPlant?.optimalConditions.length > 0 && (
                   <Card mt={4} pt={0}>
                     <ConditionSeasonsSwitch
                       my={4}
                       currentlySelected={selectedSeason}
                       onSeasonSelected={setSelectedSeason}
                       seasonsToDisplay={conditionsToStringArray(
-                        data?.plant?.optimalConditions
+                        data?.temporaryPlant?.optimalConditions
                       )}
                     />
                     <ConditionBars
-                      conditions={data?.plant?.optimalConditions}
+                      conditions={data?.temporaryPlant?.optimalConditions}
                       selectedSeason={selectedSeason}
                     />
                   </Card>
@@ -210,4 +220,4 @@ const Plant: React.FC = () => {
   );
 };
 
-export default Plant;
+export default TemporaryPlant;

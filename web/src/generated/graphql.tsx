@@ -21,11 +21,18 @@ export type Query = {
   plant?: Maybe<Plant>;
   plantNames: Array<PlantName>;
   reportedPlants: Array<ReportedPlantResponse>;
+  temporaryPlants: Array<TemporaryPlant>;
+  temporaryPlant?: Maybe<TemporaryPlant>;
   me?: Maybe<User>;
 };
 
 
 export type QueryPlantArgs = {
+  id: Scalars['Int'];
+};
+
+
+export type QueryTemporaryPlantArgs = {
   id: Scalars['Int'];
 };
 
@@ -41,6 +48,7 @@ export type Plant = {
   primaryName: Scalars['String'];
   otherNames: Array<Scalars['String']>;
   optimalConditions?: Maybe<Array<OptimalConditions>>;
+  temporaryPlant: TemporaryPlant;
   description: Scalars['String'];
   isCatFriendly: Scalars['Boolean'];
   isCatFriendlySource?: Maybe<Scalars['String']>;
@@ -78,6 +86,29 @@ export type OptimalConditions = {
   plant: Plant;
   createdAt: Scalars['String'];
   updatedAt: Scalars['String'];
+};
+
+export type TemporaryPlant = {
+  __typename?: 'TemporaryPlant';
+  id: Scalars['Float'];
+  originalPlant: Plant;
+  creatorId: Scalars['Float'];
+  creator: User;
+  score: Scalars['Float'];
+  images: Array<Scalars['String']>;
+  isReported: Scalars['Boolean'];
+  isDeleted: Scalars['Boolean'];
+  primaryName: Scalars['String'];
+  otherNames: Array<Scalars['String']>;
+  optimalConditions?: Maybe<Array<OptimalConditions>>;
+  description: Scalars['String'];
+  isCatFriendly: Scalars['Boolean'];
+  isCatFriendlySource?: Maybe<Scalars['String']>;
+  isDogFriendly: Scalars['Boolean'];
+  isDogFriendlySource?: Maybe<Scalars['String']>;
+  createdAt: Scalars['String'];
+  updatedAt: Scalars['String'];
+  descriptionSnippet: Scalars['String'];
 };
 
 export type PlantName = {
@@ -238,6 +269,18 @@ export type FullPlantFragment = (
   )>> }
 );
 
+export type FullTemporaryPlantFragment = (
+  { __typename?: 'TemporaryPlant' }
+  & Pick<TemporaryPlant, 'id' | 'createdAt' | 'updatedAt' | 'primaryName' | 'otherNames' | 'images' | 'isCatFriendly' | 'isCatFriendlySource' | 'isDogFriendly' | 'isDogFriendlySource' | 'description'>
+  & { creator: (
+    { __typename?: 'User' }
+    & Pick<User, 'id' | 'username'>
+  ), optimalConditions?: Maybe<Array<(
+    { __typename?: 'OptimalConditions' }
+    & OptimalConditionsFragment
+  )>> }
+);
+
 export type OptimalConditionsFragment = (
   { __typename?: 'OptimalConditions' }
   & Pick<OptimalConditions, 'season' | 'water' | 'sun' | 'airHumidityLow' | 'airHumidityHigh' | 'temperatureLow' | 'temperatureHigh'>
@@ -245,7 +288,7 @@ export type OptimalConditionsFragment = (
 
 export type PlantPreviewFragment = (
   { __typename?: 'Plant' }
-  & Pick<Plant, 'id' | 'createdAt' | 'updatedAt' | 'primaryName' | 'otherNames' | 'images' | 'isCatFriendly' | 'isDogFriendly' | 'descriptionSnippet'>
+  & Pick<Plant, 'id' | 'primaryName' | 'otherNames' | 'images' | 'isCatFriendly' | 'isDogFriendly' | 'descriptionSnippet'>
   & { creator: (
     { __typename?: 'User' }
     & Pick<User, 'username'>
@@ -264,6 +307,15 @@ export type PlantReportFragment = (
   ), report: (
     { __typename?: 'PlantReport' }
     & Pick<PlantReport, 'id' | 'score' | 'reason'>
+  ) }
+);
+
+export type TemporaryPlantPreviewFragment = (
+  { __typename?: 'TemporaryPlant' }
+  & Pick<TemporaryPlant, 'id' | 'primaryName' | 'otherNames' | 'images' | 'isCatFriendly' | 'isDogFriendly' | 'descriptionSnippet'>
+  & { creator: (
+    { __typename?: 'User' }
+    & Pick<User, 'username'>
   ) }
 );
 
@@ -501,6 +553,30 @@ export type ReportedPlantsQuery = (
   )> }
 );
 
+export type TemporaryPlantQueryVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type TemporaryPlantQuery = (
+  { __typename?: 'Query' }
+  & { temporaryPlant?: Maybe<(
+    { __typename?: 'TemporaryPlant' }
+    & FullTemporaryPlantFragment
+  )> }
+);
+
+export type TemporaryPlantsPreviewQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TemporaryPlantsPreviewQuery = (
+  { __typename?: 'Query' }
+  & { temporaryPlants: Array<(
+    { __typename?: 'TemporaryPlant' }
+    & TemporaryPlantPreviewFragment
+  )> }
+);
+
 export const OptimalConditionsFragmentDoc = gql`
     fragment OptimalConditions on OptimalConditions {
   season
@@ -534,11 +610,31 @@ export const FullPlantFragmentDoc = gql`
   }
 }
     ${OptimalConditionsFragmentDoc}`;
+export const FullTemporaryPlantFragmentDoc = gql`
+    fragment FullTemporaryPlant on TemporaryPlant {
+  id
+  creator {
+    id
+    username
+  }
+  createdAt
+  updatedAt
+  primaryName
+  otherNames
+  images
+  isCatFriendly
+  isCatFriendlySource
+  isDogFriendly
+  isDogFriendlySource
+  description
+  optimalConditions {
+    ...OptimalConditions
+  }
+}
+    ${OptimalConditionsFragmentDoc}`;
 export const PlantPreviewFragmentDoc = gql`
     fragment PlantPreview on Plant {
   id
-  createdAt
-  updatedAt
   primaryName
   otherNames
   images
@@ -567,6 +663,20 @@ export const PlantReportFragmentDoc = gql`
     score
     reason
   }
+}
+    `;
+export const TemporaryPlantPreviewFragmentDoc = gql`
+    fragment TemporaryPlantPreview on TemporaryPlant {
+  id
+  primaryName
+  otherNames
+  images
+  isCatFriendly
+  isDogFriendly
+  creator {
+    username
+  }
+  descriptionSnippet
 }
     `;
 export const AddOptimalConditionsDocument = gql`
@@ -1169,3 +1279,68 @@ export function useReportedPlantsLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type ReportedPlantsQueryHookResult = ReturnType<typeof useReportedPlantsQuery>;
 export type ReportedPlantsLazyQueryHookResult = ReturnType<typeof useReportedPlantsLazyQuery>;
 export type ReportedPlantsQueryResult = Apollo.QueryResult<ReportedPlantsQuery, ReportedPlantsQueryVariables>;
+export const TemporaryPlantDocument = gql`
+    query TemporaryPlant($id: Int!) {
+  temporaryPlant(id: $id) {
+    ...FullTemporaryPlant
+  }
+}
+    ${FullTemporaryPlantFragmentDoc}`;
+
+/**
+ * __useTemporaryPlantQuery__
+ *
+ * To run a query within a React component, call `useTemporaryPlantQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTemporaryPlantQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTemporaryPlantQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useTemporaryPlantQuery(baseOptions: Apollo.QueryHookOptions<TemporaryPlantQuery, TemporaryPlantQueryVariables>) {
+        return Apollo.useQuery<TemporaryPlantQuery, TemporaryPlantQueryVariables>(TemporaryPlantDocument, baseOptions);
+      }
+export function useTemporaryPlantLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TemporaryPlantQuery, TemporaryPlantQueryVariables>) {
+          return Apollo.useLazyQuery<TemporaryPlantQuery, TemporaryPlantQueryVariables>(TemporaryPlantDocument, baseOptions);
+        }
+export type TemporaryPlantQueryHookResult = ReturnType<typeof useTemporaryPlantQuery>;
+export type TemporaryPlantLazyQueryHookResult = ReturnType<typeof useTemporaryPlantLazyQuery>;
+export type TemporaryPlantQueryResult = Apollo.QueryResult<TemporaryPlantQuery, TemporaryPlantQueryVariables>;
+export const TemporaryPlantsPreviewDocument = gql`
+    query TemporaryPlantsPreview {
+  temporaryPlants {
+    ...TemporaryPlantPreview
+  }
+}
+    ${TemporaryPlantPreviewFragmentDoc}`;
+
+/**
+ * __useTemporaryPlantsPreviewQuery__
+ *
+ * To run a query within a React component, call `useTemporaryPlantsPreviewQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTemporaryPlantsPreviewQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useTemporaryPlantsPreviewQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useTemporaryPlantsPreviewQuery(baseOptions?: Apollo.QueryHookOptions<TemporaryPlantsPreviewQuery, TemporaryPlantsPreviewQueryVariables>) {
+        return Apollo.useQuery<TemporaryPlantsPreviewQuery, TemporaryPlantsPreviewQueryVariables>(TemporaryPlantsPreviewDocument, baseOptions);
+      }
+export function useTemporaryPlantsPreviewLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TemporaryPlantsPreviewQuery, TemporaryPlantsPreviewQueryVariables>) {
+          return Apollo.useLazyQuery<TemporaryPlantsPreviewQuery, TemporaryPlantsPreviewQueryVariables>(TemporaryPlantsPreviewDocument, baseOptions);
+        }
+export type TemporaryPlantsPreviewQueryHookResult = ReturnType<typeof useTemporaryPlantsPreviewQuery>;
+export type TemporaryPlantsPreviewLazyQueryHookResult = ReturnType<typeof useTemporaryPlantsPreviewLazyQuery>;
+export type TemporaryPlantsPreviewQueryResult = Apollo.QueryResult<TemporaryPlantsPreviewQuery, TemporaryPlantsPreviewQueryVariables>;
