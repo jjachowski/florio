@@ -20,6 +20,7 @@ import { Emblems } from '../../components/Emblems';
 import { Layout } from '../../components/Layout';
 import { LikePlant } from '../../components/LikePlant';
 import { Navbar } from '../../components/Navbar';
+import { PlantBasics } from '../../components/plantDetails/PlantBasics';
 import { PlantGallery } from '../../components/PlantGallery';
 import { PlantOtherNames } from '../../components/PlantOtherNames';
 import {
@@ -98,7 +99,8 @@ const Plant: React.FC = () => {
           </Flex>
           <Flex direction='column' w='60%'>
             <Box mr='auto' maxW='60rem' minW='40rem'>
-              <Card isFlex direction='column' mr='auto'>
+              {data?.plant && <PlantBasics plant={data?.plant} />}
+              {/* <Card isFlex direction='column' mr='auto'>
                 <Flex direction='row'>
                   <Flex direction='column'>
                     <Flex as={Heading} size='lg' align='center'>
@@ -185,9 +187,10 @@ const Plant: React.FC = () => {
 
                 <Box unselectable='on'>{data?.plant?.description}</Box>
               </Card>
+               */}
               {data?.plant?.optimalConditions &&
                 data?.plant?.optimalConditions.length > 0 && (
-                  <Card mt={4} pt={0}>
+                  <Card mt={4} pt={4}>
                     <ConditionSeasonsSwitch
                       my={4}
                       currentlySelected={selectedSeason}
