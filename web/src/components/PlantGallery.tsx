@@ -31,7 +31,7 @@ export const PlantGallery: React.FC<PlantGalleryProps> = ({ images }) => {
   };
 
   return (
-    <Box position='relative' maxW='40rem'>
+    <Box position='relative' height='100%' width='100%'>
       <IconButton
         position='absolute'
         h='100%'
@@ -61,27 +61,28 @@ export const PlantGallery: React.FC<PlantGalleryProps> = ({ images }) => {
         zIndex={10}
         icon={<ChevronRightIcon />}
       />
-
-      {images?.map((image, index) => (
-        <ScaleFade
-          key={index}
-          initialScale={0.9}
-          in={index === currentImageIndex}
-        >
-          {index === currentImageIndex && (
-            <Box shadow='md' rounded={20} overflow='hidden'>
-              <CloudinaryImage cloudName='disxisevt' publicId={image}>
-                <Transformation
-                  height='1600'
-                  quality='40'
-                  width='1200'
-                  crop='fill'
-                />
-              </CloudinaryImage>
-            </Box>
-          )}
-        </ScaleFade>
-      ))}
+      <Box h='100%' w='100%'>
+        {images?.map((image, index) => (
+          <ScaleFade
+            key={index}
+            initialScale={0.9}
+            in={index === currentImageIndex}
+          >
+            {index === currentImageIndex && (
+              <Box shadow='md' rounded={20} overflow='hidden'>
+                <CloudinaryImage cloudName='disxisevt' publicId={image}>
+                  <Transformation
+                    height='1600'
+                    quality='40'
+                    width='1200'
+                    crop='fill'
+                  />
+                </CloudinaryImage>
+              </Box>
+            )}
+          </ScaleFade>
+        ))}
+      </Box>
     </Box>
   );
 };

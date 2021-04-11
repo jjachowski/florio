@@ -26,10 +26,13 @@ import { LikePlant } from '../LikePlant';
 import { PlantOtherNames } from '../PlantOtherNames';
 
 interface PlantBasicsProps {
-  plant: FullPlantFragment | FullTemporaryPlantFragment;
+  plant?: FullPlantFragment | FullTemporaryPlantFragment | null;
 }
 
 export const PlantBasics: React.FC<PlantBasicsProps> = ({ plant }) => {
+  if (!plant) {
+    return <Card>Błąd wczytywania danych rośliny</Card>;
+  }
   const { id, primaryName, otherNames, creator, description } = plant;
   const { data } = useMeQuery();
   const [deletePlant] = useDeletePlantMutation();
