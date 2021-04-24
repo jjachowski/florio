@@ -31,7 +31,7 @@ jobs:
       - name: pwd
         run: pwd
       - name: run web build
-        run: 
+        run: |
           cd web
           npm install
           npm run build
