@@ -1,20 +1,10 @@
+import { Box, Flex, Icon, Tooltip } from '@chakra-ui/react';
 import React from 'react';
+import { FaCat, FaDog } from 'react-icons/fa';
 import {
   FullPlantFragment,
   FullTemporaryPlantFragment,
 } from '../generated/graphql';
-import { Card } from './Card';
-import { FaDog, FaCat } from 'react-icons/fa';
-import {
-  Box,
-  Button,
-  Flex,
-  Icon,
-  Tooltip,
-  Wrap,
-  WrapItem,
-} from '@chakra-ui/react';
-import { BsPersonFill } from 'react-icons/bs';
 
 interface EmblemsProps {
   plant: FullPlantFragment | FullTemporaryPlantFragment;

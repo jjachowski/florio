@@ -1,4 +1,4 @@
-import { Box, Button, HStack, Input, VStack } from '@chakra-ui/react';
+import { Box, Button, HStack, VStack } from '@chakra-ui/react';
 import { Image as CloudinaryImage, Transformation } from 'cloudinary-react';
 import { Form, Formik } from 'formik';
 import React, { useState } from 'react';
@@ -44,7 +44,7 @@ export const EditPlantForm: React.FC<EditPlantFormProps> = ({
         isDogFriendlySource: plantToEdit.isDogFriendlySource ?? '',
         images: [],
       }}
-      onSubmit={async (values, { setErrors }) => {
+      onSubmit={async (values) => {
         const result = await editPlant({
           variables: {
             id: plantToEdit.id,

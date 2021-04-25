@@ -22,7 +22,7 @@ const Login: React.FC<LoginProps> = ({}) => {
           <Heading mb={10}>Logowanie</Heading>
           <Formik
             initialValues={{ usernameOrEmail: '', password: '' }}
-            onSubmit={async (values, { setErrors }) => {
+            onSubmit={async (values) => {
               const response = await login({
                 variables: values,
                 update: (cache) => {
@@ -30,9 +30,6 @@ const Login: React.FC<LoginProps> = ({}) => {
                 },
               });
               if (response.data?.login.errors) {
-                // should i mark the fields red and display field error?
-                // setErrors({ usernameOrEmail: '', password: '' });
-                // setErrors(toErrorMap(response.data.login.errors));
                 toast({
                   status: 'error',
                   description: 'incorrect username or password',

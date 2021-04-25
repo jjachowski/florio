@@ -1,4 +1,5 @@
-import { Box, Flex, Heading, Image, Link } from '@chakra-ui/react';
+import { Box, Flex, Heading, Link } from '@chakra-ui/react';
+import { Image as CloudinaryImage, Transformation } from 'cloudinary-react';
 import { useRouter } from 'next/router';
 import React from 'react';
 import {
@@ -8,7 +9,6 @@ import {
 import { Card } from './Card';
 import { LikePlant } from './LikePlant';
 import { PlantOtherNames } from './PlantOtherNames';
-import { Image as CloudinaryImage, Transformation } from 'cloudinary-react';
 interface PlantCardProps {
   plant: PlantPreviewFragment | TemporaryPlantPreviewFragment;
   isTemporary?: boolean;

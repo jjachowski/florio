@@ -1,13 +1,4 @@
-import {
-  Checkbox,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
-  Radio,
-  RadioGroup,
-  Stack,
-} from '@chakra-ui/react';
+import { Checkbox, FormControl, FormErrorMessage } from '@chakra-ui/react';
 import { Field, useField } from 'formik';
 import React from 'react';
 
@@ -24,7 +15,7 @@ export const PetFriendlyField: React.FC<PetFriendlyFieldProps> = ({
   checked,
   ...props
 }) => {
-  const [, { error, value }] = useField(props);
+  const [, { error }] = useField(props);
 
   return (
     <Field name={props.name}>

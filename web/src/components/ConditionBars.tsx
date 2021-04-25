@@ -1,10 +1,6 @@
 import { Heading, VStack } from '@chakra-ui/react';
 import React from 'react';
-import {
-  OptimalConditions,
-  OptimalConditionsFragment,
-  usePlantQuery,
-} from '../generated/graphql';
+import { OptimalConditionsFragment } from '../generated/graphql';
 import { Season, seasonToInt } from '../utils/seasonConditionsHelpers';
 import { Bar } from './Bar';
 import { BarRange } from './BarRange';

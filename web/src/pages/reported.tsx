@@ -3,11 +3,7 @@ import React from 'react';
 import { Layout } from '../components/Layout';
 import { Navbar } from '../components/Navbar';
 import { ReportedPlantCard } from '../components/ReportedPlantCard';
-import {
-  useMeQuery,
-  useReportedPlantsQuery,
-  useVoteReportMutation,
-} from '../generated/graphql';
+import { useReportedPlantsQuery } from '../generated/graphql';
 
 interface ReportedProps {}
 

@@ -106,9 +106,6 @@ const main = async () => {
       req,
       res,
       redis,
-      // s3,
-      //   userLoader: createUserLoader(),
-      //   updootLoader: createUpdootLoader(),
     }),
     uploads: false,
   });

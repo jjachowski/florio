@@ -21,7 +21,7 @@ export const FileField: React.FC<FileFieldProps> = ({
 
   // Programatically click the hidden file input element
   // when the Button component is clicked
-  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+  const { getRootProps, getInputProps } = useDropzone({
     onDropAccepted: (val) => onAccepted((val as unknown) as FileList),
   });
   const [, { error }] = useField(props);

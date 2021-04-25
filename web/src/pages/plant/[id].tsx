@@ -27,6 +27,7 @@ const Plant: React.FC = () => {
               <PlantBasics plant={data?.plant} />
               <OptimalConditions
                 optimalConditions={data?.plant?.optimalConditions}
+                plantId={id}
               />
             </Box>
           </Flex>

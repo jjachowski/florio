@@ -1,7 +1,4 @@
-import { AddIcon } from '@chakra-ui/icons';
-import { Heading } from '@chakra-ui/layout';
-import { Flex, Button, VStack } from '@chakra-ui/react';
-import router from 'next/router';
+import { VStack } from '@chakra-ui/react';
 import React from 'react';
 import { Layout } from '../components/Layout';
 import { NavagationButtons } from '../components/NavagationButtons';

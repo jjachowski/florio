@@ -1,6 +1,4 @@
-import { AddIcon } from '@chakra-ui/icons';
-import { Button, Flex, VStack } from '@chakra-ui/react';
-import { useRouter } from 'next/router';
+import { VStack } from '@chakra-ui/react';
 import React from 'react';
 import { Layout } from '../components/Layout';
 import { NavagationButtons } from '../components/NavagationButtons';
@@ -9,7 +7,6 @@ import { PlantCard } from '../components/PlantCard';
 import { usePlantsPreviewQuery } from '../generated/graphql';
 const Index = () => {
   const { data } = usePlantsPreviewQuery();
-  const router = useRouter();
 
   return (
     <>

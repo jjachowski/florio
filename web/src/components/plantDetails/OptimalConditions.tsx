@@ -1,3 +1,5 @@
+import { Button } from '@chakra-ui/button';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { OptimalConditionsFragment } from '../../generated/graphql';
 import {
@@ -11,12 +13,15 @@ import { ConditionSeasonsSwitch } from '../ConditionSeasonsSwitch';
 
 interface OptimalConditionsProps {
   optimalConditions?: OptimalConditionsFragment[] | null;
+  plantId: number;
 }
 
 export const OptimalConditions: React.FC<OptimalConditionsProps> = ({
   optimalConditions,
+  plantId,
 }) => {
   const [selectedSeason, setSelectedSeason] = useState<Season>(null);
+  const router = useRouter();
   useEffect(() => {
     if (!selectedSeason) {
       const intSeasons = optimalConditions?.map((o) => o.season).sort();
@@ -43,6 +48,10 @@ export const OptimalConditions: React.FC<OptimalConditionsProps> = ({
       </Card>
     );
   } else {
-    return <Card>Brak</Card>;
+    return (
+      <Button onClick={() => router.push(`/plant/${plantId}/conditions`)}>
+        Dodaj optymalne warunki
+      </Button>
+    );
   }
 };

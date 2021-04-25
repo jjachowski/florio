@@ -1,8 +1,5 @@
 import { SelectOption } from '../components/FormSelectField';
-import {
-  OptimalConditions,
-  OptimalConditionsFragment,
-} from '../generated/graphql';
+import { OptimalConditionsFragment } from '../generated/graphql';
 
 export type Season = 'spring' | 'summer' | 'autumn' | 'winter' | null;
 

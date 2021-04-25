@@ -9,10 +9,11 @@ import {
   Root,
   UseMiddleware,
 } from 'type-graphql';
+import { Like } from '../entities/Like';
 import { OptimalConditions } from '../entities/OptimalConditions';
 import { Plant } from '../entities/Plant';
 import { TemporaryPlant } from '../entities/TemporaryPlant';
-import { isAdmin } from '../middleware/isAuth';
+import { isAdmin, isAuth } from '../middleware/isAuth';
 import { FieldError } from '../shared/graphqlTypes';
 import { MyContext } from '../types';
 import { uploadImages } from '../utils/cloudinary';
@@ -39,6 +40,20 @@ export class PlantResolver {
     const plants = await Plant.find({ where: { isReported: false } });
 
     return plants;
+  }
+
+  @Query(() => [Plant])
+  @UseMiddleware(isAuth)
+  async myLikedPlants(@Ctx() { req }: MyContext): Promise<Plant[]> {
+    if (req.session.userId) {
+      const likes = await Like.find({
+        where: { creatorId: req.session.userId },
+      });
+      const plants = likes.map((l) => l.plant);
+      return plants;
+    }
+
+    return [];
   }
 
   @Query(() => Plant, { nullable: true })

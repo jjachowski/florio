@@ -1,5 +1,5 @@
 import { Flex, HTMLChakraProps } from '@chakra-ui/react';
-import React, { useState } from 'react';
+import React from 'react';
 import { BsSun } from 'react-icons/bs';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import { GiFlowerEmblem, GiSnowing } from 'react-icons/gi';

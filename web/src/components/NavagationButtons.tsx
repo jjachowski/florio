@@ -1,7 +1,8 @@
 import { AddIcon } from '@chakra-ui/icons';
-import { Flex, Button } from '@chakra-ui/react';
-import router, { useRouter } from 'next/router';
+import { Button, Flex, IconButton, Tooltip } from '@chakra-ui/react';
+import { useRouter } from 'next/router';
 import React from 'react';
+import { TiHeart } from 'react-icons/ti';
 
 interface NavagationButtonsProps {}
 
@@ -47,6 +48,16 @@ export const NavagationButtons: React.FC<NavagationButtonsProps> = ({}) => {
         <AddIcon mr={2} />
         Dodaj nową roślinę :)
       </Button>
+      <Tooltip label='Moje polubione rośliny' openDelay={500}>
+        <IconButton
+          isRound
+          colorScheme='pink'
+          variant={isActive('/likedPlants') ? 'solid' : 'outline'}
+          aria-label='my liked plants'
+          icon={<TiHeart />}
+          onClick={() => router.push('/likedPlants')}
+        />
+      </Tooltip>
     </Flex>
   );
 };
